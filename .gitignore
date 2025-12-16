@@ -1,0 +1,4 @@
+.env
+*.log
+bot.log
+support_bot.log
