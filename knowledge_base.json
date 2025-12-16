@@ -1,0 +1,254 @@
+{
+  "faqs": [
+    {
+      "id": "domain_pending",
+      "category": "Domain Verification",
+      "keywords": ["domain", "pending", "verification", "verifying", "dns", "propagation", "stuck", "waiting"],
+      "question_patterns": ["domain.*pending", "still.*pending", "domain.*stuck", "verify.*domain", "domain.*verifying"],
+      "answer": "Domain verification typically takes 5-30 minutes for DNS changes to propagate. Try refreshing after a few minutes. If it's been over an hour, let the team know!",
+      "docs_link": "https://docs.agentmail.to/api-reference/domains/verify"
+    },
+    {
+      "id": "api_404",
+      "category": "API Errors",
+      "keywords": ["404", "not found", "api", "error", "sending", "inbox", "message"],
+      "question_patterns": ["404.*error", "not found", "api.*404", "can't send", "cannot send"],
+      "answer": "404 errors usually mean:\n1. **Free tier**: Custom domains require a paid plan\n2. **Wrong inbox_id**: Make sure you're using the correct inbox ID from the console\n3. **Domain not verified**: Check that your domain shows 'Verified' status",
+      "docs_link": "https://docs.agentmail.to/api-reference"
+    },
+    {
+      "id": "free_tier_limits",
+      "category": "Pricing & Plans",
+      "keywords": ["free", "tier", "plan", "limit", "inboxes", "emails", "month", "access"],
+      "question_patterns": ["free tier", "free plan", "what.*included", "limit.*free"],
+      "answer": "The free tier includes:\n- 3 inboxes\n- 3,000 emails per month\n- No custom domains (agentmail.to subdomain only)\n\nUpgrade at agentmail.to/pricing for custom domains and higher limits.",
+      "docs_link": "https://agentmail.to/pricing"
+    },
+    {
+      "id": "upgrade_plan",
+      "category": "Billing & Upgrade",
+      "keywords": ["upgrade", "paid", "plan", "billing", "subscribe", "payment", "pricing", "tier"],
+      "question_patterns": ["how.*upgrade", "upgrade.*plan", "can't.*add.*domain", "paid.*plan"],
+      "answer": "To upgrade your plan:\n1. Go to **agentmail.to/pricing**\n2. Choose your plan and complete payment\n3. It may take a few minutes to update\n\nIf you've paid but still can't access features, let the team know with your email address.",
+      "docs_link": "https://agentmail.to/pricing"
+    },
+    {
+      "id": "webhook_setup",
+      "category": "Webhooks",
+      "keywords": ["webhook", "setup", "configure", "create", "endpoint", "url", "events"],
+      "question_patterns": ["webhook.*setup", "how.*webhook", "configure.*webhook", "create.*webhook"],
+      "answer": "To set up webhooks:\n1. Use the API: `POST https://api.agentmail.to/v0/webhooks`\n2. Provide your `url` (must be publicly accessible) and `event_types`\n3. Store the returned `secret` for signature verification\n\nFor local dev, use ngrok to expose your endpoint.",
+      "docs_link": "https://docs.agentmail.to/api-reference/webhooks/create"
+    },
+    {
+      "id": "webhook_specific_inbox",
+      "category": "Webhooks",
+      "keywords": ["webhook", "specific", "inbox", "one", "single", "particular"],
+      "question_patterns": ["webhook.*specific.*inbox", "webhook.*one.*inbox", "webhook.*single"],
+      "answer": "Yes! You can create a webhook for specific inboxes by adding `inbox_ids` parameter when creating the webhook via API. If you don't specify inbox_ids, the webhook receives events for all inboxes.",
+      "docs_link": "https://docs.agentmail.to/api-reference/webhooks/create"
+    },
+    {
+      "id": "profile_picture",
+      "category": "Email Settings",
+      "keywords": ["profile", "picture", "image", "avatar", "logo", "photo", "icon"],
+      "question_patterns": ["profile.*pic", "add.*image", "inbox.*picture", "email.*avatar"],
+      "answer": "Profile pictures are set on the **receiving email client side**, not AgentMail. To show a profile pic in Gmail:\n1. Create a Google account using your AgentMail email\n2. Add a profile picture there\n3. It takes a few days to propagate",
+      "docs_link": "https://docs.agentmail.to"
+    },
+    {
+      "id": "auto_reply",
+      "category": "Automation",
+      "keywords": ["auto", "reply", "automatic", "respond", "automation", "incoming", "receive"],
+      "question_patterns": ["auto.*reply", "automatic.*respond", "automat.*email", "incoming.*email"],
+      "answer": "Check out our auto-reply agent example! It shows how to automatically respond to incoming emails using webhooks.\n\nKey steps: Create webhook → Receive `message.received` event → Parse sender → Send reply",
+      "docs_link": "https://docs.agentmail.to/documentation/examples/auto-reply-agent"
+    },
+    {
+      "id": "domain_registrar",
+      "category": "Domain Setup",
+      "keywords": ["domain", "registrar", "buy", "purchase", "where", "porkbun", "cloudflare", "namecheap"],
+      "question_patterns": ["where.*buy.*domain", "domain.*registrar", "buy.*domain"],
+      "answer": "AgentMail doesn't sell domains - you buy them from a registrar and connect them. Popular options:\n- **Porkbun** (popular in community)\n- **Cloudflare** (good DNS management)\n- **Namecheap**\n\nAfter purchase, add DNS records in your registrar to verify with AgentMail.",
+      "docs_link": "https://docs.agentmail.to/api-reference/domains/create"
+    },
+    {
+      "id": "gmail_integration",
+      "category": "Domain Setup",
+      "keywords": ["gmail", "google", "workspace", "existing", "subdomain", "forward", "routing"],
+      "question_patterns": ["gmail.*agentmail", "existing.*domain", "use.*with.*gmail", "google.*workspace"],
+      "answer": "Two options to use AgentMail alongside Gmail:\n\n**Option 1: Subdomain (simpler)**\nCreate a subdomain like `mail.yourdomain.com` and point its MX records to AgentMail only.\n\n**Option 2: Google Workspace Routing**\nRequires paid Google Workspace. Configure email routing in Google Admin console to forward specific addresses to AgentMail.",
+      "docs_link": "https://docs.agentmail.to/api-reference/domains"
+    },
+    {
+      "id": "reply_followup",
+      "category": "API Usage",
+      "keywords": ["reply", "follow", "followup", "thread", "to", "recipient", "wrong", "myself"],
+      "question_patterns": ["reply.*myself", "reply.*wrong", "follow.*up", "send.*same.*thread"],
+      "answer": "If `reply()` is sending to yourself instead of the recipient, **override the `to` field explicitly**:\n\n```python\nclient.inboxes.messages.reply(\n    inbox_id=\"...\",\n    message_id=\"...\",\n    to=[\"recipient@email.com\"],  # Must be a list!\n    text=\"Your message\"\n)\n```",
+      "docs_link": "https://docs.agentmail.to/api-reference/inboxes/messages/reply"
+    },
+    {
+      "id": "attachment_download",
+      "category": "Console Issues",
+      "keywords": ["attachment", "download", "pdf", "file", "open", "console", "broken"],
+      "question_patterns": ["attachment.*download", "can't.*download", "pdf.*open", "file.*broken"],
+      "answer": "If attachments aren't downloading from the console, use the API:\n```python\nclient.inboxes.threads.get_attachment(\n    inbox_id=\"...\",\n    thread_id=\"...\",\n    attachment_id=\"...\"\n)\n```\nGet the `attachment_id` from the thread or message response.",
+      "docs_link": "https://docs.agentmail.to/api-reference/inboxes/threads/get-attachment"
+    },
+    {
+      "id": "sdk_installation",
+      "category": "SDK Setup",
+      "keywords": ["install", "sdk", "pip", "npm", "package", "library", "python", "typescript", "node", "javascript"],
+      "question_patterns": ["install.*sdk", "pip.*install", "npm.*install", "how.*install", "setup.*sdk"],
+      "answer": "**Python:**\n```bash\npip install agentmail\n```\n\n**TypeScript/Node:**\n```bash\nnpm install agentmail\n```\n\nThen set `AGENTMAIL_API_KEY` in your `.env` file.",
+      "docs_link": "https://docs.agentmail.to/quickstart"
+    },
+    {
+      "id": "api_key_setup",
+      "category": "Authentication",
+      "keywords": ["api", "key", "token", "auth", "authentication", "create", "get", "where"],
+      "question_patterns": ["get.*api.*key", "create.*api.*key", "where.*api.*key", "api.*key.*setup"],
+      "answer": "To get your API key:\n1. Go to **console.agentmail.to**\n2. Navigate to **API Keys** section\n3. Click **Create API Key**\n4. Copy and store it securely (you won't see it again!)\n\nStore in `.env` as `AGENTMAIL_API_KEY=your_key_here`",
+      "docs_link": "https://docs.agentmail.to/quickstart"
+    },
+    {
+      "id": "inbox_default_domain",
+      "category": "Inbox Creation",
+      "keywords": ["inbox", "create", "default", "domain", "agentmail.to", "username", "random"],
+      "question_patterns": ["create.*inbox", "default.*domain", "agentmail\\.to.*domain", "random.*username"],
+      "answer": "When creating an inbox without specifying a domain, it defaults to `@agentmail.to`. The username is randomly generated unless you provide one:\n\n```python\ninbox = client.inboxes.create(\n    username=\"myagent\",  # Optional\n    domain=\"mydomain.com\"  # Requires paid plan\n)\n```",
+      "docs_link": "https://docs.agentmail.to/api-reference/inboxes/create"
+    },
+    {
+      "id": "domain_dns_records",
+      "category": "Domain Setup",
+      "keywords": ["dns", "records", "mx", "txt", "cname", "spf", "dkim", "dmarc", "setup"],
+      "question_patterns": ["dns.*record", "mx.*record", "what.*dns", "add.*dns", "spf.*dkim"],
+      "answer": "After adding a domain via API, you'll receive DNS records to add:\n- **MX records**: For receiving email\n- **TXT records**: For domain verification\n- **CNAME records**: For email authentication (DKIM)\n\nAdd these in your registrar's DNS settings. Use the `verify` endpoint to check status.",
+      "docs_link": "https://docs.agentmail.to/api-reference/domains/create"
+    },
+    {
+      "id": "send_email_basic",
+      "category": "Sending Email",
+      "keywords": ["send", "email", "message", "how", "to", "subject", "body", "text"],
+      "question_patterns": ["send.*email", "how.*send", "send.*message", "first.*email"],
+      "answer": "```python\nclient.inboxes.messages.send(\n    inbox_id=\"your-inbox@agentmail.to\",\n    to=[\"recipient@example.com\"],\n    subject=\"Hello!\",\n    text=\"Plain text body\",\n    html=\"<b>HTML body</b>\"  # Optional\n)\n```\n\nThe `to` field accepts a single email string or array of emails.",
+      "docs_link": "https://docs.agentmail.to/api-reference/inboxes/messages/send"
+    },
+    {
+      "id": "send_attachments",
+      "category": "Sending Email",
+      "keywords": ["attachment", "send", "file", "attach", "pdf", "image", "upload"],
+      "question_patterns": ["send.*attachment", "attach.*file", "how.*attach", "email.*file"],
+      "answer": "Include attachments in the `attachments` array:\n\n```python\nclient.inboxes.messages.send(\n    inbox_id=\"...\",\n    to=[\"recipient@example.com\"],\n    subject=\"File attached\",\n    text=\"See attachment\",\n    attachments=[{\n        \"content\": base64_encoded_content,\n        \"filename\": \"document.pdf\",\n        \"content_type\": \"application/pdf\"\n    }]\n)\n```",
+      "docs_link": "https://docs.agentmail.to/api-reference/inboxes/messages/send"
+    },
+    {
+      "id": "webhook_events",
+      "category": "Webhooks",
+      "keywords": ["webhook", "event", "types", "received", "sent", "bounced", "delivered"],
+      "question_patterns": ["webhook.*event", "event.*type", "what.*events", "which.*webhook"],
+      "answer": "Available webhook event types:\n- `message.received` - New email received\n- `message.sent` - Email sent successfully\n- `message.delivered` - Email delivered\n- `message.bounced` - Email bounced\n- `message.complained` - Spam complaint\n- `message.rejected` - Email rejected\n- `domain.verified` - Domain verification complete",
+      "docs_link": "https://docs.agentmail.to/api-reference/webhooks/create"
+    },
+    {
+      "id": "webhook_loop_prevention",
+      "category": "Webhooks",
+      "keywords": ["webhook", "loop", "infinite", "self", "reply", "own", "message"],
+      "question_patterns": ["infinite.*loop", "reply.*own", "webhook.*loop", "message.*sent.*event"],
+      "answer": "**Critical**: Always filter out `message.sent` events to prevent infinite loops!\n\n```python\n@app.route('/webhook', methods=['POST'])\ndef webhook():\n    event = request.json\n    if event['type'] == 'message.sent':\n        return 'OK', 200  # Ignore sent events!\n    # Process message.received...\n```",
+      "docs_link": "https://docs.agentmail.to/documentation/examples/auto-reply-agent"
+    },
+    {
+      "id": "message_labels",
+      "category": "API Usage",
+      "keywords": ["label", "labels", "tag", "categorize", "add", "remove", "update"],
+      "question_patterns": ["add.*label", "label.*message", "categorize.*email", "tag.*message"],
+      "answer": "Add or remove labels with the update endpoint:\n\n```python\nclient.inboxes.messages.update(\n    inbox_id=\"...\",\n    message_id=\"...\",\n    add_labels=[\"important\", \"needs-review\"],\n    remove_labels=[\"processed\"]\n)\n```\n\nLabels are great for organizing and filtering messages.",
+      "docs_link": "https://docs.agentmail.to/api-reference/inboxes/messages/update"
+    },
+    {
+      "id": "threading_explained",
+      "category": "Email Threading",
+      "keywords": ["thread", "thread_id", "conversation", "group", "messages", "chain"],
+      "question_patterns": ["thread.*work", "what.*thread", "thread_id", "conversation.*group"],
+      "answer": "Threads group related messages (like email chains). Each message has both `message_id` and `thread_id`.\n\n- Use `threads.list()` to see all conversations\n- Use `threads.get()` to fetch all messages in a thread\n- Replies automatically join the same thread",
+      "docs_link": "https://docs.agentmail.to/api-reference/inboxes/threads/get"
+    },
+    {
+      "id": "pagination",
+      "category": "API Usage",
+      "keywords": ["pagination", "page", "limit", "next", "token", "all", "list"],
+      "question_patterns": ["paginate", "next.*page", "get.*all", "page.*token", "limit.*results"],
+      "answer": "List endpoints support pagination:\n\n```python\n# First page\nresult = client.inboxes.messages.list(inbox_id=\"...\", limit=50)\n\n# Next page\nif result.next_page_token:\n    next_page = client.inboxes.messages.list(\n        inbox_id=\"...\",\n        page_token=result.next_page_token\n    )\n```",
+      "docs_link": "https://docs.agentmail.to/api-reference/inboxes/messages/list"
+    },
+    {
+      "id": "api_auth_format",
+      "category": "Authentication",
+      "keywords": ["bearer", "token", "header", "authorization", "format", "auth"],
+      "question_patterns": ["auth.*header", "bearer.*token", "authorization.*format"],
+      "answer": "API requests require Bearer token authentication:\n\n```\nAuthorization: Bearer YOUR_API_KEY\n```\n\nIf using the SDK, just pass `api_key` when creating the client - it handles auth automatically.",
+      "docs_link": "https://docs.agentmail.to/api-reference"
+    },
+    {
+      "id": "api_error_400",
+      "category": "API Errors",
+      "keywords": ["400", "bad", "request", "invalid", "parameter", "error"],
+      "question_patterns": ["400.*error", "bad.*request", "invalid.*parameter"],
+      "answer": "400 Bad Request means invalid parameters. Common causes:\n- Missing required fields (`to`, `inbox_id`)\n- Wrong data types (e.g., string instead of array for `to`)\n- Invalid email format\n- Malformed JSON body\n\nCheck your request body matches the API spec.",
+      "docs_link": "https://docs.agentmail.to/api-reference"
+    },
+    {
+      "id": "api_error_403",
+      "category": "API Errors",
+      "keywords": ["403", "forbidden", "permission", "denied", "unauthorized", "access"],
+      "question_patterns": ["403.*error", "forbidden", "permission.*denied", "access.*denied"],
+      "answer": "403 Forbidden means permission denied. Check:\n1. **API key is valid** - Not expired or deleted\n2. **Correct API key** - Using the right key for your account\n3. **Feature access** - Some features require paid plan\n4. **Resource ownership** - Can only access your own inboxes/domains",
+      "docs_link": "https://docs.agentmail.to/api-reference"
+    },
+    {
+      "id": "ngrok_webhooks",
+      "category": "Webhooks",
+      "keywords": ["ngrok", "local", "localhost", "development", "tunnel", "testing"],
+      "question_patterns": ["ngrok", "localhost.*webhook", "local.*development", "test.*webhook"],
+      "answer": "For local webhook development, use **ngrok** to expose your server:\n\n```bash\nngrok http 8080\n```\n\nUse the generated URL (e.g., `https://abc123.ngrok.io/webhook`) when creating your webhook. Free ngrok domains change on restart - consider a paid plan for persistent URLs.",
+      "docs_link": "https://docs.agentmail.to/documentation/examples/auto-reply-agent"
+    },
+    {
+      "id": "webhook_return_200",
+      "category": "Webhooks",
+      "keywords": ["webhook", "200", "response", "acknowledge", "return", "status"],
+      "question_patterns": ["webhook.*return", "webhook.*response", "webhook.*200", "acknowledge.*webhook"],
+      "answer": "**Always return HTTP 200** from your webhook endpoint, even if processing fails:\n\n```python\n@app.route('/webhook', methods=['POST'])\ndef webhook():\n    try:\n        process_event(request.json)\n    except Exception as e:\n        log_error(e)  # Handle internally\n    return 'OK', 200  # Always acknowledge!\n```\n\nNon-200 responses trigger retries, which won't help with app errors.",
+      "docs_link": "https://docs.agentmail.to/documentation/examples/auto-reply-agent"
+    },
+    {
+      "id": "parse_from_field",
+      "category": "API Usage",
+      "keywords": ["from", "sender", "parse", "email", "name", "extract", "address"],
+      "question_patterns": ["parse.*from", "extract.*email", "sender.*name", "from.*field"],
+      "answer": "The `from` field can be `\"John Doe <john@example.com>\"` or just `\"john@example.com\"`. Parse it:\n\n```python\nfrom_field = message.get('from_', '') or message.get('from', '')\nif '<' in from_field:\n    email = from_field.split('<')[1].split('>')[0]\n    name = from_field.split('<')[0].strip()\nelse:\n    email = from_field\n    name = email.split('@')[0]\n```",
+      "docs_link": "https://docs.agentmail.to/documentation/examples/auto-reply-agent"
+    },
+    {
+      "id": "get_thread_messages",
+      "category": "Email Threading",
+      "keywords": ["thread", "messages", "get", "all", "conversation", "history"],
+      "question_patterns": ["get.*thread.*messages", "all.*messages.*thread", "thread.*history"],
+      "answer": "To get all messages in a conversation:\n\n```python\nthread = client.inboxes.threads.get(\n    inbox_id=\"...\",\n    thread_id=\"...\"\n)\n# thread.messages contains all messages in order\nfor msg in thread.messages:\n    print(msg.subject, msg.text)\n```",
+      "docs_link": "https://docs.agentmail.to/api-reference/inboxes/threads/get"
+    },
+    {
+      "id": "filter_messages_labels",
+      "category": "API Usage",
+      "keywords": ["filter", "messages", "labels", "search", "find", "query"],
+      "question_patterns": ["filter.*label", "search.*messages", "find.*label", "query.*messages"],
+      "answer": "Filter messages by labels when listing:\n\n```python\nmessages = client.inboxes.messages.list(\n    inbox_id=\"...\",\n    labels=[\"urgent\", \"unread\"],\n    after=\"2024-01-01T00:00:00Z\",\n    limit=50\n)\n```\n\nYou can also filter by `before`/`after` timestamps.",
+      "docs_link": "https://docs.agentmail.to/api-reference/inboxes/messages/list"
+    }
+  ],
+  "team_usernames": ["haakam21", "mablanc", "simplehacker1313", "mikesteroonie", "harryduu_61189"],
+  "skip_patterns": ["dm you", "dmed you", "will look", "looking into", "looking now"]
+}

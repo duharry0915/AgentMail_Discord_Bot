@@ -1,0 +1,3002 @@
+[
+  {
+    "author": "haakam21",
+    "content": "Hmm haven't seen this before. Can you try this again? Added some more logging so we will be able to debug once it happens again",
+    "timestamp": "2025-12-07 21:11:17.230000+00:00",
+    "id": "1447334677231960246"
+  },
+  {
+    "author": "sebastiankupers_20912",
+    "content": "inbox_id I just put a placeholder right now",
+    "timestamp": "2025-12-06 22:35:03.736000+00:00",
+    "id": "1446993372060582131"
+  },
+  {
+    "author": "sebastiankupers_20912",
+    "content": "hey - did you guys ever had issues in responding to emails coming from outlook? if I reply to an email from gmail everything is fine. but outlook throw the 500.\n\n---\n  Issue: reply_to_message returns 500 Server Error for Outlook/Exchange emails\n\n  Error Response:\n  {\n    \"name\": \"ServerError\",\n    \"message\": \"An unexpected error occurred\"\n  }\n\n  Failing Payload (Outlook/Exchange):\n  {\n    \"inbox_id\": \"your-inbox@your-domain.com\",\n    \"message_id\": \"PFZJMlBSMDZNQjEwNjU3MDc4OTQ4MzkyRDFBQjA2QzgyNjk4QUE0QUBWSTJQUjA2TUIxMDY1Ny5ldXJwcmQwNi5w\n  cm9kLm91dGxvb2suY29tPg\",\n    \"text\": \"Your reply text here...\"\n  }\n\n  Decoded message_id: <VI2PR06MB1065707894839D1AB06C82698AA4A@VI2PR06MB10657.eurprd06.prod.outlook.com>\n\n  Working Payload (Gmail):\n  {\n    \"inbox_id\": \"your-inbox@your-domain.com\",\n    \"message_id\":\n  \"PENBSDRjRWluQ0VIWTZZeWVla0hGT21CdFRBWVZ5VGlwM2FxZmJlM0RCMDFDYlZFS0p6UUBtYWlsLmdtYWlsLmNvbT4\",\n    \"text\": \"Your reply text here...\"\n  }\n\n  Decoded message_id: <CAH4cEinCEHY6YyeekHFOmBtTAYVyTip3aqfbe3DB01CbVEKJzQ@mail.gmail.com>\n\n  Summary: Same API call, same inbox, same format - works for Gmail message_ids, fails with 500 for\n  Outlook/Exchange message_ids.",
+    "timestamp": "2025-12-06 22:34:36.608000+00:00",
+    "id": "1446993258277376060"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "Hey Haroon! Domain verification can take a bit. DNS changes need time to propagate across the internet (typically 5-30 minutes, sometimes longer).\nTry refreshing/checking again in a few minutes. Let us know if it still doesn't work.",
+    "timestamp": "2025-12-06 17:46:29.929000+00:00",
+    "id": "1446920752690364496"
+  },
+  {
+    "author": "haroonq_76048",
+    "content": "My domain is still in pending state",
+    "timestamp": "2025-12-06 10:41:37.972000+00:00",
+    "id": "1446813831673155676"
+  },
+  {
+    "author": "haakam21",
+    "content": "haakam@agentmail.cc or discord DM",
+    "timestamp": "2025-12-05 17:55:28.409000+00:00",
+    "id": "1446560623373848721"
+  },
+  {
+    "author": "matasar",
+    "content": "Sure, where should i send them?",
+    "timestamp": "2025-12-05 17:55:10.572000+00:00",
+    "id": "1446560548559786077"
+  },
+  {
+    "author": "haakam21",
+    "content": "Can you provide me with the raw .eml file of a dropped email so I can look into this?",
+    "timestamp": "2025-12-05 17:54:49.694000+00:00",
+    "id": "1446560460991107235"
+  },
+  {
+    "author": "matasar",
+    "content": "Hello! We're having a scary problem. I forward my icloud email to gmail, and in testing we sent an email to my icloud address. Replies from the gmail interface seem to be dropped on the floor by agentmail. If I login to icloud.com and reply directly from there we receive them as normal. I don't see any sign of the messages I sent in the agentmail console and we didn't receive any webhooks.",
+    "timestamp": "2025-12-05 17:52:55.358000+00:00",
+    "id": "1446559981431427236"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes you would have to buy through a registrar. This is something we are considering adding to our platform however",
+    "timestamp": "2025-12-04 17:10:49.496000+00:00",
+    "id": "1446186999332470784"
+  },
+  {
+    "author": "mattloffredo",
+    "content": "So does AgentMail not offer fully automated domain setup? I would still have to buy the custom domain through a registrar?",
+    "timestamp": "2025-12-03 22:36:03.924000+00:00",
+    "id": "1445906460910420091"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hi <@150808470759669760> dming you",
+    "timestamp": "2025-12-03 06:12:26.208000+00:00",
+    "id": "1445658922668261406"
+  },
+  {
+    "author": "austin4495",
+    "content": "Hi Support - relatively new user here. I've been struggling to send any emails with the API. I've tried with both a free and now paid plan, and with an agentmail.to and custom domain inbox - no luck sending with anything. I keep getting 404 {\"message\": \"Not Found\"}. My webhook logs show Fetched inboxes: { \"message\": \"Not Found\" } Fetched identities: { \"message\": \"Not Found\" }. Any idea what's going on?",
+    "timestamp": "2025-12-03 06:08:06.169000+00:00",
+    "id": "1445657831985516647"
+  },
+  {
+    "author": "haakam21",
+    "content": "Profile pictures are actually set on the receving email client. If you want a profile pic for gmail you can sign up for a google account using the agentmail email and add a picture there. Once you do that it takes a few days to propogate",
+    "timestamp": "2025-12-02 10:46:16.646000+00:00",
+    "id": "1445365449054359603"
+  },
+  {
+    "author": "haakam21",
+    "content": "Haven't seen this before, will look into it",
+    "timestamp": "2025-12-02 10:45:25.967000+00:00",
+    "id": "1445365236491354152"
+  },
+  {
+    "author": "parmatma",
+    "content": "Also how can I add an image to an inbox? Would love to add our company logo",
+    "timestamp": "2025-12-02 10:18:54.155000+00:00",
+    "id": "1445358559947657226"
+  },
+  {
+    "author": "parmatma",
+    "content": "Is this a known issue? Happens when I click on Sent tab of an Inbox to see the sent emails. Doesn't happen on the Inbox tab.\n\\",
+    "timestamp": "2025-12-02 10:17:37.551000+00:00",
+    "id": "1445358238647455955"
+  },
+  {
+    "author": "ajayk_47",
+    "content": "thanks , now i got it !",
+    "timestamp": "2025-12-02 08:46:50.484000+00:00",
+    "id": "1445335391992287254"
+  },
+  {
+    "author": "haakam21",
+    "content": "You can use reply but set the to field explicitly this will override it",
+    "timestamp": "2025-12-02 08:39:11.681000+00:00",
+    "id": "1445333467633156137"
+  },
+  {
+    "author": "ajayk_47",
+    "content": "hey guys , what's the best way to send a follow-up to an email I sent earlier? reply() sends it back to me instead of the recipient \ud83d\ude05",
+    "timestamp": "2025-12-02 08:27:24.531000+00:00",
+    "id": "1445330501631213578"
+  },
+  {
+    "author": "karstenp_ai",
+    "content": "i'd recommend tld-list.com",
+    "timestamp": "2025-11-29 19:48:31.023000+00:00",
+    "id": "1444414744525013152"
+  },
+  {
+    "author": "clintalexwood",
+    "content": "Thanks for the help",
+    "timestamp": "2025-11-29 00:33:02.874000+00:00",
+    "id": "1444123961192611850"
+  },
+  {
+    "author": "clintalexwood",
+    "content": "I hate namecheap, cloudflare might be a good option but I\u2019m looking to buy at least 200 domains and I would guess porkbun will be more affordable/better for this use case",
+    "timestamp": "2025-11-29 00:32:53.874000+00:00",
+    "id": "1444123923443875852"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes Porkbun is popular, folks use Cloudflare and Namecheap as well.",
+    "timestamp": "2025-11-28 23:45:27.961000+00:00",
+    "id": "1444111986819596471"
+  },
+  {
+    "author": "clintalexwood",
+    "content": "Everyone uses porkbun I assume",
+    "timestamp": "2025-11-28 23:44:44.052000+00:00",
+    "id": "1444111802651775118"
+  },
+  {
+    "author": "haakam21",
+    "content": "You buy the domains elsewhere and connect them",
+    "timestamp": "2025-11-28 23:40:31.038000+00:00",
+    "id": "1444110741434138736"
+  },
+  {
+    "author": "clintalexwood",
+    "content": "Stupid question: the 300 domains advertised, is it up to 300 I can connect after I buy elsewhere or I get to create 300 domains within the server\u2019s network?",
+    "timestamp": "2025-11-28 23:39:53.822000+00:00",
+    "id": "1444110585338921160"
+  },
+  {
+    "author": "zealous_axolotl_85495",
+    "content": "i'll find out shortly and report back",
+    "timestamp": "2025-11-22 11:05:39.566000+00:00",
+    "id": "1441746448038498334"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "Thx. Does this solve your question?",
+    "timestamp": "2025-11-22 03:20:03.765000+00:00",
+    "id": "1441629276796358677"
+  },
+  {
+    "author": "zealous_axolotl_85495",
+    "content": "cheers <@1145150649344983040>",
+    "timestamp": "2025-11-22 02:06:07.218000+00:00",
+    "id": "1441610668569530501"
+  },
+  {
+    "author": "haakam21",
+    "content": "Dmed you",
+    "timestamp": "2025-11-22 00:34:02.932000+00:00",
+    "id": "1441587498034794636"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "Hey ndr! Two options:\nOp 1: Google Workspace Routing (Requires a paid Google Workspace account)\nYou can configure email routing in the Google Admin console to forward specific addresses to AgentMail.\nOp 2: Use a subdomain (simpler)\nCreate a subdomain like mail.yourdomain.com and set its MX records to point only to AgentMail. No conflict with Gmail since they're separate subdomains.",
+    "timestamp": "2025-11-21 22:42:05.069000+00:00",
+    "id": "1441559321275273389"
+  },
+  {
+    "author": "zealous_axolotl_85495",
+    "content": "hey <@319929970212339733> - I would love to get those instructions too, have exactly this problem",
+    "timestamp": "2025-11-21 15:58:13.087000+00:00",
+    "id": "1441457684976238634"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "",
+    "timestamp": "2025-11-20 20:44:16.585000+00:00",
+    "id": "1441167286038822964"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "LFG",
+    "timestamp": "2025-11-20 03:13:29.861000+00:00",
+    "id": "1440902848912035860"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "@everyone after building, we realized the first part of building community is feeling heard, and we want to make sure everyone who interacts with AgentMail feels like they have a voice, as a result we will be closely monitoring this feedback board( https://feedback.agentmail.to) where you can submit feature requests, bug reports, and see if someone has ran into a similar issue with you before (and how to solve it!)\n\nFeel free to continue using <#1341859984820015289> for immediate help from us, but if your message gets swamped amongst others use https://feedback.agentmail.to, we'll make a mission to respond to every post.\n\nLFG",
+    "timestamp": "2025-11-20 03:13:06.746000+00:00",
+    "id": "1440902751960961136"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "You can also do it online Vash. Put your thread_id and inbox_id into get_thread to get attachement_id and put it here. \nhttps://docs.agentmail.to/api-reference/inboxes/messages/get-attachment?explorer=true",
+    "timestamp": "2025-11-19 04:50:14.036000+00:00",
+    "id": "1440564805520986214"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "Sorry to hear that. Currently the API still works",
+    "timestamp": "2025-11-19 04:47:25.711000+00:00",
+    "id": "1440564099514630216"
+  },
+  {
+    "author": "vg073025",
+    "content": "It downloads the pdf but the pdf doesn't open",
+    "timestamp": "2025-11-18 23:42:54.934000+00:00",
+    "id": "1440487466321711125"
+  },
+  {
+    "author": "vg073025",
+    "content": "Can't download attachment from the console UI.",
+    "timestamp": "2025-11-18 23:42:37.861000+00:00",
+    "id": "1440487394712358993"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes we did, but we replaced with Svix's UI so you can view webhook logs as well. For now you can use the the API explorer in the docs to quickly configure a webhook via API: https://docs.agentmail.to/api-reference/webhooks/create?explorer=true",
+    "timestamp": "2025-11-17 22:04:26.312000+00:00",
+    "id": "1440100295899353189"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "Ok awesome be awesome if possible Becuase I\u2019m not using the API, and I miss this functionality, swear we had it in the past",
+    "timestamp": "2025-11-17 20:04:00.758000+00:00",
+    "id": "1440069989729173574"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes by adding that `inbox_id` to the `inbox_ids` parameter when creating the webhook. Right now this can be done via API and not in dashboard. Will update dashboard with this functionality as well",
+    "timestamp": "2025-11-17 19:56:43.601000+00:00",
+    "id": "1440068156159688826"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "Is there a way to make a web hook to a a specific inbox? I want 1 webhook for 1 specific inbox, not all of them",
+    "timestamp": "2025-11-17 19:55:25.430000+00:00",
+    "id": "1440067828287017045"
+  },
+  {
+    "author": "haakam21",
+    "content": "You can create a webhook without specifying inbox_ids and it will received events for all inboxes",
+    "timestamp": "2025-11-17 19:54:50.140000+00:00",
+    "id": "1440067680269897788"
+  },
+  {
+    "author": "haakam21",
+    "content": "Shipped",
+    "timestamp": "2025-11-17 19:54:09.244000+00:00",
+    "id": "1440067508739641465"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "Good question! The example shows localhost for development, but for production you'll need a publicly accessible URL.\nFor Vercel deployment:\n1. Deploy your webhook handler as a Vercel serverless function\n2. Use your Vercel URL (e.g., `https://your-app.vercel.app/api/webhook`) in AgentMail webhook settings\n3. Make sure to set environment variables (API keys) in Vercel dashboard",
+    "timestamp": "2025-11-15 20:53:24.191000+00:00",
+    "id": "1439357643536859351"
+  },
+  {
+    "author": ".awiee",
+    "content": "Yeah thanks that exactly I'm looking for but this will run locally right? If my server is running on local then only I can do this automation right?\nI tried to build something and it's working on locally and then i tried to deploy on vercel but ig there is inconsistency in my code for vercel deployment or maybe I'm not going in the right direction",
+    "timestamp": "2025-11-15 20:49:46.797000+00:00",
+    "id": "1439356731720208546"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "Hey, check out https://docs.agentmail.to/documentation/examples/auto-reply-agent\nIt covers exactly what you're looking for: auto-replying to incoming emails. Let me know if you have questions!",
+    "timestamp": "2025-11-15 20:36:23.519000+00:00",
+    "id": "1439353362528079873"
+  },
+  {
+    "author": ".awiee",
+    "content": "Hey can anyone help me with something. I'm trying to build automation with agentmail. Whenever anyone send mail to my custom mail id it will automatically send a reply for my side. I'm having difficulty with documentation. Can anyone help me with the flow of things we do in agentmail?",
+    "timestamp": "2025-11-15 17:32:28.282000+00:00",
+    "id": "1439307077389390047"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "<@1279142946683359376> following up on this, there seems to be some DNS polling issue on AWS's side, the records are all good on your end, tried manually kickstarting a dns poll but aws isn't budging. Opened up a support ticket as this is very peculiar behavior, will keep you in the loop as I interface with the AWS team.",
+    "timestamp": "2025-11-14 02:35:45.601000+00:00",
+    "id": "1438719024723660822"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes sequence would have to be built externally. We are focused on the infrastructure.\nWe do support schedule sending drafts however",
+    "timestamp": "2025-11-13 23:41:12.798000+00:00",
+    "id": "1438675098604146749"
+  },
+  {
+    "author": "mattloffredo",
+    "content": "To support email sequencing, we would have to build that out ourselves?",
+    "timestamp": "2025-11-13 22:42:19.835000+00:00",
+    "id": "1438660280283299860"
+  },
+  {
+    "author": "mattloffredo",
+    "content": "Ok sounds good, thank you!",
+    "timestamp": "2025-11-13 22:41:56.500000+00:00",
+    "id": "1438660182409478234"
+  },
+  {
+    "author": "mattloffredo",
+    "content": "Yea exactly",
+    "timestamp": "2025-11-13 22:41:51.720000+00:00",
+    "id": "1438660162360447067"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Do you mean viewing them on dashboard? Believe they aren\u2019t visible yet but will have it up soon",
+    "timestamp": "2025-11-13 22:36:25.146000+00:00",
+    "id": "1438658792609812552"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "https://docs.agentmail.to/api-reference/pods/create",
+    "timestamp": "2025-11-13 22:35:47.607000+00:00",
+    "id": "1438658635159965848"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hey <@427019900708454402> pods are accessible via api",
+    "timestamp": "2025-11-13 22:35:45.529000+00:00",
+    "id": "1438658626444333056"
+  },
+  {
+    "author": "mattloffredo",
+    "content": "How can I enable Pods on my account?",
+    "timestamp": "2025-11-13 22:26:12.169000+00:00",
+    "id": "1438656221598060566"
+  },
+  {
+    "author": "maliksalim",
+    "content": "That\u2019s sad \ud83d\ude2d",
+    "timestamp": "2025-11-13 19:41:43.092000+00:00",
+    "id": "1438614827688923146"
+  },
+  {
+    "author": "haakam21",
+    "content": "Seems it is just taking a while to verify, which can happen. Will monitor this closely",
+    "timestamp": "2025-11-13 19:23:58.808000+00:00",
+    "id": "1438610363758280805"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "<@1039610985440366603> under free tier access, you won\u2019t have access to custom domains. That\u2019s likely why you\u2019re getting a 404? Under free tier, you get 3 inboxes and 3k emails a month to send.",
+    "timestamp": "2025-11-13 18:49:56.367000+00:00",
+    "id": "1438601797139697734"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Most likely an aws issue and we can retrigger manual verification",
+    "timestamp": "2025-11-13 18:49:03.992000+00:00",
+    "id": "1438601577463021741"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hey <@1279142946683359376> we\u2019ll fix this asap",
+    "timestamp": "2025-11-13 18:48:48.479000+00:00",
+    "id": "1438601512396918924"
+  },
+  {
+    "author": "eric_85172",
+    "content": "We have a domain that is all green in the right column but that just is stuck in the \"Verifying\" status no matter how many times I re-click the Verify button. Been about a week.",
+    "timestamp": "2025-11-13 17:42:44.456000+00:00",
+    "id": "1438584886079262771"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "The team can give you a definitive answer when they're online in a few hours. In the meantime, you might find info in the docs at https://docs.agentmail.to/api-reference if you want to check!",
+    "timestamp": "2025-11-13 17:08:48.996000+00:00",
+    "id": "1438576348741242931"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "That's a good question. I'm not certain about the exact free tier API limits.",
+    "timestamp": "2025-11-13 17:06:27.868000+00:00",
+    "id": "1438575756807508110"
+  },
+  {
+    "author": "maliksalim",
+    "content": "Does the free tier include API access for automated email sending?",
+    "timestamp": "2025-11-13 17:00:18.153000+00:00",
+    "id": "1438574206110666835"
+  },
+  {
+    "author": "maliksalim",
+    "content": "and its just a playground access",
+    "timestamp": "2025-11-13 16:55:36.637000+00:00",
+    "id": "1438573025346846810"
+  },
+  {
+    "author": "maliksalim",
+    "content": "on free tier",
+    "timestamp": "2025-11-13 16:55:30.107000+00:00",
+    "id": "1438572997957914674"
+  },
+  {
+    "author": "maliksalim",
+    "content": "access to api",
+    "timestamp": "2025-11-13 16:55:28.039000+00:00",
+    "id": "1438572989284094072"
+  },
+  {
+    "author": "maliksalim",
+    "content": "they just dont give u",
+    "timestamp": "2025-11-13 16:55:25.801000+00:00",
+    "id": "1438572979897241710"
+  },
+  {
+    "author": "maliksalim",
+    "content": "i feel like",
+    "timestamp": "2025-11-13 16:55:21.781000+00:00",
+    "id": "1438572963036270665"
+  },
+  {
+    "author": "maliksalim",
+    "content": "and i just uplaoded it to vercek",
+    "timestamp": "2025-11-13 16:55:18.789000+00:00",
+    "id": "1438572950487044137"
+  },
+  {
+    "author": "maliksalim",
+    "content": "via zone file",
+    "timestamp": "2025-11-13 16:55:13.398000+00:00",
+    "id": "1438572927875285012"
+  },
+  {
+    "author": "maliksalim",
+    "content": "i configured it correctly",
+    "timestamp": "2025-11-13 16:55:11.483000+00:00",
+    "id": "1438572919843197009"
+  },
+  {
+    "author": "maliksalim",
+    "content": "i think",
+    "timestamp": "2025-11-13 16:55:07.703000+00:00",
+    "id": "1438572903988985938"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "Hi! This looks like a domain routing issue. The team will be online in a few hours and can help debug. \nCan you share your domain and any API error details in the meantime? That'll help speed things up.",
+    "timestamp": "2025-11-13 16:49:09.838000+00:00",
+    "id": "1438571402994257951"
+  },
+  {
+    "author": "maliksalim",
+    "content": "but still lets me send email through the dashboard UI",
+    "timestamp": "2025-11-13 16:38:45.841000+00:00",
+    "id": "1438568785761275924"
+  },
+  {
+    "author": "maliksalim",
+    "content": "I'm having issue with Agent Mail api, whenever I try to send an automated email through my domain, i get a 404 error",
+    "timestamp": "2025-11-13 16:38:34.727000+00:00",
+    "id": "1438568739145650306"
+  },
+  {
+    "author": "maliksalim",
+    "content": "Hi There",
+    "timestamp": "2025-11-13 16:37:59.864000+00:00",
+    "id": "1438568592919760958"
+  },
+  {
+    "author": "eric_85172",
+    "content": "Bulk senders are required to set specific one-click unsubscribe headers for both Gmail and Yahoo. https://support.google.com/a/answer/81126?hl=en#requirements-5k",
+    "timestamp": "2025-11-13 00:00:39.995000+00:00",
+    "id": "1438317606317588693"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hmm it\u2019s not possible right now but we can ship it. Curious, what is your use case?",
+    "timestamp": "2025-11-12 20:57:34.402000+00:00",
+    "id": "1438271529401061376"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "I never linked my old account - super sorry! \n\nAlso, is it possible to have 2 emails linked to the same webhook? Or to have 1 webhook directly to 1 email? Or am i being daft and cannot work it out",
+    "timestamp": "2025-11-12 20:50:51.190000+00:00",
+    "id": "1438269838207221924"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "It was mty fault <@319929970212339733>",
+    "timestamp": "2025-11-12 20:50:20.652000+00:00",
+    "id": "1438269710121701437"
+  },
+  {
+    "author": "matasar",
+    "content": "Is it possible to set arbitrary MIME headers for the emails we send with agentmail? I'd like to but I can't work out how from looking through the client code. Example: 'X-Mycompany-Header' or 'List-Unsubscribe' or whatever",
+    "timestamp": "2025-11-12 19:08:14.499000+00:00",
+    "id": "1438244015173669068"
+  },
+  {
+    "author": "haakam21",
+    "content": "Tom could you send a screenshot. My admin dashboard says you  logged in 2 hours ago",
+    "timestamp": "2025-11-12 18:53:30.619000+00:00",
+    "id": "1438240307912249354"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "hi <@1279142946683359376> looking now and we'll have a fix shortly",
+    "timestamp": "2025-11-12 17:58:59.434000+00:00",
+    "id": "1438226587568050196"
+  },
+  {
+    "author": "eric_85172",
+    "content": "It seems this is very broken and I need help.",
+    "timestamp": "2025-11-12 17:28:31.097000+00:00",
+    "id": "1438218918966595707"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hi tom, Will look into this! Can you send me a screenshot please",
+    "timestamp": "2025-11-12 17:01:42.949000+00:00",
+    "id": "1438212173905006713"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "sorry to hear that",
+    "timestamp": "2025-11-12 17:00:29.731000+00:00",
+    "id": "1438211866806714469"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "Says \"Couldn't find your account.\"",
+    "timestamp": "2025-11-12 13:18:12.994000+00:00",
+    "id": "1438155928477372579"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "is anyone elsee having issues signing in? the console cant find my email despite me paying monthly for it...",
+    "timestamp": "2025-11-12 13:18:03.598000+00:00",
+    "id": "1438155889067687996"
+  },
+  {
+    "author": "haakam21",
+    "content": "<@434087751525203978>",
+    "timestamp": "2025-11-11 21:49:01.391000+00:00",
+    "id": "1437922089305768006"
+  },
+  {
+    "author": "billygates1",
+    "content": "wait this exists??",
+    "timestamp": "2025-11-11 21:48:36.875000+00:00",
+    "id": "1437921986478080133"
+  },
+  {
+    "author": "eric_85172",
+    "content": "We are seeing this in our AgentMail dashboard. I am not sure how to interpret this.",
+    "timestamp": "2025-11-11 20:08:09.600000+00:00",
+    "id": "1437896706254438511"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "lol, well I have a custom domain and I want to keep that so I'm staying paid for now",
+    "timestamp": "2025-11-11 19:52:04.493000+00:00",
+    "id": "1437892658302423267"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "noooo \ud83e\udd23\ud83e\udd23 haha",
+    "timestamp": "2025-11-11 19:27:36.750000+00:00",
+    "id": "1437886502142214194"
+  },
+  {
+    "author": "haakam21",
+    "content": "Dmed you",
+    "timestamp": "2025-11-11 18:30:07.418000+00:00",
+    "id": "1437872034594951230"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "How can I switch from a paid tier to the free tier?",
+    "timestamp": "2025-11-11 18:16:52.239000+00:00",
+    "id": "1437868699372617909"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes it is functional. We will update to include schemas as well",
+    "timestamp": "2025-11-10 05:33:14.284000+00:00",
+    "id": "1437314137075220521"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "",
+    "timestamp": "2025-11-09 14:15:01.461000+00:00",
+    "id": "1437083061027344405"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "there is no schemas defined",
+    "timestamp": "2025-11-09 14:14:22.717000+00:00",
+    "id": "1437082898523099197"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "Hi - is this a functional solution? This seems to be incomplete.",
+    "timestamp": "2025-11-09 14:14:09.230000+00:00",
+    "id": "1437082841954390148"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "thanks, that helped.",
+    "timestamp": "2025-11-09 05:59:52.158000+00:00",
+    "id": "1436958451178930377"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hmm we will fix this <@434087751525203978> . For now can you adjust the zoom on your browser?",
+    "timestamp": "2025-11-09 05:56:20.161000+00:00",
+    "id": "1436957561998807060"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "<@319929970212339733>  The following message is displayed to click \"Verify Domain\" but the button/link is not visible/accessible on the screen.",
+    "timestamp": "2025-11-09 05:55:33.929000+00:00",
+    "id": "1436957368088006707"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "thanks, am able to add domain now. appreciate the quick response.",
+    "timestamp": "2025-11-09 05:23:36.158000+00:00",
+    "id": "1436949324373426248"
+  },
+  {
+    "author": "haakam21",
+    "content": "Have complete the above. Apologies for this we are working to improve the billing experience",
+    "timestamp": "2025-11-09 05:14:51.156000+00:00",
+    "id": "1436947122355306666"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "<@319929970212339733> thank you!",
+    "timestamp": "2025-11-09 05:11:46.378000+00:00",
+    "id": "1436946347340202016"
+  },
+  {
+    "author": "haakam21",
+    "content": "Looking into this. Will ensure you can create domains as well as cancel and refund 2nd payment",
+    "timestamp": "2025-11-09 05:11:24.959000+00:00",
+    "id": "1436946257502539838"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "my email talent@avoca-solutions.com",
+    "timestamp": "2025-11-09 05:03:46.079000+00:00",
+    "id": "1436944332820189326"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "can you pls cancel the duplicate.",
+    "timestamp": "2025-11-09 05:03:35.982000+00:00",
+    "id": "1436944290470297711"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "looking at the above message, looks like  my payment mighth have happened twice.",
+    "timestamp": "2025-11-09 05:03:28.035000+00:00",
+    "id": "1436944257138036967"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "I tried the payment agian, the payment went throught but still not working.",
+    "timestamp": "2025-11-09 05:02:57.327000+00:00",
+    "id": "1436944128339476624"
+  },
+  {
+    "author": "pavan_79369",
+    "content": "hi!  I subscribed to the $20 plan, I am still getting message the domain limits has been reached.",
+    "timestamp": "2025-11-09 05:02:35.238000+00:00",
+    "id": "1436944035691495526"
+  },
+  {
+    "author": "haakam21",
+    "content": "Great lmk if we can help with anything else",
+    "timestamp": "2025-11-06 22:11:44.770000+00:00",
+    "id": "1436115868403896491"
+  },
+  {
+    "author": "yash_84436",
+    "content": "Thanks",
+    "timestamp": "2025-11-06 22:11:31.525000+00:00",
+    "id": "1436115812850077828"
+  },
+  {
+    "author": "yash_84436",
+    "content": "Okay, yeah - just tried again, seems like it's gone through now.",
+    "timestamp": "2025-11-06 22:11:29.249000+00:00",
+    "id": "1436115803303841913"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hey Yash, can u try one more time? Sometimes it takes a minute to update - we are working on making this instant",
+    "timestamp": "2025-11-06 22:11:05.307000+00:00",
+    "id": "1436115702883815547"
+  },
+  {
+    "author": "yash_84436",
+    "content": "Hey <@319929970212339733> ! I just paid for a $20 plan but it still won't let me add domains due to a tier restriction! Email is ykothari@myecommerceagent.com and the organization is E-Commerce OS Inc.",
+    "timestamp": "2025-11-06 22:10:23.845000+00:00",
+    "id": "1436115528979845130"
+  },
+  {
+    "author": "anuj_40543",
+    "content": "Got it. Thanks",
+    "timestamp": "2025-11-05 09:02:05.557000+00:00",
+    "id": "1435554757715689582"
+  },
+  {
+    "author": "haakam21",
+    "content": "Those are actually set on email client side. If you want a profile pic in Gmail you can create a google account using the agentmail email and set a profile pic there. It takes a few days to propagate.",
+    "timestamp": "2025-11-05 09:00:11.290000+00:00",
+    "id": "1435554278445158421"
+  },
+  {
+    "author": "anuj_40543",
+    "content": "Hi <@319929970212339733> How can I set Profile Pic for email addresses setuped on agentmail?",
+    "timestamp": "2025-11-05 08:59:22.542000+00:00",
+    "id": "1435554073980965000"
+  },
+  {
+    "author": "haakam21",
+    "content": "Here's how you would do in Typescript:\n```\nimport { serialization } from \"agentmail\";\n\nconst messageReceivedEvent =\n  serialization.MessageReceivedEvent.parseOrThrow(rawEvent);\n\nconsole.log(messageReceivedEvent.message);\n```",
+    "timestamp": "2025-11-05 00:13:18.604000+00:00",
+    "id": "1435421685229551739"
+  },
+  {
+    "author": "haakam21",
+    "content": "Not at my computer but there is a way to serialize the webhook payload into the types. Will send when free",
+    "timestamp": "2025-11-04 21:15:00.025000+00:00",
+    "id": "1435376812136857710"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "Hey I am also using 0.1.4 and just ran into a similar API change issue. This looks like a field mapping issue in webhook events. Try accessing the field directly as a dict:\ninstead of: message.message_id\nTry: message['message_id'] or access the raw data",
+    "timestamp": "2025-11-04 20:35:46.742000+00:00",
+    "id": "1435366941752688651"
+  },
+  {
+    "author": "markding",
+    "content": "not sure if anyone else has this issue again. im using `0.1.4`\n\nin the message received webhook event and other webhook events, the SDK type is in camelCase, but data returned from API is snake_case. And when accessing `message.message_id` , it is undefined. seemed like the SDK didnt correctly format the response. \n\nhelp!",
+    "timestamp": "2025-11-04 18:27:09.690000+00:00",
+    "id": "1435334574090748057"
+  },
+  {
+    "author": "kornatzky",
+    "content": "Thanks",
+    "timestamp": "2025-11-04 14:54:57.082000+00:00",
+    "id": "1435281169661952132"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes, we support multiple domains. Quota is over all domains. The demo is restricted, API supports sending before receiving.",
+    "timestamp": "2025-11-04 12:18:43.594000+00:00",
+    "id": "1435241854403739809"
+  },
+  {
+    "author": "kornatzky",
+    "content": "Question on sending messages: The docs show how to write a loop that finds the last unanswered thread and then replies. Can you send a message to someone before receiving a message from that person? In the demo you cannot.",
+    "timestamp": "2025-11-04 11:17:53.966000+00:00",
+    "id": "1435226546754293870"
+  },
+  {
+    "author": "kornatzky",
+    "content": "Question on inboxes: If I add custom domains, is my total quota for inboxes over all the domains, or per specific domain?",
+    "timestamp": "2025-11-04 11:17:02.945000+00:00",
+    "id": "1435226332756971580"
+  },
+  {
+    "author": "kornatzky",
+    "content": "Question on custom domains: Can I add multiple custom domains?",
+    "timestamp": "2025-11-04 11:16:37.388000+00:00",
+    "id": "1435226225562878053"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "confirmed, console\u2019s back up for me too \ud83d\ude4c",
+    "timestamp": "2025-11-04 01:50:58.803000+00:00",
+    "id": "1435083876820058296"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "<@145022299311964162> we should be all good now!",
+    "timestamp": "2025-11-04 01:43:53.253000+00:00",
+    "id": "1435082091934122034"
+  },
+  {
+    "author": "matasar",
+    "content": "Also on the console the metrics load in",
+    "timestamp": "2025-11-04 00:44:07.159000+00:00",
+    "id": "1435067050765582496"
+  },
+  {
+    "author": "matasar",
+    "content": "I can confirm this yes, the API seems fine",
+    "timestamp": "2025-11-04 00:43:45.358000+00:00",
+    "id": "1435066959325696121"
+  },
+  {
+    "author": "haakam21",
+    "content": "<@434087751525203978> This seems like an issue w thr frontend as the API is working as expected",
+    "timestamp": "2025-11-04 00:42:26.462000+00:00",
+    "id": "1435066628411752603"
+  },
+  {
+    "author": "haakam21",
+    "content": "Looking",
+    "timestamp": "2025-11-04 00:30:25.888000+00:00",
+    "id": "1435063606105473055"
+  },
+  {
+    "author": "matasar",
+    "content": "I just went to the console (https://console.agentmail.to) and it seems like something's wrong with it. Inboxes, domains, and such are all gone",
+    "timestamp": "2025-11-04 00:11:54.302000+00:00",
+    "id": "1435058943776002209"
+  },
+  {
+    "author": "haakam21",
+    "content": "Nice, your account has been updated so you can now configure domains",
+    "timestamp": "2025-11-01 10:09:22.501000+00:00",
+    "id": "1434122138423398494"
+  },
+  {
+    "author": "yasyf",
+    "content": "awesome thanks, will go upgrade now!",
+    "timestamp": "2025-11-01 10:07:17.523000+00:00",
+    "id": "1434121614227800216"
+  },
+  {
+    "author": "haakam21",
+    "content": "We have been shipping constantly just haven't got into the habit of updating changelog",
+    "timestamp": "2025-11-01 10:06:08.465000+00:00",
+    "id": "1434121324577554462"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "No there\u2019s no pivot planned, production usage is in the millions of emails monthly",
+    "timestamp": "2025-11-01 10:05:35.348000+00:00",
+    "id": "1434121185674924083"
+  },
+  {
+    "author": "yasyf",
+    "content": "got it! I never would have found that. I had a couple questions first that I asked in DMs but maybe you can help:\n\n1. I noticed the changelog hasn't been updated since Aug. Are you guys still focused on this use case or is there a pivot planned?\n2. Can you share super high-level what production usage looks like right now?",
+    "timestamp": "2025-11-01 10:03:41.398000+00:00",
+    "id": "1434120707733983404"
+  },
+  {
+    "author": "haakam21",
+    "content": "Ah we need to make it more accessible go to https://agentmail.to/pricing to upgrade and give it a few minutes to update",
+    "timestamp": "2025-11-01 10:00:17.987000+00:00",
+    "id": "1434119854566408272"
+  },
+  {
+    "author": "yasyf",
+    "content": "I've been looking around the dashboard and cant for the life of me figure out how to upgrade. I also DMed <@902390145808994334> and <@434087751525203978> about this. Am I missing something?",
+    "timestamp": "2025-11-01 09:53:29.461000+00:00",
+    "id": "1434118141083910215"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hi are you on a paid plan? If so can you tell me the email you signed up with? If not, you would need to upgrade in order to configure domains",
+    "timestamp": "2025-11-01 07:41:59.557000+00:00",
+    "id": "1434085048428134401"
+  },
+  {
+    "author": "swagbot300",
+    "content": "does agent mail do the same functions that a platform like resend does for auth?",
+    "timestamp": "2025-11-01 06:43:14.506000+00:00",
+    "id": "1434070263292493925"
+  },
+  {
+    "author": "yasyf",
+    "content": "Also getting this and also wondering if anyone is using this in prod!  trying to figure out if we should try agentmail out or stick to mailslurp \ud83d\ude42",
+    "timestamp": "2025-11-01 05:37:56.269000+00:00",
+    "id": "1434053829015502959"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "hey krish are you on a paid plan?",
+    "timestamp": "2025-11-01 05:08:11.102000+00:00",
+    "id": "1434046341482418307"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Thanks for the ping, just need to update your account - will fix asap",
+    "timestamp": "2025-10-30 16:05:03.281000+00:00",
+    "id": "1433486872411246745"
+  },
+  {
+    "author": "krishkhubchand.",
+    "content": "i haven't added any domains to agentmail yet!",
+    "timestamp": "2025-10-30 12:20:25.122000+00:00",
+    "id": "1433430340915171410"
+  },
+  {
+    "author": "krishkhubchand.",
+    "content": "specifically - getting this issue",
+    "timestamp": "2025-10-30 12:20:11.029000+00:00",
+    "id": "1433430281804582972"
+  },
+  {
+    "author": "krishkhubchand.",
+    "content": "is anyone using agentmail in production? trying to set it up with a domain and it's not letting me?",
+    "timestamp": "2025-10-30 12:17:45.326000+00:00",
+    "id": "1433429670682034178"
+  },
+  {
+    "author": "haakam21",
+    "content": "Gotcha will work on this. Could u provide a raw .eml of an email u sent that is not showing up so I can debug?",
+    "timestamp": "2025-10-28 22:04:49.484000+00:00",
+    "id": "1432852635777634324"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "I think Agentmail has labeling features so you can use that as a flag",
+    "timestamp": "2025-10-28 22:03:36.541000+00:00",
+    "id": "1432852329832648737"
+  },
+  {
+    "author": "brrrat",
+    "content": "Yeah I've been using that. I think it is an issue with Gmail rules conflicting, but it would be good to have an insight if some emails were flagged as spam/junk/etc by AgentMail",
+    "timestamp": "2025-10-28 22:02:32.273000+00:00",
+    "id": "1432852060272857180"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "I think you can try \"Unified Inbox\" icon on the console so you can see all your message threads. The mail should be there if it was received.",
+    "timestamp": "2025-10-28 21:04:02.731000+00:00",
+    "id": "1432837340186804224"
+  },
+  {
+    "author": "brrrat",
+    "content": "How can I check if the mail AgentMail is supposed to receive is 'marked as spam' and therefore not visible on the dashboard? I have a Gmail filter that marks the email as read and forwards it, and the email was marked as read but there is no email in AgentMail.",
+    "timestamp": "2025-10-28 19:49:06.497000+00:00",
+    "id": "1432818481614557356"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hey Matt working on it now but I can do this manually, do you want to dm me your email so I can send you a link",
+    "timestamp": "2025-10-27 00:01:31.211000+00:00",
+    "id": "1432157227417866393"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "How can we access our Stripe billing link to change our payment method?",
+    "timestamp": "2025-10-26 23:58:25.258000+00:00",
+    "id": "1432156447474585682"
+  },
+  {
+    "author": "haakam21",
+    "content": "Oh just made the connection that you are Ben lol",
+    "timestamp": "2025-10-21 02:35:30.510000+00:00",
+    "id": "1430021652653150238"
+  },
+  {
+    "author": "matasar",
+    "content": "It\u2019s good now!",
+    "timestamp": "2025-10-21 02:34:40.522000+00:00",
+    "id": "1430021442988277891"
+  },
+  {
+    "author": "haakam21",
+    "content": "Has your issue been resolved or still ongoing?",
+    "timestamp": "2025-10-21 00:29:20.858000+00:00",
+    "id": "1429989903231483934"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "agent mail>> any other big tech company rn",
+    "timestamp": "2025-10-20 22:59:36.740000+00:00",
+    "id": "1429967320603693218"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "that\u2019s so tuff",
+    "timestamp": "2025-10-20 22:59:20.960000+00:00",
+    "id": "1429967254417572001"
+  },
+  {
+    "author": "matasar",
+    "content": "Agentmail folks fixed it by kicking a process",
+    "timestamp": "2025-10-20 22:59:06.681000+00:00",
+    "id": "1429967194527371414"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "probably",
+    "timestamp": "2025-10-20 22:47:29.311000+00:00",
+    "id": "1429964269545328640"
+  },
+  {
+    "author": "matasar",
+    "content": "I setup a new domain today and I still can't send to it. Is there some funny business happening with the us-east-1 outage?\n\n```\nThe response from the remote server was:\n550 5.1.1 Requested action not taken: mailbox unavailable\n```",
+    "timestamp": "2025-10-20 22:20:13.710000+00:00",
+    "id": "1429957409337507933"
+  },
+  {
+    "author": "vg073025",
+    "content": "Do any of you guys have good html templates for sending invite emails? (Emails sent to the user asking them to create an account)",
+    "timestamp": "2025-10-20 20:58:11.321000+00:00",
+    "id": "1429936763341897738"
+  },
+  {
+    "author": "harryduu_61189",
+    "content": "Hello Saidev, thank you for your suggestion. Do you mind giving some suggestions about UI parts?",
+    "timestamp": "2025-10-17 13:42:24.316000+00:00",
+    "id": "1428739931257311242"
+  },
+  {
+    "author": "dev.unfazed",
+    "content": "quick feedback on the UI, it can be improved & more responsive",
+    "timestamp": "2025-10-17 10:21:07.689000+00:00",
+    "id": "1428689278212378697"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "yes yes, this sounds more right \ud83d\ude2d",
+    "timestamp": "2025-10-16 02:07:08.851000+00:00",
+    "id": "1428202576049995929"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "",
+    "timestamp": "2025-10-16 02:07:08.495000+00:00",
+    "id": "1428202574556827851"
+  },
+  {
+    "author": "haakam21",
+    "content": "What time delta in particular are you looking for?",
+    "timestamp": "2025-10-16 01:48:26.957000+00:00",
+    "id": "1428197870485639348"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hi Jason, the timestamp of a message is the timestamp of when it was sent from the sending email provider. If you subscribe to the `message.received` webhook you could measure the time it takes for your servers to receive the webhook from when the message was sent. Note that this time difference would include time it takes for sending mail server to deliver the message to our mail server, time it takes for our mail server to process the message, and time for the webhook to be delivered to your server.",
+    "timestamp": "2025-10-16 01:47:55.750000+00:00",
+    "id": "1428197739593990266"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "just winging it but it takes around 1 min here or there for a response",
+    "timestamp": "2025-10-16 00:43:58.205000+00:00",
+    "id": "1428181643763515405"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "I know sending and receiving email is generally a slow process, but is there a way to measure how long it takes for agent mail to receive something?",
+    "timestamp": "2025-10-15 20:45:40.970000+00:00",
+    "id": "1428121676813439008"
+  },
+  {
+    "author": "humanagent_eth",
+    "content": "hello! would to get a free api key for my hacakthon project",
+    "timestamp": "2025-10-14 19:50:25.692000+00:00",
+    "id": "1427745383664324672"
+  },
+  {
+    "author": "haakam21",
+    "content": "Great np",
+    "timestamp": "2025-10-11 20:30:09.365000+00:00",
+    "id": "1426668217916723373"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "flags  -LOJ worked, thanks",
+    "timestamp": "2025-10-11 20:29:47.067000+00:00",
+    "id": "1426668124392001556"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "Sure, away from my computer at the moment, will try later and reply back",
+    "timestamp": "2025-10-11 20:07:33.760000+00:00",
+    "id": "1426662532097249324"
+  },
+  {
+    "author": "haakam21",
+    "content": "Can you try with -LOJ flags and -H \"Auth...\" as the only additional arguments?",
+    "timestamp": "2025-10-11 20:06:49.627000+00:00",
+    "id": "1426662346990026853"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "I added -I because I wasn't getting a response body back",
+    "timestamp": "2025-10-11 20:05:07.344000+00:00",
+    "id": "1426661917983772743"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "HTTP/2 404 \ncontent-type: application/json\ncontent-length: 23\ndate: Sat, 11 Oct 2025 16:13:49 GMT\napigw-requestid: SSlJvhhsyK4EJPw=\nx-cache: Error from cloudfront\nvia: 1.1 55bc97432f52f2c0b668b3f5b955e0ac.cloudfront.net (CloudFront)\nx-amz-cf-pop: SFO53-P5\nx-amz-cf-id: TE8jyR6CZPCAer62nrGdbfbS0uB-2nEgJ4rI3Jbk69RCrw9H16S37A==\n\ncurl: (22) The requested URL returned error: 404",
+    "timestamp": "2025-10-11 20:04:39.366000+00:00",
+    "id": "1426661800635793548"
+  },
+  {
+    "author": "haakam21",
+    "content": "What is message being returned with the 404? Does it say \u201cAttachment not found\u201d?",
+    "timestamp": "2025-10-11 20:04:08.862000+00:00",
+    "id": "1426661672692744374"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "Get the thread and the inbox is working, but getting the attachment from that thread is not",
+    "timestamp": "2025-10-11 20:03:44.611000+00:00",
+    "id": "1426661570976682065"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "I'm calling this endpoint with the following args, with inbox id, thread id, and attachment id set, but I'm getting a 404\n\nexport BEARER_TOKEN='token-here'\n\nCLI_ARGS=(-fsSL -H \"Authorization: Bearer ${BEARER_TOKEN}\")\n\n\ncurl -I \"${CLI_ARGS[@]}\" \"https://api.agentmail.to/v0/inboxes/${INBOX_ID}/threads/${THREAD_ID}/attachments/${ATTACHMENT_ID}\"",
+    "timestamp": "2025-10-11 20:02:40.091000+00:00",
+    "id": "1426661300359921798"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hi could you describe the issue you are facing?",
+    "timestamp": "2025-10-11 20:00:23.768000+00:00",
+    "id": "1426660728580083835"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "I'm having issues with getting the attachments api endpoint to download attachments. What's the best way to get help with this?",
+    "timestamp": "2025-10-11 19:59:55.429000+00:00",
+    "id": "1426660609717436497"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes you can delete threads and yes the attachment will be deleted from storage",
+    "timestamp": "2025-10-10 20:16:47.339000+00:00",
+    "id": "1426302466110263297"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "<@434087751525203978> nice, I'm curious, let's say someone sends a sensitive attachment to the agent and it needs to be deleted.\n\nI'm not at my computer right now. Is there an api method to delete a thread? If so, will deleting the thread delete the attachment from storage?",
+    "timestamp": "2025-10-10 20:13:42.617000+00:00",
+    "id": "1426301691330035824"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "@everyone you can now view + download attatchments in the console!",
+    "timestamp": "2025-10-10 07:38:29.549000+00:00",
+    "id": "1426111634547540058"
+  },
+  {
+    "author": "haakam21",
+    "content": "Dming you",
+    "timestamp": "2025-10-09 07:49:56.042000+00:00",
+    "id": "1425752126042148966"
+  },
+  {
+    "author": "anuj_40543",
+    "content": "I followed instructions from the video",
+    "timestamp": "2025-10-09 07:49:38.449000+00:00",
+    "id": "1425752052251754519"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes what does it say the status of the domain is in the console?",
+    "timestamp": "2025-10-09 07:45:29.634000+00:00",
+    "id": "1425751008646271068"
+  },
+  {
+    "author": "anuj_40543",
+    "content": "Means? Not verified in agentmail?",
+    "timestamp": "2025-10-09 07:44:58.021000+00:00",
+    "id": "1425750876051738735"
+  },
+  {
+    "author": "haakam21",
+    "content": "It seems that your domain is not fully verified",
+    "timestamp": "2025-10-08 22:33:13.270000+00:00",
+    "id": "1425612024662065313"
+  },
+  {
+    "author": "anuj_40543",
+    "content": "I have configured inbox in my agentmail console with custom domain now. But when I am trying to reply to email from agentmail console, i am getting this error:\n\nStatus code: 500 Body: { \"name\": \"ServerError\", \"message\": \"An unexpected error occurred\" }",
+    "timestamp": "2025-10-08 14:25:50.335000+00:00",
+    "id": "1425489370902695968"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes here is a video walkthrough on how to configure: https://drive.google.com/file/d/1CP0LMRtAilA_zEuHVpgKkntEDuXMSxKd/view?usp=drive_link",
+    "timestamp": "2025-10-08 10:33:39.793000+00:00",
+    "id": "1425430941974663299"
+  },
+  {
+    "author": "anuj_40543",
+    "content": "Hi Team, I have already setuped google workspace for my domain. Now I want to add email which will be used by agentmail. And google workspace should be my primary. How to tackle this? \n\n<@319929970212339733>  Seems like you have the answer. Could you please help me with steps?",
+    "timestamp": "2025-10-08 10:06:29.194000+00:00",
+    "id": "1425424102747017241"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hmm we currently don't have built in way to do this but we will look into adding an endpoint + UI for email forwarding",
+    "timestamp": "2025-10-08 04:36:41.022000+00:00",
+    "id": "1425341105138044938"
+  },
+  {
+    "author": "vg073025",
+    "content": "Yes",
+    "timestamp": "2025-10-08 04:36:07.100000+00:00",
+    "id": "1425340962858729525"
+  },
+  {
+    "author": "haakam21",
+    "content": "For downloading attachments, you would need to use our API for now. We are working on adding it to the dashboard. For forwarding, are you trying to forward an email recieved by an agentmail inbox to an external inbox?",
+    "timestamp": "2025-10-08 04:24:42.467000+00:00",
+    "id": "1425338091299672164"
+  },
+  {
+    "author": "vg073025",
+    "content": "<@319929970212339733> <@902390145808994334> How do I download attachments to an email directly from the dashboard. Also, how do I forward emails from the dashboard.",
+    "timestamp": "2025-10-08 03:58:56.459000+00:00",
+    "id": "1425331606872395876"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "<@434087751525203978> looks good, thanks",
+    "timestamp": "2025-10-08 01:59:59.804000+00:00",
+    "id": "1425301673571516559"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "<@1345621576543895675> can you check again for me?",
+    "timestamp": "2025-10-07 22:06:34.579000+00:00",
+    "id": "1425242931400282272"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "it looks like my records have been verified, but the overall status is stuck at verifying?",
+    "timestamp": "2025-10-07 04:47:03.238000+00:00",
+    "id": "1424981327035371570"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "thanks for the feedback guys we were planning on adding this but will make sure to expedite.",
+    "timestamp": "2025-10-02 02:51:22.141000+00:00",
+    "id": "1423140274636587129"
+  },
+  {
+    "author": "rflih",
+    "content": "hey - would be nice if you wrote about this is public docs - I faced the same issue as this guy. Ended up creating a subdomain.",
+    "timestamp": "2025-10-02 02:31:53.231000+00:00",
+    "id": "1423135371872567297"
+  },
+  {
+    "author": "haakam21",
+    "content": "Dming you. Since Gmail has higher priority you would have to configure routing from Gmail AgentMail. Fortunately its relatively straightforward",
+    "timestamp": "2025-10-01 21:41:09.218000+00:00",
+    "id": "1423062206379200694"
+  },
+  {
+    "author": "andrguardia",
+    "content": "DNS records match the ones agentmail provided. I have a couple MX records configured for google with priority 5 (I configured agentmail with priority 10 based on your dns config)",
+    "timestamp": "2025-10-01 21:31:02.944000+00:00",
+    "id": "1423059663481471169"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "cc <@319929970212339733> who can help with this when available if you\u2019d like to use autodyne.co",
+    "timestamp": "2025-10-01 21:29:12.084000+00:00",
+    "id": "1423059198501060769"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "unless you do some special configuration",
+    "timestamp": "2025-10-01 21:28:44.400000+00:00",
+    "id": "1423059082385948692"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Also if you\u2019re using autodyne.co with another provider like gmail then you will get this error",
+    "timestamp": "2025-10-01 21:28:37.506000+00:00",
+    "id": "1423059053470285916"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hey this looks like an error on the MX records side - can you double check your DNS records?",
+    "timestamp": "2025-10-01 21:27:51.063000+00:00",
+    "id": "1423058858674225172"
+  },
+  {
+    "author": "andrguardia",
+    "content": "hey I configured custom domain shows as \"ready\" and my agents are successfully sending emails using the toolkit. However whenever I email the agent it bounces (see images). Appreciate any help here",
+    "timestamp": "2025-10-01 21:22:28.873000+00:00",
+    "id": "1423057507311681638"
+  },
+  {
+    "author": "haakam21",
+    "content": "<@1387545813718405250> Back up. Apologies was doing some maintenance",
+    "timestamp": "2025-09-30 08:46:28.702000+00:00",
+    "id": "1422504865099419729"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "Some of the site is not working either so assume this is a down <@902390145808994334>  <@319929970212339733>",
+    "timestamp": "2025-09-30 08:07:22.478000+00:00",
+    "id": "1422495024322580500"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "",
+    "timestamp": "2025-09-30 08:06:42.398000+00:00",
+    "id": "1422494856215003181"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "no web hooks or inboxes were showing > logged out > logged in = Could not validate API Key at this time. Please try again later.",
+    "timestamp": "2025-09-30 07:59:45.361000+00:00",
+    "id": "1422493107034914868"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "cannot login anymore",
+    "timestamp": "2025-09-30 07:59:13.248000+00:00",
+    "id": "1422492972343361548"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "anyone else seeing the systems are down?",
+    "timestamp": "2025-09-30 07:59:08.189000+00:00",
+    "id": "1422492951124246569"
+  },
+  {
+    "author": "matasar",
+    "content": "I found it! I think I'm good now",
+    "timestamp": "2025-09-29 20:13:49.876000+00:00",
+    "id": "1422315455254761593"
+  },
+  {
+    "author": "haakam21",
+    "content": "",
+    "timestamp": "2025-09-29 20:12:49.768000+00:00",
+    "id": "1422315203143532584"
+  },
+  {
+    "author": "matasar",
+    "content": "Where is claim legacy API key?",
+    "timestamp": "2025-09-29 20:12:16.319000+00:00",
+    "id": "1422315062848389141"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes you should cretae an org. Once you do so you can click the profile in the bottom left. Then click \"Claim Legacy API Key\" and enter your API key. Then all resources will be migrated over to your new account.",
+    "timestamp": "2025-09-29 20:08:21.869000+00:00",
+    "id": "1422314079493816352"
+  },
+  {
+    "author": "matasar",
+    "content": "I'll hold until you tell me what to do but I tried again and now it's prompting me to create an organization.",
+    "timestamp": "2025-09-29 20:06:59.700000+00:00",
+    "id": "1422313734851788820"
+  },
+  {
+    "author": "haakam21",
+    "content": "<@434087751525203978>",
+    "timestamp": "2025-09-29 20:03:47.704000+00:00",
+    "id": "1422312929562464457"
+  },
+  {
+    "author": "matasar",
+    "content": "",
+    "timestamp": "2025-09-29 20:03:41.909000+00:00",
+    "id": "1422312905256210565"
+  },
+  {
+    "author": "matasar",
+    "content": "I also managed to get this",
+    "timestamp": "2025-09-29 20:03:27.788000+00:00",
+    "id": "1422312846028701839"
+  },
+  {
+    "author": "matasar",
+    "content": "infinite spinner",
+    "timestamp": "2025-09-29 20:00:58.104000+00:00",
+    "id": "1422312218208370789"
+  },
+  {
+    "author": "haakam21",
+    "content": "What issue are you running into? A screenshot would be helpfult to debug",
+    "timestamp": "2025-09-29 19:59:56.507000+00:00",
+    "id": "1422311959851700455"
+  },
+  {
+    "author": "matasar",
+    "content": "I don't seem to be able to get into the console with my google account. Is there some setup you need to do on your end? <@902390145808994334>",
+    "timestamp": "2025-09-29 19:59:04.531000+00:00",
+    "id": "1422311741848686702"
+  },
+  {
+    "author": "markding",
+    "content": "I've encountered an issue with image attachments.  \n\nsteps to reproduce:\n1) send a gmail with an inline image to the agent\n2) agent reply via email\n3) reply with just text in the same thread ->  this is where the issue occur. `message.attachments` contains the image from the previous email. how do we differentiate whether the inline image is attached from the previous email or the current email",
+    "timestamp": "2025-09-29 19:29:27.240000+00:00",
+    "id": "1422304287349805097"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Yes",
+    "timestamp": "2025-09-29 16:02:48.179000+00:00",
+    "id": "1422252281918918696"
+  },
+  {
+    "author": "__zeeshan__",
+    "content": "<@902390145808994334> Would i be able to use the old API keys after migration?",
+    "timestamp": "2025-09-29 15:59:06.015000+00:00",
+    "id": "1422251350095560814"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hey <@761602235175403560> you will be able to migrate your resources from your old api key into the new console",
+    "timestamp": "2025-09-29 15:55:40.769000+00:00",
+    "id": "1422250489231183994"
+  },
+  {
+    "author": "__zeeshan__",
+    "content": "Thanks for sharing this. Any idea how I can access the org that I set up in the previous dashboard?",
+    "timestamp": "2025-09-29 15:52:59.975000+00:00",
+    "id": "1422249814812266536"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "console.agentmail.to",
+    "timestamp": "2025-09-29 15:27:40.042000+00:00",
+    "id": "1422243439751336049"
+  },
+  {
+    "author": "__zeeshan__",
+    "content": "Any updates?",
+    "timestamp": "2025-09-29 15:21:58.831000+00:00",
+    "id": "1422242008608804934"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "1. We parse MIME headers and record authentication results (SPF, DKIM, DMARC). Emails that fail these checks are dropped as of now. \n2. For messages that are actually received/sent, you can call the get raw message endpoint(https://docs.agentmail.to/api-reference/inboxes/messages/get-raw) which should return a .eml file which will have the full mime content. Are the headers something you would like to have in the webhook payload?",
+    "timestamp": "2025-09-29 04:55:03.332000+00:00",
+    "id": "1422084237770625124"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "dming",
+    "timestamp": "2025-09-29 04:46:56.174000+00:00",
+    "id": "1422082194482139248"
+  },
+  {
+    "author": "ajayk_47",
+    "content": "any update on this !",
+    "timestamp": "2025-09-29 01:29:33.819000+00:00",
+    "id": "1422032524045189230"
+  },
+  {
+    "author": "andrguardia",
+    "content": "Hey! not sure if this has been asked before - but I'm having issues with webhooks not being delivered to the address I set on the console. Any way I can check logs? I need to see where this is going wrong, my server is not even receiving a request. Im using port forwarding thru vscode (not ngrok)",
+    "timestamp": "2025-09-28 23:14:41.106000+00:00",
+    "id": "1421998580746555584"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "Checking in on this",
+    "timestamp": "2025-09-28 20:13:20.454000+00:00",
+    "id": "1421952943984345128"
+  },
+  {
+    "author": "matasar",
+    "content": "Would love to know the answer to this!",
+    "timestamp": "2025-09-28 04:07:35.744000+00:00",
+    "id": "1421709906255282184"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "It\u2019s usually an AWS issue? Has it been stuck like this since",
+    "timestamp": "2025-09-28 03:39:02.719000+00:00",
+    "id": "1421702721307803670"
+  },
+  {
+    "author": "declspecl",
+    "content": "My domain has been stuck in pending for like 40 minutes, and I've set all the DNS records within the first few minutes of registering it. Is there a way to kick off a reverification manually? Or what is the SLA for when it will be checked again?",
+    "timestamp": "2025-09-28 02:24:20.239000+00:00",
+    "id": "1421683920423878790"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "Is the dashboard down right now?",
+    "timestamp": "2025-09-27 23:29:54.877000+00:00",
+    "id": "1421640025514442945"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hey <@760122920847540264> check dm sending you an aoi key now",
+    "timestamp": "2025-09-27 11:48:00.296000+00:00",
+    "id": "1421463384158769184"
+  },
+  {
+    "author": "arshroop",
+    "content": "anything that could be done?",
+    "timestamp": "2025-09-27 11:07:37.137000+00:00",
+    "id": "1421453220693278801"
+  },
+  {
+    "author": "arshroop",
+    "content": "I think i used this email for stripe: arshroopsaini@gmail.com",
+    "timestamp": "2025-09-27 11:06:00.060000+00:00",
+    "id": "1421452813522702396"
+  },
+  {
+    "author": "arshroop",
+    "content": "still showing this. there is no login button as well lmao",
+    "timestamp": "2025-09-27 10:53:28.496000+00:00",
+    "id": "1421449661234806794"
+  },
+  {
+    "author": "arshroop",
+    "content": "<@319929970212339733> <@902390145808994334> guys I just subscribed to the Dev plan and i still cant access the API via the dashboard, I got the payment receipt.  \nI'm in a hackathon rn and I need this shii asap, any help would be appreciated.",
+    "timestamp": "2025-09-27 10:46:29.895000+00:00",
+    "id": "1421447905495224330"
+  },
+  {
+    "author": "matasar",
+    "content": "I have some questions about authentication:\n\n1. Do you all valdiate the various email headers before sending a webhook? What happens to emails that are rejected?\n2. If not,  can I get at them somehow? They're not posted to the webhook payload as far as I can see.",
+    "timestamp": "2025-09-26 23:55:03.148000+00:00",
+    "id": "1421283963795673088"
+  },
+  {
+    "author": "haakam21",
+    "content": "Here's how you can get the webhook data into the serialized camelCase format:\n```\nimport { MessageReceivedEvent } from \"agentmail/serialization\";\n\n// Example of raw (snake_case) data that might come from a webhook\nconst rawEventData: MessageReceivedEvent.Raw = {\n  type: \"event\",\n  event_type: \"message.received\",\n  event_id: \"evt_123\",\n  message: {\n    inbox_id: \"inbox_123\",\n    thread_id: \"thread_123\",\n    message_id: \"msg_123\",\n    labels: [\"inbox\"],\n    timestamp: \"2023-01-01T00:00:00Z\",\n    from: \"sender@example.com\",\n    to: [\"recipient@example.com\"],\n    subject: \"Test Subject\",\n    text: \"Test message body\",\n    updated_at: \"2023-01-01T00:00:00Z\",\n    created_at: \"2023-01-01T00:00:00Z\",\n  },\n};\n\n// Example usage with unknown data (e.g., from webhook)\nconst webhookData: unknown = rawEventData;\nconst camelCaseEvent = MessageReceivedEvent.parseOrThrow(webhookData);\nconsole.log(\"From webhook - camelCase:\", camelCaseEvent);\n```\nWill look into making this more clear",
+    "timestamp": "2025-09-26 21:23:32.803000+00:00",
+    "id": "1421245836125540452"
+  },
+  {
+    "author": "haakam21",
+    "content": "Looking into this definitely a bug",
+    "timestamp": "2025-09-26 20:47:30.672000+00:00",
+    "id": "1421236767490838548"
+  },
+  {
+    "author": "markding",
+    "content": "in the message received webhook event, there is `message_id` in message object. but with version `0.0.58` typescript sdk, it only allows `message.messageId`, which is undefined lol",
+    "timestamp": "2025-09-26 19:50:23.828000+00:00",
+    "id": "1421222394265075883"
+  },
+  {
+    "author": "markding",
+    "content": "what is the most stable version of agentmail typescript sdk we should use?",
+    "timestamp": "2025-09-26 19:47:32.034000+00:00",
+    "id": "1421221673708949504"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Yep exactly, we can manually configure white listing something as an added measure for you but if you even reply once to the given email address, it will always be delivered and not marked as spam.",
+    "timestamp": "2025-09-26 17:17:10.430000+00:00",
+    "id": "1421183834359070880"
+  },
+  {
+    "author": "brrrat",
+    "content": "Yes please! We are looking into potentially transferring our app to use AgentMail. Basically, all the emails would be forwarded from a single Gmail address to AgentMail, and will mostly have at least 1 document (pdf/xlsx/docs) attached, and it is critical they are properly received so that we can fetch them through the API. Although, I am assuming that if all emails we receive come from a single address, they shouldn't be flagged as spam down the line..",
+    "timestamp": "2025-09-26 17:15:01.888000+00:00",
+    "id": "1421183295214981130"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Right now we don\u2019t support sender-level whitelisting inside AgentMail. Attachments from legitimate senders should be delivered however. We\u2019re tracking whitelisting as a potential feature, so let us know if that would be important for your workflows and we will add it to roadmap \ud83d\ude42",
+    "timestamp": "2025-09-26 17:09:58.674000+00:00",
+    "id": "1421182023443152977"
+  },
+  {
+    "author": "brrrat",
+    "content": "Hi all! Is it possible to whitelist senders of emails we receive on AgentMail, so that we are sure all sent attachments are properly received / not flagged as spam?",
+    "timestamp": "2025-09-26 17:06:52.522000+00:00",
+    "id": "1421181242665341092"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "No need to delete the inboxes. Just let",
+    "timestamp": "2025-09-25 06:59:14.896000+00:00",
+    "id": "1420665940432916506"
+  },
+  {
+    "author": "haakam21",
+    "content": "No need to delete the inboxes. Just let us know the inbox ids and what display names you want. We can updated the display names manually",
+    "timestamp": "2025-09-25 06:31:25.991000+00:00",
+    "id": "1420658940538257471"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "<@902390145808994334> If you have the time, can you manually delete my inboxes for me? I'm going to recreate them with the right display name. I can share my API with you",
+    "timestamp": "2025-09-25 06:24:42.852000+00:00",
+    "id": "1420657249650479104"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Thank you for the feedback!",
+    "timestamp": "2025-09-25 04:26:49.268000+00:00",
+    "id": "1420627580888809583"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hey! We\u2019re shipping deletes this Friday, we can manually delete these or you can go over for the meantime",
+    "timestamp": "2025-09-25 04:20:09.461000+00:00",
+    "id": "1420625903976845363"
+  },
+  {
+    "author": "andrguardia",
+    "content": "hey! im trying to find a way to delete previously created inboxes. I was testing frontend creation flow and have 5 inboxes i need to delete. I don't see an option on the dashboard or the API reference since it only talks about how to create, get and list inboxes. Any recs?",
+    "timestamp": "2025-09-25 04:14:50.542000+00:00",
+    "id": "1420624566333476874"
+  },
+  {
+    "author": "etgibbs",
+    "content": "these are things I cannot be bothered to debug for a side project / marketing attempt, but could be of use to you guys",
+    "timestamp": "2025-09-25 03:44:22.736000+00:00",
+    "id": "1420616899959590913"
+  },
+  {
+    "author": "etgibbs",
+    "content": "I'd say 1/25 or so logs is a connector error and 1/100 is an illegal address",
+    "timestamp": "2025-09-25 03:43:21.479000+00:00",
+    "id": "1420616643029106789"
+  },
+  {
+    "author": "etgibbs",
+    "content": "also, on occassion:\n\n```\n File \"/usr/local/lib/python3.11/site-packages/openai/_base_client.py\", line 1561, in request\n    raise APIConnectionError(request=request) from err\nopenai.APIConnectionError: Connection error.\"\n```",
+    "timestamp": "2025-09-25 03:42:56.926000+00:00",
+    "id": "1420616540046233702"
+  },
+  {
+    "author": "etgibbs",
+    "content": "\"illegal address\"",
+    "timestamp": "2025-09-25 03:42:16.564000+00:00",
+    "id": "1420616370755866635"
+  },
+  {
+    "author": "etgibbs",
+    "content": "just curious what this means about the person who triggered the hook",
+    "timestamp": "2025-09-25 03:42:10.084000+00:00",
+    "id": "1420616343576645733"
+  },
+  {
+    "author": "etgibbs",
+    "content": "not an issue for me but happening a bit in my logs",
+    "timestamp": "2025-09-25 03:41:52.182000+00:00",
+    "id": "1420616268490215516"
+  },
+  {
+    "author": "etgibbs",
+    "content": "```\nFile \"/usr/local/lib/python3.11/site-packages/agentmail/inboxes/messages/raw_client.py\", line 506, in reply\n    raise MessageRejectedError(\nagentmail.messages.errors.message_rejected_error.MessageRejectedError: headers: {'content-type': 'application/json', 'content-length': '77', 'connection': 'keep-alive', 'date': 'Thu, 25 Sep 2025 03:40:17 GMT', 'apigw-requestid': 'RcHxTgl6IAMEb0w=', 'x-cache': 'Error from cloudfront', 'via': '1.1 8bf94e29f889f8d0076c4502ae008b58.cloudfront.net (CloudFront)', 'x-amz-cf-pop': 'IAD55-P1', 'x-amz-cf-id': 'htMpAw7_B0iW1-ov1WSxIOliYhFQDcwmgIoduKEbpMUQZe784N1srQ=='}, status_code: 403, body: name='MessageRejectedError' message='Message rejected: Illegal address'\n```",
+    "timestamp": "2025-09-25 03:41:39.370000+00:00",
+    "id": "1420616214752919644"
+  },
+  {
+    "author": "haakam21",
+    "content": "Not yet but working on this",
+    "timestamp": "2025-09-25 00:09:05.665000+00:00",
+    "id": "1420562721836896327"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "Is it possible to change the displayName of an email once you've already created it?",
+    "timestamp": "2025-09-25 00:00:03.211000+00:00",
+    "id": "1420560446619914310"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "That was thanks",
+    "timestamp": "2025-09-24 23:21:48.913000+00:00",
+    "id": "1420550823636897822"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "not sure if this is what u were talking about",
+    "timestamp": "2025-09-24 23:19:02.118000+00:00",
+    "id": "1420550124047831100"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "https://docs.agentmail.to/inboxes#core-capabilities\n\ni think this might help u figure out ur issue",
+    "timestamp": "2025-09-24 23:18:34.526000+00:00",
+    "id": "1420550008318595152"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "Are you able to change the display name the email sends from? Mine is stuck on AgentMail",
+    "timestamp": "2025-09-24 23:17:22.680000+00:00",
+    "id": "1420549706974625905"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "Took a while for me to piece together the API context enough for my claude.md",
+    "timestamp": "2025-09-24 20:42:27.218000+00:00",
+    "id": "1420510718981312594"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "I was looking for some full jsons that showed all of the data fields we can access with the API",
+    "timestamp": "2025-09-24 20:41:35.171000+00:00",
+    "id": "1420510500680368291"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "Yup got my test email system to work",
+    "timestamp": "2025-09-24 20:41:07.679000+00:00",
+    "id": "1420510385370431488"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "what was the biggest point of confusion for you in figuring this out? Maybe we can adjust our docs",
+    "timestamp": "2025-09-24 20:40:51.436000+00:00",
+    "id": "1420510317242486834"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hey <@1387876255453675531> was just about to answer! Everything all good now?",
+    "timestamp": "2025-09-24 20:40:20.566000+00:00",
+    "id": "1420510187764191272"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "Nevermind got it!",
+    "timestamp": "2025-09-24 20:39:58.686000+00:00",
+    "id": "1420510095992815698"
+  },
+  {
+    "author": "caladan_ai",
+    "content": "<@902390145808994334> \n\nQuick question on the email API \u2013 hitting a wall with the send message endpoint.\n\nI can create and fetch inboxes no problem:\n\u2705 `POST /inboxes`\n\u2705 `GET /inboxes/{inbox_id}`\n\nBut the send endpoint is ghosting me. Keep getting 404s on everything I've tried:\n\u274c `POST /inboxes/{inbox_id}/messages/send`\n\u274c `POST /inboxes/{inbox_id}/messages`\n\u274c `POST /messages`\n\nUsing `test-discovery-1758744761249@agentmail.to` for my test inbox.\n\nWhat's the right endpoint for sending? Feel like I'm missing something obvious.",
+    "timestamp": "2025-09-24 20:21:55.884000+00:00",
+    "id": "1420505554392191016"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes we provide a webhook secret, which you can use to verify AgentMail webhooks using the Svix SDK: https://docs.svix.com/receiving/verifying-payloads/how",
+    "timestamp": "2025-09-24 20:10:01.896000+00:00",
+    "id": "1420502559709466714"
+  },
+  {
+    "author": "jasonariddle",
+    "content": "With webhooks, when an event is received, is there a way to confirm that it's coming from agentmail.io?\n\nI think I briefly saw something that said secret key, but I wasn't sure what that was for/how that should be used.",
+    "timestamp": "2025-09-24 19:55:10.532000+00:00",
+    "id": "1420498821057609820"
+  },
+  {
+    "author": "etgibbs",
+    "content": "mostly fixed, nvm.",
+    "timestamp": "2025-09-24 15:39:23.001000+00:00",
+    "id": "1420434448846950601"
+  },
+  {
+    "author": "etgibbs",
+    "content": "I may also need help re-triggering all of my webhooks. since they have failed. lmao.",
+    "timestamp": "2025-09-24 15:29:07.188000+00:00",
+    "id": "1420431865940283399"
+  },
+  {
+    "author": "etgibbs",
+    "content": "how to swap model? it defaulted to 4.1 and i got rate limited lmao",
+    "timestamp": "2025-09-24 15:28:46.091000+00:00",
+    "id": "1420431777452916746"
+  },
+  {
+    "author": "etgibbs",
+    "content": "hello agent mail",
+    "timestamp": "2025-09-24 15:28:27.400000+00:00",
+    "id": "1420431699057180763"
+  },
+  {
+    "author": "moritz_79500",
+    "content": "thank you for the quick reply!",
+    "timestamp": "2025-09-22 11:05:25.360000+00:00",
+    "id": "1419640728652349582"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Also feel free to leverage dashboard.agentmail.to if easier",
+    "timestamp": "2025-09-22 10:30:12.164000+00:00",
+    "id": "1419631865265918043"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "https://docs.agentmail.to/api-reference/webhooks/delete",
+    "timestamp": "2025-09-22 10:29:54.718000+00:00",
+    "id": "1419631792092348518"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hey <@1405519344410034246> you can delete webhooks",
+    "timestamp": "2025-09-22 10:29:52.221000+00:00",
+    "id": "1419631781619175546"
+  },
+  {
+    "author": "moritz_79500",
+    "content": "Hi Haakam, \n\nthanks for the quick reply. How can I delete it? The API docs only show how to create it.",
+    "timestamp": "2025-09-22 10:05:01.204000+00:00",
+    "id": "1419625527840477235"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "this typically happens when you only send plaintext and no html, and this is Gmails way of rendering quotes",
+    "timestamp": "2025-09-21 22:27:59.531000+00:00",
+    "id": "1419450115029991474"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "are you doing this via the dashboard or api?",
+    "timestamp": "2025-09-21 22:06:06.687000+00:00",
+    "id": "1419444608563417202"
+  },
+  {
+    "author": "rezirezi12",
+    "content": "Hey team, quick question, is there a way to avoid this formatting when replying using agentmail? it' doesn't look good and is too distracting/confusing if the previous message was long.",
+    "timestamp": "2025-09-21 15:41:35.748000+00:00",
+    "id": "1419347842031681628"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hi <@748113596361211935> not yet but we\u2019re working on this as we speak!",
+    "timestamp": "2025-09-17 18:46:57.396000+00:00",
+    "id": "1417944938141712434"
+  },
+  {
+    "author": "melonaz3958",
+    "content": "Hi, is it possible ti manage ones subscription from the dashboard?",
+    "timestamp": "2025-09-17 18:12:24.098000+00:00",
+    "id": "1417936242099621968"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hey yea would be interested, please send the details",
+    "timestamp": "2025-09-17 03:16:55.196000+00:00",
+    "id": "1417710886751309944"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hi Eshwar, for the time being the API isn't available for free. You would need to subscribe to a plan to get an API key",
+    "timestamp": "2025-09-16 09:16:01.840000+00:00",
+    "id": "1417438872060690513"
+  },
+  {
+    "author": "epilli",
+    "content": "Hi Team, I\u2019m trying to obtain the API key, but the provided link redirects me to the Pricing page. Could you please guide me on how to access the API key? https://docs.agentmail.to/quickstart",
+    "timestamp": "2025-09-16 03:37:17.019000+00:00",
+    "id": "1417353623582670869"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "@channel can send drafts on the dashboard now!",
+    "timestamp": "2025-09-15 22:49:32.072000+00:00",
+    "id": "1417281209146408981"
+  },
+  {
+    "author": "k.areem",
+    "content": "for the agent mail team \u2014\u2014 would u guys be interested in sponsoring https://sfhacks.io. it'll be feb 2026 at sfsu. lmk & i can send more details",
+    "timestamp": "2025-09-15 21:28:30.254000+00:00",
+    "id": "1417260817203597405"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Ty for flagging",
+    "timestamp": "2025-09-15 17:06:23.140000+00:00",
+    "id": "1417194852906565632"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Lmfao",
+    "timestamp": "2025-09-15 17:06:20.025000+00:00",
+    "id": "1417194839841177620"
+  },
+  {
+    "author": "markding",
+    "content": "our delivery rate feels pretty strong \ud83d\ude02",
+    "timestamp": "2025-09-15 16:44:36.384000+00:00",
+    "id": "1417189371974779033"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Rolling out dashboard in few days",
+    "timestamp": "2025-09-13 18:23:26.689000+00:00",
+    "id": "1416489469745299487"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Working on it rn as of now we do it manually for you",
+    "timestamp": "2025-09-13 18:22:54.680000+00:00",
+    "id": "1416489335489822850"
+  },
+  {
+    "author": "wayy275",
+    "content": "can i manage my stripe subscription somwhere?",
+    "timestamp": "2025-09-13 15:47:31.164000+00:00",
+    "id": "1416450229829501012"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Will make this more apparent as well in docs",
+    "timestamp": "2025-09-11 21:46:00.552000+00:00",
+    "id": "1415815671010431116"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Feel free to log in with your API key \ud83d\ude42",
+    "timestamp": "2025-09-11 21:45:50.794000+00:00",
+    "id": "1415815630082408592"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "u can use at dashboard.agentmail.to",
+    "timestamp": "2025-09-11 21:45:38.931000+00:00",
+    "id": "1415815580325511198"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "We have a UI",
+    "timestamp": "2025-09-11 21:45:30.142000+00:00",
+    "id": "1415815543461646428"
+  },
+  {
+    "author": "wayy275",
+    "content": "for debugging",
+    "timestamp": "2025-09-11 21:23:32.924000+00:00",
+    "id": "1415810018648784918"
+  },
+  {
+    "author": "wayy275",
+    "content": "it would be nice to be able to see my actual live emails on a ui (non playground)",
+    "timestamp": "2025-09-11 21:23:29.856000+00:00",
+    "id": "1415810005780922388"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "fixed, thanks for bringing this to our attention!",
+    "timestamp": "2025-09-11 19:20:07.259000+00:00",
+    "id": "1415778957038714950"
+  },
+  {
+    "author": "wayy275",
+    "content": "go tit",
+    "timestamp": "2025-09-11 19:10:25.893000+00:00",
+    "id": "1415776518612844635"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "i see, if you want true idempotency include a client_id when creating the resource, so any subsequent runs/requests with the same client_id will return the object instead of returning an AlreadyExistsError",
+    "timestamp": "2025-09-11 19:10:16.592000+00:00",
+    "id": "1415776479601496184"
+  },
+  {
+    "author": "wayy275",
+    "content": "guess theres no right answer here",
+    "timestamp": "2025-09-11 19:09:25.782000+00:00",
+    "id": "1415776266488910026"
+  },
+  {
+    "author": "wayy275",
+    "content": "yeah getting alr exist, but i was the one who made it",
+    "timestamp": "2025-09-11 19:09:17.731000+00:00",
+    "id": "1415776232720699524"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "you can include a client_id to make requests idempotent-- im assuming you are getting a 403 because that username has already been taken. Are you getting an AlreadyExistsError?",
+    "timestamp": "2025-09-11 19:08:42.355000+00:00",
+    "id": "1415776084342866042"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "working on deletes as we speak, apologies we have a lot on our plate right now",
+    "timestamp": "2025-09-11 19:07:57.014000+00:00",
+    "id": "1415775894169194576"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "Maybe the copy on the landing page could experience some improvements, but the playground is an isolated environment with restricted api keys - will work on this as this is what other people have been mentioning as well",
+    "timestamp": "2025-09-11 19:06:25.867000+00:00",
+    "id": "1415775511870705734"
+  },
+  {
+    "author": "wayy275",
+    "content": "also shouldnt this be idempotent now im getting 403 already exists when i call create again, i expect it to say success and give me my inbox object (what happened the first time)",
+    "timestamp": "2025-09-11 19:03:22.717000+00:00",
+    "id": "1415774743684190339"
+  },
+  {
+    "author": "wayy275",
+    "content": "bc they were randomly generated its a terribly ugly name",
+    "timestamp": "2025-09-11 19:01:25.583000+00:00",
+    "id": "1415774252388585532"
+  },
+  {
+    "author": "wayy275",
+    "content": "but i'd like to be able to delete some",
+    "timestamp": "2025-09-11 19:01:15.882000+00:00",
+    "id": "1415774211699638312"
+  },
+  {
+    "author": "wayy275",
+    "content": "its fine i just made new ones",
+    "timestamp": "2025-09-11 19:01:08.943000+00:00",
+    "id": "1415774182595104848"
+  },
+  {
+    "author": "wayy275",
+    "content": "i dont know my inbox id, its not the same as the email address",
+    "timestamp": "2025-09-11 18:54:15.595000+00:00",
+    "id": "1415772448888193149"
+  },
+  {
+    "author": "wayy275",
+    "content": "when i try creating that same inbox i have on playgroun its taken",
+    "timestamp": "2025-09-11 18:53:39.635000+00:00",
+    "id": "1415772298060763396"
+  },
+  {
+    "author": "wayy275",
+    "content": "when i list inboxes its []",
+    "timestamp": "2025-09-11 18:53:26.154000+00:00",
+    "id": "1415772241517350912"
+  },
+  {
+    "author": "wayy275",
+    "content": "i have create two inboxes on playground",
+    "timestamp": "2025-09-11 18:53:21.104000+00:00",
+    "id": "1415772220336247025"
+  },
+  {
+    "author": "wayy275",
+    "content": "im having trouble",
+    "timestamp": "2025-09-11 18:53:12.676000+00:00",
+    "id": "1415772184986517636"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Sent",
+    "timestamp": "2025-09-11 16:55:03.315000+00:00",
+    "id": "1415742450051584080"
+  },
+  {
+    "author": "wayy275",
+    "content": "sweet",
+    "timestamp": "2025-09-11 16:51:39.167000+00:00",
+    "id": "1415741593792544858"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "<@357641201370923008> sending over an api key now",
+    "timestamp": "2025-09-11 16:51:24.774000+00:00",
+    "id": "1415741533424189562"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "hey Aman will look into this",
+    "timestamp": "2025-09-11 16:51:14.221000+00:00",
+    "id": "1415741489161437364"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Hey <@357641201370923008> temporarily it\u2019s only for paid users, working on a free tier as we speak",
+    "timestamp": "2025-09-11 16:50:29.149000+00:00",
+    "id": "1415741300115898578"
+  },
+  {
+    "author": "wayy275",
+    "content": "hey i paid for a plan i would like my api key faster than this.. it usually is automatic",
+    "timestamp": "2025-09-11 16:41:37.573000+00:00",
+    "id": "1415739070524424313"
+  },
+  {
+    "author": "wayy275",
+    "content": "count me in",
+    "timestamp": "2025-09-11 16:35:36.703000+00:00",
+    "id": "1415737556925943879"
+  },
+  {
+    "author": "wayy275",
+    "content": "oh its only availble for non free users is it",
+    "timestamp": "2025-09-11 16:34:14.054000+00:00",
+    "id": "1415737210271170743"
+  },
+  {
+    "author": "wayy275",
+    "content": "i see playground and the homepage, no settings no user account page",
+    "timestamp": "2025-09-11 16:33:43.553000+00:00",
+    "id": "1415737082340577392"
+  },
+  {
+    "author": "wayy275",
+    "content": "how do i get an api key?? it shouldnt be this hard",
+    "timestamp": "2025-09-11 16:32:55.044000+00:00",
+    "id": "1415736878879215687"
+  },
+  {
+    "author": "amanpatel_24711",
+    "content": "still not receiving emails",
+    "timestamp": "2025-09-11 09:42:26.023000+00:00",
+    "id": "1415633577277784106"
+  },
+  {
+    "author": "amanpatel_24711",
+    "content": "also i have added email farwording",
+    "timestamp": "2025-09-11 09:41:50.525000+00:00",
+    "id": "1415633428388253697"
+  },
+  {
+    "author": "amanpatel_24711",
+    "content": "i have send many emails",
+    "timestamp": "2025-09-11 09:40:59.426000+00:00",
+    "id": "1415633214063644694"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "will be watching logs",
+    "timestamp": "2025-09-11 07:17:48.019000+00:00",
+    "id": "1415597179090767903"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "can you try sending another message?",
+    "timestamp": "2025-09-11 07:17:41.747000+00:00",
+    "id": "1415597152784093184"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "<@1414866784997081200> thanks for the ping, gut instinct is you're inbound messages is failing one of the spf dkim dmarc policy checks we have",
+    "timestamp": "2025-09-11 07:17:29.585000+00:00",
+    "id": "1415597101773099008"
+  },
+  {
+    "author": "amanpatel_24711",
+    "content": "Hello AgentMail Team,\n\nI have configured the DNS records for the domain kimmchi.com and created the inboxes ai@kimmchi.com and aman.patel@kimmchi.com\nThe status is showing as \"Overall Status: Ready\", as shown in the attached screenshot.\n\nI am able to send emails from AgentMail, but I am not receiving any incoming emails.\n\nCould you please check and advise?\nThanks",
+    "timestamp": "2025-09-11 05:52:42.923000+00:00",
+    "id": "1415575766766190593"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hi, it seems you have 2 webhooks configured for the the same url. Deleting one will solve it",
+    "timestamp": "2025-09-11 00:59:29.486000+00:00",
+    "id": "1415501974543274035"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hi, for now we are only offering the playground for free. We provide API keys for paid plans.",
+    "timestamp": "2025-09-11 00:55:29.982000+00:00",
+    "id": "1415500969990557709"
+  },
+  {
+    "author": "haakam21",
+    "content": "<@317880338720489472> Figured our the issue and fixed it. We listen to insert events in our database to send `message.received` webhooks. As our traffic has grown we now regularly have multiple such events happening at the same time. These events get rolled up into batches to be processed. However, when processing a batch, an exception with one event caused the remaining events in the batch to be not processed. Have now isolated exception handling for each event. Thank you for bringing this to our attention!",
+    "timestamp": "2025-09-11 00:21:14.351000+00:00",
+    "id": "1415492348049227806"
+  },
+  {
+    "author": "markding",
+    "content": "thanks man! appreciate all the support!",
+    "timestamp": "2025-09-10 21:55:26.213000+00:00",
+    "id": "1415455655698890856"
+  },
+  {
+    "author": "haakam21",
+    "content": "<@317880338720489472> About to take my last meeting of the day. Will dive into the issues right after. We will also ship webhook observability features asap",
+    "timestamp": "2025-09-10 21:33:03.996000+00:00",
+    "id": "1415450026032758927"
+  },
+  {
+    "author": "markding",
+    "content": "yea, we are having pretty bad receive rate from webhook this week. we can see that emails are received in agentmail dashboard, but they never send to our webhook (aournd 10-25% roughly). \n\nwe are currently writing a custom polling logic (every min) to process all the new email message from all the inboxes we have to ensure all new messages are processed successfully on our backed. it'd be great if we can see some metrics on webhook stats",
+    "timestamp": "2025-09-10 21:25:31.836000+00:00",
+    "id": "1415448129536397313"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Sounds good looking now thank you",
+    "timestamp": "2025-09-10 18:56:13.709000+00:00",
+    "id": "1415410556428619897"
+  },
+  {
+    "author": "__zeeshan__",
+    "content": "<@902390145808994334> I've sent you a dm with details about that bug",
+    "timestamp": "2025-09-10 18:52:34.506000+00:00",
+    "id": "1415409637024595978"
+  },
+  {
+    "author": "__zeeshan__",
+    "content": "",
+    "timestamp": "2025-09-10 18:51:57.831000+00:00",
+    "id": "1415409483198501008"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Mind sending a screenshot? Will fix - thank you for flagging btw",
+    "timestamp": "2025-09-10 18:11:59.936000+00:00",
+    "id": "1415399425697906848"
+  },
+  {
+    "author": "__zeeshan__",
+    "content": "The contact link in the footer sent me to `contact@agentmail.to` lol",
+    "timestamp": "2025-09-10 17:34:19.982000+00:00",
+    "id": "1415389946763673620"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "hey <@761602235175403560> our email is contact@agentmail.cc, do you mind sending a fresh email or dming me here",
+    "timestamp": "2025-09-10 17:03:20.324000+00:00",
+    "id": "1415382146792689695"
+  },
+  {
+    "author": "fabri_20287",
+    "content": "the landing is confusing. says i need an api key, sends me to the pricing page, and the free account takes me to the web inbox. \n\nso i never get to see how to get an a apikey",
+    "timestamp": "2025-09-10 16:52:01.898000+00:00",
+    "id": "1415379301267935233"
+  },
+  {
+    "author": "fabri_20287",
+    "content": "how cna i get free api key?",
+    "timestamp": "2025-09-10 16:50:09.017000+00:00",
+    "id": "1415378827810439190"
+  },
+  {
+    "author": "__zeeshan__",
+    "content": "Hi team, I am experiencing a weird issue where the webhook is not being triggered even though the email shows up in the dasboard. I've sent specifics in an email to contact@agentmail.to\n\nHoping to get this fixed asap as it is impacting our customers",
+    "timestamp": "2025-09-10 13:59:36.264000+00:00",
+    "id": "1415335908533600328"
+  },
+  {
+    "author": "moritz_79500",
+    "content": "Hi there,\n\nIt seems like agentmail pushes two webhook events. \nIs it our configuration or an agentmail issue? \n\nBest,\nMoritz",
+    "timestamp": "2025-09-09 10:04:43.475000+00:00",
+    "id": "1414914411226730607"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "dubs",
+    "timestamp": "2025-09-07 11:28:22.782000+00:00",
+    "id": "1414210687995216016"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "we're working on a free tier now and will get rid of the playground soon",
+    "timestamp": "2025-09-07 06:43:14.225000+00:00",
+    "id": "1414138929506029679"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "thats our bad as well",
+    "timestamp": "2025-09-07 06:42:48.870000+00:00",
+    "id": "1414138823159578665"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "dming you",
+    "timestamp": "2025-09-07 06:41:40.339000+00:00",
+    "id": "1414138535719473152"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "think we'd need to delete that api key in order to free it up",
+    "timestamp": "2025-09-07 06:41:37.446000+00:00",
+    "id": "1414138523585347604"
+  },
+  {
+    "author": "st0llo",
+    "content": "I just created an inbox using chat.agentmail.to, but seems like it got created on an alternative account.\n\nIs there any way to get it transferred to my paid account?",
+    "timestamp": "2025-09-07 06:15:54.852000+00:00",
+    "id": "1414132053477429349"
+  },
+  {
+    "author": "haakam21",
+    "content": "Replied to your email",
+    "timestamp": "2025-09-06 01:00:43.753000+00:00",
+    "id": "1413690346713518200"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "Thanks thanks <@319929970212339733> Any idea on the API download issue? i emailed support",
+    "timestamp": "2025-09-05 19:48:50.386000+00:00",
+    "id": "1413611857163583518"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes we haven\u2019t added that functionality to the client yet",
+    "timestamp": "2025-09-05 19:04:35.847000+00:00",
+    "id": "1413600723219910676"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "These are not clickable or downloadable. (This is not related to our not been able to download via API BUT thought id share)",
+    "timestamp": "2025-09-05 17:58:57.304000+00:00",
+    "id": "1413584203773247569"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "if you could have a look into it. I shared the error codes. Think we need INTERNAL_INBOX_UUID BUT i also cannot download files directly from the email client - they seem to be nothing in there. Not sure if that's a bug or just not possible to download in the client.",
+    "timestamp": "2025-09-05 17:53:13.641000+00:00",
+    "id": "1413582762346283028"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "yeah, i shared it to support@ email <@902390145808994334>",
+    "timestamp": "2025-09-05 17:52:16.167000+00:00",
+    "id": "1413582521282859179"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "hey <@1387545813718405250> looking further into this now - you should be able to download so not sure why this issues being caused. Is there any error? Will get back to you here in just a moment",
+    "timestamp": "2025-09-05 17:02:02.137000+00:00",
+    "id": "1413569879524774089"
+  },
+  {
+    "author": "taafy",
+    "content": "bet ty",
+    "timestamp": "2025-09-05 17:01:57.116000+00:00",
+    "id": "1413569858465042583"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "hey <@675198392795922432> we\u2019re actively working on deletes as we speak, should be shipped in the next few days",
+    "timestamp": "2025-09-05 17:01:02.781000+00:00",
+    "id": "1413569630567661670"
+  },
+  {
+    "author": "taafy",
+    "content": "hi, any way to delete inboxes created on the dashboard? adi sent me an api key for a trial account, not sure if deleting inboxes is a paid feature or smth",
+    "timestamp": "2025-09-05 16:11:35.698000+00:00",
+    "id": "1413557185719439370"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "Struggling to download attachments; Building an agent where an email with PDF attachment is not able to be downloaded, so i checked the mailbox, and although it shows an attachemnet, I also cannot download it. Any help?",
+    "timestamp": "2025-09-05 12:37:32.025000+00:00",
+    "id": "1413503315450269809"
+  },
+  {
+    "author": "jubilant_unicorn_37698",
+    "content": "Hey everyone, just checking - are we good to download attachemnts from the mailboxes?",
+    "timestamp": "2025-09-05 12:36:58.408000+00:00",
+    "id": "1413503174450348083"
+  },
+  {
+    "author": "k.areem",
+    "content": "sg, sent a dm",
+    "timestamp": "2025-09-04 22:44:43.706000+00:00",
+    "id": "1413293733130014881"
+  },
+  {
+    "author": "haakam21",
+    "content": "Gotchu looks cool. Yea as long as we don\u2019t brand it as spammer or use the word spam we are cool w it",
+    "timestamp": "2025-09-04 22:15:01.339000+00:00",
+    "id": "1413286257340977208"
+  },
+  {
+    "author": "k.areem",
+    "content": "idk if it quantifies as spam",
+    "timestamp": "2025-09-04 22:12:37.999000+00:00",
+    "id": "1413285656129572864"
+  },
+  {
+    "author": "k.areem",
+    "content": "this is the project if you're down to check it out: https://automailer.streamlit.app/",
+    "timestamp": "2025-09-04 22:12:16.886000+00:00",
+    "id": "1413285567575363634"
+  },
+  {
+    "author": "haakam21",
+    "content": "We\u2019d love to repost anything you build but we don\u2019t want to associate AgentMail with spam",
+    "timestamp": "2025-09-04 22:04:22.139000+00:00",
+    "id": "1413283576341860453"
+  },
+  {
+    "author": "k.areem",
+    "content": "if i launched an easy to use ai emailer outreach spammer tool using agentmail and put it up on linkedin would u guys be rewilling to repost it",
+    "timestamp": "2025-09-04 21:59:43.867000+00:00",
+    "id": "1413282409184493599"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes it should",
+    "timestamp": "2025-09-04 02:43:26.718000+00:00",
+    "id": "1412991420331069562"
+  },
+  {
+    "author": "k.areem",
+    "content": "if i add wait times does that fix it",
+    "timestamp": "2025-09-04 02:42:56.645000+00:00",
+    "id": "1412991294195634297"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yes lmao. We shouldn't allow it to cause the bug however. Working on a fix.",
+    "timestamp": "2025-09-04 02:42:19.556000+00:00",
+    "id": "1412991138633351330"
+  },
+  {
+    "author": "k.areem",
+    "content": "is that causing the issue",
+    "timestamp": "2025-09-04 02:41:41.710000+00:00",
+    "id": "1412990979895726150"
+  },
+  {
+    "author": "k.areem",
+    "content": "yea",
+    "timestamp": "2025-09-04 02:41:33.315000+00:00",
+    "id": "1412990944684544061"
+  },
+  {
+    "author": "haakam21",
+    "content": "Ah I think i understand. Im guessing your agent replies instantly when it receives the email?",
+    "timestamp": "2025-09-04 02:40:08.772000+00:00",
+    "id": "1412990590085369969"
+  },
+  {
+    "author": "k.areem",
+    "content": "i was emailing hiring@agentmail.to with another automated agentmail",
+    "timestamp": "2025-09-04 02:38:46.190000+00:00",
+    "id": "1412990243711483915"
+  },
+  {
+    "author": "k.areem",
+    "content": "two agentmails were talking to eachother",
+    "timestamp": "2025-09-04 02:38:14.788000+00:00",
+    "id": "1412990112001691649"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hmm i havent seen this behavior. I made the fix as I did before. I am trying to recreate the bug. Do you know what sequence of events led to it?",
+    "timestamp": "2025-09-04 02:37:04.414000+00:00",
+    "id": "1412989816832004166"
+  },
+  {
+    "author": "haakam21",
+    "content": "Hmm gimme a sec",
+    "timestamp": "2025-09-04 02:12:10.821000+00:00",
+    "id": "1412983552248774777"
+  },
+  {
+    "author": "k.areem",
+    "content": "im able to see this specific email now but all the previous ones i sent are still showing this error and same goes for new ones sent",
+    "timestamp": "2025-09-04 02:11:36.972000+00:00",
+    "id": "1412983410275647623"
+  },
+  {
+    "author": "k.areem",
+    "content": "ty",
+    "timestamp": "2025-09-04 01:17:26.845000+00:00",
+    "id": "1412969778255233145"
+  },
+  {
+    "author": "haakam21",
+    "content": "Can you try again, should be fixed",
+    "timestamp": "2025-09-04 01:02:57.322000+00:00",
+    "id": "1412966131211309197"
+  },
+  {
+    "author": "k.areem",
+    "content": "is there a fix",
+    "timestamp": "2025-09-04 00:57:05.216000+00:00",
+    "id": "1412964654371835924"
+  },
+  {
+    "author": "k.areem",
+    "content": "i was sending a bunch of emails and im trying to see the responses but im getting this error",
+    "timestamp": "2025-09-04 00:57:01.359000+00:00",
+    "id": "1412964638194401370"
+  },
+  {
+    "author": "haakam21",
+    "content": "Gotcha, just sent over an API key \ud83d\ude42",
+    "timestamp": "2025-09-03 05:09:30.138000+00:00",
+    "id": "1412665788913156238"
+  },
+  {
+    "author": "jeremy.biggs",
+    "content": "<@319929970212339733> I've setup a Developer account",
+    "timestamp": "2025-09-03 05:07:39.170000+00:00",
+    "id": "1412665323479634091"
+  },
+  {
+    "author": "jeremy.biggs",
+    "content": "Ah, yes! I'm in the Playground",
+    "timestamp": "2025-09-03 04:58:33.284000+00:00",
+    "id": "1412663033867796532"
+  },
+  {
+    "author": "haakam21",
+    "content": "Could you have been using our playground by chance? We have no record of provisioning an API key for you",
+    "timestamp": "2025-09-03 04:57:39.981000+00:00",
+    "id": "1412662810298548265"
+  },
+  {
+    "author": "jeremy.biggs",
+    "content": "I setup AgentMail a few weeks ago and can't recall for the life of me recall if I got an API Key - busy setting up domains and mailboxes now and need to re-generate one? Can you help?",
+    "timestamp": "2025-09-03 04:44:27.548000+00:00",
+    "id": "1412659486593781870"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "its back",
+    "timestamp": "2025-09-02 03:23:54.093000+00:00",
+    "id": "1412276825748672575"
+  },
+  {
+    "author": "k.areem",
+    "content": "\u2639\ufe0f",
+    "timestamp": "2025-09-02 02:50:52.699000+00:00",
+    "id": "1412268515179757670"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "<@444922076911108116> it\u2019s been temporarily removed as we\u2019re making some fixes, will be back up soon",
+    "timestamp": "2025-09-02 02:37:53.572000+00:00",
+    "id": "1412265247284133979"
+  },
+  {
+    "author": "k.areem",
+    "content": "was the metrics dashboard removed, i dont see it anymore",
+    "timestamp": "2025-09-02 01:38:59.748000+00:00",
+    "id": "1412250425352257586"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "nah that\u2019s cap yk u need a 4th come on now",
+    "timestamp": "2025-09-01 11:53:52.496000+00:00",
+    "id": "1412042776886902825"
+  },
+  {
+    "author": "dev.unfazed",
+    "content": "\ud83d\ude02",
+    "timestamp": "2025-09-01 11:40:11.385000+00:00",
+    "id": "1412039332897751122"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "\ud83e\udd23",
+    "timestamp": "2025-09-01 02:47:02.072000+00:00",
+    "id": "1411905159994544240"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "It\u2019s the opposite dude",
+    "timestamp": "2025-09-01 02:46:56.585000+00:00",
+    "id": "1411905136980394054"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "whats the saying, too little cooks spoil the pot",
+    "timestamp": "2025-09-01 02:23:37.933000+00:00",
+    "id": "1411899270608457839"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "matter of fact make us co-founders too lowk",
+    "timestamp": "2025-09-01 02:23:14.588000+00:00",
+    "id": "1411899172692561980"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "yee we the only reason agent mail exists",
+    "timestamp": "2025-09-01 02:22:56.741000+00:00",
+    "id": "1411899097836945559"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "thank u for building w agentmail ur the reason which keeps us going everyday",
+    "timestamp": "2025-09-01 01:06:54.316000+00:00",
+    "id": "1411879961639522450"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "lol igu guys",
+    "timestamp": "2025-09-01 01:06:43.685000+00:00",
+    "id": "1411879917049876543"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "who doesnt \ud83e\udef6",
+    "timestamp": "2025-08-31 22:01:37.851000+00:00",
+    "id": "1411833335805640775"
+  },
+  {
+    "author": "dev.unfazed",
+    "content": "I love you man.",
+    "timestamp": "2025-08-31 21:36:45.805000+00:00",
+    "id": "1411827077711400991"
+  },
+  {
+    "author": "dev.unfazed",
+    "content": "resolved!",
+    "timestamp": "2025-08-31 21:36:40.387000+00:00",
+    "id": "1411827054986399824"
+  },
+  {
+    "author": "dev.unfazed",
+    "content": "Hey I have sent you a reply. Pls check that out.",
+    "timestamp": "2025-08-31 21:11:57.135000+00:00",
+    "id": "1411820833776861204"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "sending now",
+    "timestamp": "2025-08-31 19:37:28.408000+00:00",
+    "id": "1411797057412530247"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "you can send emails from the same domain or a custom domain, but not from the same inbox",
+    "timestamp": "2025-08-31 19:37:23.953000+00:00",
+    "id": "1411797038726643763"
+  },
+  {
+    "author": "dev.unfazed",
+    "content": "<@902390145808994334> hey i have sent you a follow up mail, could. you pls help me ASAP!",
+    "timestamp": "2025-08-31 11:14:49.032000+00:00",
+    "id": "1411670559821135972"
+  },
+  {
+    "author": "tornado100k",
+    "content": "does my agentmail email need to be @agentmail.to or can i have it directly sending messages from my gmail?",
+    "timestamp": "2025-08-30 20:00:06.787000+00:00",
+    "id": "1411440367001141422"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "fixed!",
+    "timestamp": "2025-08-28 19:41:20.956000+00:00",
+    "id": "1410710869192478802"
+  },
+  {
+    "author": "__zeeshan__",
+    "content": "Hi, i\u2019m trying to create a new webhook in the dashboard, but when I specify an inbox, it defaults to \"All inboxes\" instead.",
+    "timestamp": "2025-08-28 16:30:21.367000+00:00",
+    "id": "1410662804192628840"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "dang, that\u2019s good tho ig",
+    "timestamp": "2025-08-28 10:35:18.703000+00:00",
+    "id": "1410573454343802951"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "Not as much as you\u2019d think!",
+    "timestamp": "2025-08-28 04:16:46.405000+00:00",
+    "id": "1410478192061579328"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "im gonna assume it costs a lot to do that...",
+    "timestamp": "2025-08-27 14:31:21.736000+00:00",
+    "id": "1410270470544298045"
+  },
+  {
+    "author": "haakam21",
+    "content": "Nice just sent over your API key",
+    "timestamp": "2025-08-27 07:45:15.335000+00:00",
+    "id": "1410168270450856060"
+  },
+  {
+    "author": "melonaz3958",
+    "content": "Ah okay! Jumped on the developer tier now to try out!",
+    "timestamp": "2025-08-27 07:43:41.918000+00:00",
+    "id": "1410167878631555162"
+  },
+  {
+    "author": "haakam21",
+    "content": "Not as of right now, but we are working on making a free API tier",
+    "timestamp": "2025-08-27 07:41:35.919000+00:00",
+    "id": "1410167350153576521"
+  },
+  {
+    "author": "melonaz3958",
+    "content": "Sick service! Just a clarifying question, you can't use it via API in the free tier?",
+    "timestamp": "2025-08-27 07:40:54.362000+00:00",
+    "id": "1410167175851020390"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "Agreed, we have some customers running big numbers!",
+    "timestamp": "2025-08-27 04:56:16.245000+00:00",
+    "id": "1410125744025374841"
+  },
+  {
+    "author": "k.areem",
+    "content": "thanks",
+    "timestamp": "2025-08-27 04:55:07.755000+00:00",
+    "id": "1410125456757227561"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "80k in a week is crazy \ud83d\ude2d",
+    "timestamp": "2025-08-27 01:12:34.734000+00:00",
+    "id": "1410069450128101518"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "note the metrics endpoint / dashboard tends to break if you've sent more than ~80,000 emails in the past 7 days, working on a fix to make it more efficient!!",
+    "timestamp": "2025-08-27 01:01:49.552000+00:00",
+    "id": "1410066744038653952"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "<@444922076911108116>",
+    "timestamp": "2025-08-27 01:01:05.907000+00:00",
+    "id": "1410066560978260009"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "fixed",
+    "timestamp": "2025-08-27 01:01:01.354000+00:00",
+    "id": "1410066541881458718"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "better pray lmao",
+    "timestamp": "2025-08-27 00:06:02.549000+00:00",
+    "id": "1410052705690452130"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "the metrics tab is the only thing broken yea?",
+    "timestamp": "2025-08-27 00:05:34.157000+00:00",
+    "id": "1410052586605776906"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "scanned, will take a look in a sec",
+    "timestamp": "2025-08-27 00:04:52.080000+00:00",
+    "id": "1410052410121912331"
+  },
+  {
+    "author": "haakam21",
+    "content": "<@434087751525203978> \ud83d\udc40",
+    "timestamp": "2025-08-27 00:02:06.123000+00:00",
+    "id": "1410051714048069673"
+  },
+  {
+    "author": "k.areem",
+    "content": "is the dashbaord down, i cant access it anymore",
+    "timestamp": "2025-08-27 00:01:36.403000+00:00",
+    "id": "1410051589393354802"
+  },
+  {
+    "author": "dev.unfazed",
+    "content": "Ohh hii, I think we talked over mail. If that so thanks for remembering",
+    "timestamp": "2025-08-26 20:46:11.899000+00:00",
+    "id": "1410002413259329567"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "<@1088411799960948736> emailing you briefly",
+    "timestamp": "2025-08-26 20:33:26.433000+00:00",
+    "id": "1409999202662088804"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "Not yet, working on it as we speak!",
+    "timestamp": "2025-08-26 18:41:49.299000+00:00",
+    "id": "1409971112846295110"
+  },
+  {
+    "author": "dev.unfazed",
+    "content": "Is your dashboard now providing api keys?",
+    "timestamp": "2025-08-26 10:50:17.538000+00:00",
+    "id": "1409852448599707719"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "@everyone node sdk briefly had a stint where serialziation wasn't enabled, so params would only accept snake_case, but now serialization is back so the newest package allows idiomatic camelCase again! This is a breaking change if you upgrade so please keep in mind when upgrading to latest npm package!",
+    "timestamp": "2025-08-26 08:32:11.485000+00:00",
+    "id": "1409817694374592542"
+  },
+  {
+    "author": "haakam21",
+    "content": "Not yet but working on it. Requires some work to ensure all child resources are cleaned up",
+    "timestamp": "2025-08-26 00:16:40.468000+00:00",
+    "id": "1409692993451069511"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "no delete endpoint or smth",
+    "timestamp": "2025-08-26 00:16:32.210000+00:00",
+    "id": "1409692958814376049"
+  },
+  {
+    "author": "markding",
+    "content": "is there a way to delete an inbox?",
+    "timestamp": "2025-08-26 00:16:00.078000+00:00",
+    "id": "1409692824042999869"
+  },
+  {
+    "author": "haakam21",
+    "content": "Ah ok gotcha",
+    "timestamp": "2025-08-25 21:25:20.364000+00:00",
+    "id": "1409649875569737739"
+  },
+  {
+    "author": "kirkmarple",
+    "content": "The 'list inboxes' issue was likely unrelated to this receipt issue.",
+    "timestamp": "2025-08-25 21:25:07.450000+00:00",
+    "id": "1409649821404495944"
+  },
+  {
+    "author": "kirkmarple",
+    "content": "Looks like an issue where we were sending all inboxes to our DEV and PROD webhooks, since we can't differentiate w/o whitelisting all inboxes.\n\nThe HTTP 500 was correct, since that webhook was supposed to receive all inboxes. \n\nBut the DEV webhook had been locked to a single inbox for some reason; recreating that solved it",
+    "timestamp": "2025-08-25 21:24:41.514000+00:00",
+    "id": "1409649712621031605"
+  },
+  {
+    "author": "haakam21",
+    "content": "Webhook was attempted to be delivered by received 500. May be related to failure to list inboxes",
+    "timestamp": "2025-08-25 21:19:51.175000+00:00",
+    "id": "1409648494851002451"
+  },
+  {
+    "author": "kirkmarple",
+    "content": "I deleted it and recreated new webhook, and will try again.",
+    "timestamp": "2025-08-25 21:18:53.725000+00:00",
+    "id": "1409648253888368642"
+  },
+  {
+    "author": "kirkmarple",
+    "content": "Ah this is weird, now looking at the webhook it's locked to a single inbox; I had created it to handle all inboxes.",
+    "timestamp": "2025-08-25 21:18:05.693000+00:00",
+    "id": "1409648052427428003"
+  },
+  {
+    "author": "kirkmarple",
+    "content": "OK, I never got a webhook for this last email, but I can see it in your dashboard.",
+    "timestamp": "2025-08-25 21:16:56.147000+00:00",
+    "id": "1409647760730361938"
+  },
+  {
+    "author": "haakam21",
+    "content": "Yep, email sending recieving was not affected. Simply the getting the inboxes was giving errors",
+    "timestamp": "2025-08-25 21:16:07.878000+00:00",
+    "id": "1409647558275629297"
+  },
+  {
+    "author": "kirkmarple",
+    "content": "Perfect, now I see the inboxes; should I try sending a fresh email to that inbox?",
+    "timestamp": "2025-08-25 21:15:20.021000+00:00",
+    "id": "1409647357548695613"
+  },
+  {
+    "author": "haakam21",
+    "content": "Apologies, db migration caused unintended schema validation failure. Have relaxed the validation can you try again now?",
+    "timestamp": "2025-08-25 21:14:28.960000+00:00",
+    "id": "1409647143383334973"
+  },
+  {
+    "author": "kirkmarple",
+    "content": "Oh hold on, I'm looking at app.agentmail.to, but I see dashboard.agentmail.to mentioned above.\n\nThere I'm seeing HTTP 500 to \nhttps://dashboard.agentmail.to/api/list-inboxes.data?_routes=api%2Flist-inboxes",
+    "timestamp": "2025-08-25 21:13:13.808000+00:00",
+    "id": "1409646828173004922"
+  },
+  {
+    "author": "kirkmarple",
+    "content": "We're getting HTTP 500 trying to list inboxes in the dashboard, and not seeing any emails come through right now.\n\nAny known issues today?",
+    "timestamp": "2025-08-25 21:10:21.737000+00:00",
+    "id": "1409646106455048392"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "lsfg Michael Kim from Umich shouted me out",
+    "timestamp": "2025-08-25 19:31:24.239000+00:00",
+    "id": "1409621202783440972"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "i\u2019m applying to uc and stanford so perhaps mayhaps possibly?",
+    "timestamp": "2025-08-25 19:30:44.711000+00:00",
+    "id": "1409621036990730485"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "are you looking to do college here?",
+    "timestamp": "2025-08-25 19:30:17.053000+00:00",
+    "id": "1409620920984797276"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "inshallah you'll be in the bay one day",
+    "timestamp": "2025-08-25 19:30:12.933000+00:00",
+    "id": "1409620903704264734"
+  },
+  {
+    "author": "mikesteroonie",
+    "content": "shout out to you shreyas",
+    "timestamp": "2025-08-25 19:30:03.061000+00:00",
+    "id": "1409620862297968692"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "yeah ikr so tuff",
+    "timestamp": "2025-08-25 19:29:47.246000+00:00",
+    "id": "1409620795965182062"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "but that\u2019s great i saw pictures and some of  the projects it looked pretty good",
+    "timestamp": "2025-08-25 08:51:31.598000+00:00",
+    "id": "1409460172375457823"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "i\u2019m a high schooler in near philly \ud83d\ude2d",
+    "timestamp": "2025-08-25 08:50:54.321000+00:00",
+    "id": "1409460016024653925"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "hackathon was awesome! had a ton of people build with our api and got some great feedback - will sponsor more in the future. where are you based out to?",
+    "timestamp": "2025-08-25 05:11:48.837000+00:00",
+    "id": "1409404879868395621"
+  },
+  {
+    "author": "simplehacker1313",
+    "content": "thanks so much for the feedback here",
+    "timestamp": "2025-08-25 05:11:14.348000+00:00",
+    "id": "1409404735210917968"
+  },
+  {
+    "author": "st0llo",
+    "content": "The 3 webhooks I didn\u2019t get from\nAgentMail yesterday all came 5.5 hours ago, just fyi",
+    "timestamp": "2025-08-25 05:08:50.579000+00:00",
+    "id": "1409404132200157245"
+  },
+  {
+    "author": "haakam21",
+    "content": "Great feedback, thanks will add to the list",
+    "timestamp": "2025-08-24 20:13:00.327000+00:00",
+    "id": "1409269284269723700"
+  },
+  {
+    "author": "st0llo",
+    "content": "Second these, and would like to add 1 feature request:\n\n### **Webhook delivery logs**\nI had some issues w some webhooks not being triggered from AgentMail. Would be amazing to have an event log similar to Github/Stripe, where you can see if webhooks were fired from AgentMail: https://docs.stripe.com/webhooks#view-event-deliveries / https://docs.github.com/en/webhooks/testing-and-troubleshooting-webhooks/viewing-webhook-deliveries\n\nThis is both useful for development, but just as much for production.",
+    "timestamp": "2025-08-24 14:48:48.872000+00:00",
+    "id": "1409187698953945141"
+  },
+  {
+    "author": "st0llo",
+    "content": "Ah great, thanks \u270c\ufe0f",
+    "timestamp": "2025-08-24 14:42:41.728000+00:00",
+    "id": "1409186159040532500"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "",
+    "timestamp": "2025-08-24 12:43:15.356000+00:00",
+    "id": "1409156101097652336"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "i think they said they were working on a delete endpoint rn",
+    "timestamp": "2025-08-24 12:42:39.885000+00:00",
+    "id": "1409155952321626153"
+  },
+  {
+    "author": "st0llo",
+    "content": "Is there either a staging environment, or a way to delete e-mail addresses?\n\nI wanna test out my integration with AgentMail w/o burning addy's etc.",
+    "timestamp": "2025-08-24 11:56:37.943000+00:00",
+    "id": "1409144367897116703"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "i lowk wish i was in sf rn it sounds really fun",
+    "timestamp": "2025-08-24 01:59:11.754000+00:00",
+    "id": "1408994018083340319"
+  },
+  {
+    "author": "k.shreyas0",
+    "content": "is the yc hackathon going well?",
+    "timestamp": "2025-08-24 01:58:56.228000+00:00",
+    "id": "1408993952962445403"
+  },
+  {
+    "author": "k.areem",
+    "content": "myb i ended up fixing it but ty",
+    "timestamp": "2025-08-23 21:37:52.234000+00:00",
+    "id": "1408928253409755317"
+  },
+  {
+    "author": "haakam21",
+    "content": "I\u2019m in the cafe area can come help in person",
+    "timestamp": "2025-08-23 20:22:30.398000+00:00",
+    "id": "1408909287455068290"
+  }
+]
