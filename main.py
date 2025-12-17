@@ -439,15 +439,30 @@ async def on_member_join(member: discord.Member):
     """Send welcome DM to new members, fallback to channel."""
     logger.info(f"New member joined: {member.name}")
 
-    # Create concise welcome embed
+    # Create warm welcome embed
     embed = discord.Embed(
         title="Welcome to AgentMail! 👋",
-        description="Email infrastructure for AI agents. Let's get you started!",
+        description=f"Hey {member.mention}, **we're so glad you're here!** 🎉\n\n"
+                    "AgentMail makes it easy for AI agents to send, receive, and manage emails. "
+                    "Let's get you started!",
         color=DISCORD_BLURPLE
     )
-    embed.add_field(name="📧 Console", value="[console.agentmail.to](https://console.agentmail.to)", inline=False)
-    embed.add_field(name="📚 Docs", value="[docs.agentmail.to](https://docs.agentmail.to)", inline=False)
-    embed.set_footer(text="Questions? Head to #support!")
+    embed.add_field(
+        name="🚀 Try the Console and create your first inbox",
+        value="[Get started at console.agentmail.to](https://console.agentmail.to)",
+        inline=False
+    )
+    embed.add_field(
+        name="📚 Explore the docs",
+        value="[Check out our API docs](https://docs.agentmail.to)",
+        inline=False
+    )
+    embed.add_field(
+        name="💬 Need help?",
+        value=f"Head over to <#{SUPPORT_CHANNEL_ID}> and ask away!",
+        inline=False
+    )
+    embed.set_footer(text="We're excited to see what you build! ✨")
 
     welcome_channel = bot.get_channel(WELCOME_CHANNEL_ID)
 
@@ -456,11 +471,12 @@ async def on_member_join(member: discord.Member):
         await member.send(embed=embed)
         logger.info(f"✅ Sent welcome DM to {member.name}")
 
-        # Send brief channel notification (auto-deletes after 30s)
+        # Send warm channel notification (auto-deletes after 3 minutes)
         if welcome_channel:
             await welcome_channel.send(
-                f"👋 Welcome {member.mention}! Check your DMs for getting started.",
-                delete_after=30
+                f"👋 Welcome {member.mention}! We're excited to have you join the AgentMail community. "
+                f"Check your DMs for a quick guide to get started!",
+                delete_after=180
             )
 
     except discord.Forbidden:
