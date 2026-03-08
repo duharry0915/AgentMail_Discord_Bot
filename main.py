@@ -41,7 +41,7 @@ WELCOME_CHANNEL_ID = int(os.getenv('WELCOME_CHANNEL_ID', '0'))
 # Claude API Configuration
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 CLAUDE_MODEL = os.getenv('CLAUDE_MODEL', 'claude-opus-4-6')
-CLAUDE_MAX_TOKENS = int(os.getenv('CLAUDE_MAX_TOKENS', '1024'))
+CLAUDE_MAX_TOKENS = int(os.getenv('CLAUDE_MAX_TOKENS', '2048'))
 
 # Security Configuration
 RATE_LIMIT_REQUESTS = int(os.getenv('RATE_LIMIT_REQUESTS', '5'))  # Max requests per user
@@ -165,35 +165,6 @@ COMPILED_INJECTION_PATTERNS = [
     re.compile(pattern, re.IGNORECASE) for pattern in PROMPT_INJECTION_PATTERNS
 ]
 
-
-ANSWER_PATTERNS = [
-    r"^the\s+(error|issue|problem|bug|fix|solution|reason)\s+(is|happens|occurs|was)",
-    r"^(you|u)\s+(need|should|can|have|could|might)\s+to\b",
-    r"^(try|use|check|make\s+sure|ensure)\s+",
-    r"^(it'?s|that'?s|this\s+is)\s+because\b",
-    r"^(yeah|yep|yes|no|nah),?\s+(you|it|that|the)\b",
-    r"^have\s+you\s+tried\b",
-    r"^(i\s+think|i\s+believe)\s+(you|it|the|that)\b",
-    r"^(the|your)\s+\w+\s+(is|are)\s+(wrong|incorrect|missing|broken)",
-    r"^just\s+(use|do|run|add|set|change|update)\b",
-    r"^(fyi|btw|fwiw|for\s+what\s+it'?s\s+worth)\b",
-]
-
-COMPILED_ANSWER_PATTERNS = [
-    re.compile(pattern, re.IGNORECASE) for pattern in ANSWER_PATTERNS
-]
-
-
-def looks_like_answer(message: discord.Message) -> bool:
-    """Detect if a message looks like a user answering another user, not asking."""
-    if message.reference and message.reference.message_id:
-        return True
-
-    content = message.content.strip()
-    for pattern in COMPILED_ANSWER_PATTERNS:
-        if pattern.search(content):
-            return True
-    return False
 
 
 def check_rate_limit(user_id: str) -> tuple[bool, int]:
@@ -360,7 +331,6 @@ RULES:
 - Use Discord markdown: **bold**, `code`, ```code blocks```
 - If the user seems to be reporting a bug, acknowledge it and suggest they share error details
 - If the message is clearly not a support question (e.g., "thanks", casual chat), set confidence < 0.3
-- If the message looks like someone ANSWERING another user (e.g., "the error is because...", "try using...", "you need to..."), set confidence < 0.2 — do NOT respond to answers
 - Be friendly — this is a Discord community
 """
 
@@ -572,10 +542,6 @@ async def handle_support_question(message: discord.Message):
     knowledge_base = load_knowledge_base()
 
     if should_skip_message(message.content, knowledge_base):
-        return
-
-    if looks_like_answer(message):
-        logger.debug(f"Skipped answer-type message from {message.author.name}: {message.content[:60]}...")
         return
 
     last_reply = recent_replies.get(message.author.id, 0)
