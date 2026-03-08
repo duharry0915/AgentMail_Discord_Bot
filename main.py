@@ -41,7 +41,7 @@ WELCOME_CHANNEL_ID = int(os.getenv('WELCOME_CHANNEL_ID', '0'))
 # Claude API Configuration
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
 CLAUDE_MODEL = os.getenv('CLAUDE_MODEL', 'claude-opus-4-6')
-CLAUDE_MAX_TOKENS = int(os.getenv('CLAUDE_MAX_TOKENS', '4096'))
+CLAUDE_MAX_TOKENS = int(os.getenv('CLAUDE_MAX_TOKENS', '1024'))
 
 # Security Configuration
 RATE_LIMIT_REQUESTS = int(os.getenv('RATE_LIMIT_REQUESTS', '5'))  # Max requests per user
@@ -355,7 +355,7 @@ CONFIDENCE GUIDELINES:
 
 RULES:
 - Base your answer ONLY on the provided knowledge context. Never invent API endpoints, parameters, or features.
-- Keep answers concise but complete (2-8 sentences typical, longer for complex questions)
+- Keep answers concise: 2-6 sentences typical, max ~300 words. No long paragraphs.
 - Include code examples from the knowledge base when they help
 - Use Discord markdown: **bold**, `code`, ```code blocks```
 - If the user seems to be reporting a bug, acknowledge it and suggest they share error details
