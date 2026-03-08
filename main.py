@@ -10,6 +10,7 @@ import discord
 from discord.ext import commands
 from dotenv import load_dotenv
 import os
+import sys
 import json
 import logging
 import re
@@ -34,8 +35,7 @@ LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
 SUPPORT_CHANNEL_ID = int(os.getenv('SUPPORT_CHANNEL_ID', '0'))
 TEAM_USERNAMES = os.getenv('TEAM_USERNAMES', '').split(',')
 RESPONSE_DELAY_SECONDS = int(os.getenv('RESPONSE_DELAY_SECONDS', '60'))
-CONFIDENCE_THRESHOLD = float(os.getenv('CONFIDENCE_THRESHOLD', '0.5'))
-PARTIAL_HINT_THRESHOLD = float(os.getenv('PARTIAL_HINT_THRESHOLD', '0.3'))
+CONFIDENCE_THRESHOLD = float(os.getenv('CONFIDENCE_THRESHOLD', '0.4'))
 WELCOME_CHANNEL_ID = int(os.getenv('WELCOME_CHANNEL_ID', '0'))
 
 # Claude API Configuration
@@ -57,7 +57,7 @@ if ANTHROPIC_API_KEY:
     except Exception as e:
         logging.warning(f"Failed to initialize Anthropic client: {e}")
 
-# Rate limiting data structure: {user_id: [(timestamp, ...], ...}
+# Rate limiting: {user_id: [timestamp, ...]}
 user_request_times = defaultdict(list)
 
 # Colors
@@ -70,6 +70,10 @@ KNOWLEDGE_BASE_FILE = Path(__file__).parent / 'knowledge_base.json'
 
 # Track bot responses for feedback (message_id -> original_question_id)
 pending_feedback = {}
+
+# Per-user reply cooldown: {user_id: last_reply_timestamp}
+recent_replies: dict[int, float] = {}
+REPLY_COOLDOWN_SECONDS = 600
 
 
 # Logging setup
@@ -86,7 +90,7 @@ def setup_logging():
     file_handler.setLevel(log_level)
     file_handler.setFormatter(formatter)
 
-    console_handler = logging.StreamHandler()
+    console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(log_level)
     console_handler.setFormatter(formatter)
 
@@ -162,6 +166,36 @@ COMPILED_INJECTION_PATTERNS = [
 ]
 
 
+ANSWER_PATTERNS = [
+    r"^the\s+(error|issue|problem|bug|fix|solution|reason)\s+(is|happens|occurs|was)",
+    r"^(you|u)\s+(need|should|can|have|could|might)\s+to\b",
+    r"^(try|use|check|make\s+sure|ensure)\s+",
+    r"^(it'?s|that'?s|this\s+is)\s+because\b",
+    r"^(yeah|yep|yes|no|nah),?\s+(you|it|that|the)\b",
+    r"^have\s+you\s+tried\b",
+    r"^(i\s+think|i\s+believe)\s+(you|it|the|that)\b",
+    r"^(the|your)\s+\w+\s+(is|are)\s+(wrong|incorrect|missing|broken)",
+    r"^just\s+(use|do|run|add|set|change|update)\b",
+    r"^(fyi|btw|fwiw|for\s+what\s+it'?s\s+worth)\b",
+]
+
+COMPILED_ANSWER_PATTERNS = [
+    re.compile(pattern, re.IGNORECASE) for pattern in ANSWER_PATTERNS
+]
+
+
+def looks_like_answer(message: discord.Message) -> bool:
+    """Detect if a message looks like a user answering another user, not asking."""
+    if message.reference and message.reference.message_id:
+        return True
+
+    content = message.content.strip()
+    for pattern in COMPILED_ANSWER_PATTERNS:
+        if pattern.search(content):
+            return True
+    return False
+
+
 def check_rate_limit(user_id: str) -> tuple[bool, int]:
     """
     Check if a user has exceeded the rate limit.
@@ -228,13 +262,11 @@ def sanitize_user_input(message: str, max_length: int = None) -> str:
     if len(message) > max_length:
         message = message[:max_length] + "..."
     
-    # Remove excessive whitespace
     message = ' '.join(message.split())
-    
-    # Remove control characters (except newlines)
+
     message = ''.join(
-        char for char in message 
-        if char == '\n' or (ord(char) >= 32 and ord(char) < 127) or ord(char) > 127
+        char for char in message
+        if (ord(char) >= 32 and ord(char) < 127) or ord(char) > 127
     )
     
     return message
@@ -318,9 +350,8 @@ RESPONSE FORMAT (JSON only, no markdown code fences):
 }
 
 CONFIDENCE GUIDELINES:
-- 0.7-1.0: The context directly answers the question
-- 0.4-0.7: The context is partially relevant; answer what you can
-- 0.0-0.4: The question is unrelated to AgentMail or truly unanswerable
+- 0.4-1.0: You can answer the question from the context (higher = more certain)
+- 0.0-0.4: The question is unrelated to AgentMail, unanswerable, or not a question at all
 
 RULES:
 - Base your answer ONLY on the provided knowledge context. Never invent API endpoints, parameters, or features.
@@ -328,7 +359,8 @@ RULES:
 - Include code examples from the knowledge base when they help
 - Use Discord markdown: **bold**, `code`, ```code blocks```
 - If the user seems to be reporting a bug, acknowledge it and suggest they share error details
-- If the question is clearly not a support question (e.g., "thanks", casual chat), set confidence < 0.3
+- If the message is clearly not a support question (e.g., "thanks", casual chat), set confidence < 0.3
+- If the message looks like someone ANSWERING another user (e.g., "the error is because...", "try using...", "you need to..."), set confidence < 0.2 — do NOT respond to answers
 - Be friendly — this is a Discord community
 """
 
@@ -393,16 +425,16 @@ async def claude_generate_answer(user_message: str, user_id: str = None, user_na
         return (None, 0.0)
 
     try:
-        # Retrieve context: Hyperspell (primary) or local KB (fallback)
         context = None
+        context_source = "local"
         if os.getenv("HYPERSPELL_API_KEY"):
             try:
                 from hyperspell_retriever import get_context_from_hyperspell
                 context = await get_context_from_hyperspell(sanitized_message)
                 if context:
-                    logger.debug("Using Hyperspell for context retrieval")
+                    context_source = "hyperspell"
             except Exception as e:
-                logger.debug(f"Hyperspell retrieval skipped: {e}")
+                logger.warning(f"Hyperspell retrieval failed, falling back to local: {e}")
 
         if not context:
             kb = get_knowledge_base()
@@ -424,7 +456,7 @@ Generate a helpful, accurate answer based on the knowledge above. Return JSON on
 
         input_tokens = response.usage.input_tokens
         output_tokens = response.usage.output_tokens
-        logger.info(f"Claude API usage - Input: {input_tokens}, Output: {output_tokens}")
+        logger.info(f"Claude API - context: {context_source}, tokens in/out: {input_tokens}/{output_tokens}")
 
         result = _extract_json_from_response(response.content[0].text)
         confidence = float(result.get('confidence', 0.0))
@@ -432,11 +464,11 @@ Generate a helpful, accurate answer based on the knowledge above. Return JSON on
 
         logger.debug(f"Claude reasoning: {result.get('reasoning', '')}")
 
-        if confidence >= PARTIAL_HINT_THRESHOLD:
-            logger.info(f"Claude generated answer (confidence: {confidence:.2f}) for: {sanitized_message[:50]}...")
+        if confidence >= CONFIDENCE_THRESHOLD:
+            logger.info(f"Generated answer (confidence={confidence:.2f}) for: {sanitized_message[:60]}")
             return (result, confidence)
 
-        logger.info(f"Claude confidence too low ({confidence:.2f}), skipping")
+        logger.info(f"Confidence too low ({confidence:.2f}), skipping: {sanitized_message[:60]}")
         return (None, 0.0)
 
     except json.JSONDecodeError as e:
@@ -479,16 +511,15 @@ async def check_team_responded(channel: discord.TextChannel, after_message: disc
     return False
 
 
-async def send_generated_response(message: discord.Message, answer_dict: dict, confidence: float, is_partial: bool = False):
+async def send_generated_response(message: discord.Message, answer_dict: dict, confidence: float):
     """Send a generated answer as a Discord embed."""
     answer_text = answer_dict.get('answer', '')
 
-    # Discord embed description limit is 4096 chars
     if len(answer_text) > 4000:
         answer_text = answer_text[:4000] + "..."
 
     embed = discord.Embed(
-        title="💡 Quick Answer" if not is_partial else "💡 This might help",
+        title="💡 Quick Answer",
         description=answer_text,
         color=DISCORD_BLURPLE
     )
@@ -520,16 +551,14 @@ async def send_generated_response(message: discord.Message, answer_dict: dict, c
             'user_id': message.author.id
         }
 
-        action = 'auto_responded' if not is_partial else 'partial_hint'
-        logger.info(f"Auto-responded to {message.author.name} (confidence: {confidence:.2f}, partial: {is_partial})")
+        logger.info(f"Replied to {message.author.name} (confidence={confidence:.2f})")
 
         log_support_event({
             'user': message.author.name,
             'user_id': str(message.author.id),
             'question': message.content[:200],
-            'matched_faq_id': 'generated',
             'confidence': round(confidence, 2),
-            'action': action,
+            'action': 'auto_responded',
             'user_feedback': None,
             'escalated': False
         })
@@ -543,7 +572,14 @@ async def handle_support_question(message: discord.Message):
     knowledge_base = load_knowledge_base()
 
     if should_skip_message(message.content, knowledge_base):
-        logger.debug(f"Skipping message (contains skip pattern): {message.content[:50]}...")
+        return
+
+    if looks_like_answer(message):
+        logger.debug(f"Skipped answer-type message from {message.author.name}: {message.content[:60]}...")
+        return
+
+    last_reply = recent_replies.get(message.author.id, 0)
+    if time.time() - last_reply < REPLY_COOLDOWN_SECONDS:
         return
 
     # Try Claude generative answer first
@@ -555,16 +591,12 @@ async def handle_support_question(message: discord.Message):
         )
 
         if answer_dict and confidence >= CONFIDENCE_THRESHOLD:
-            logger.info(f"Waiting {RESPONSE_DELAY_SECONDS}s before responding...")
             await asyncio.sleep(RESPONSE_DELAY_SECONDS)
             if await check_team_responded(message.channel, message):
                 logger.info("Team already responded, skipping bot reply")
                 return
             await send_generated_response(message, answer_dict, confidence)
-            return
-
-        if answer_dict and confidence >= PARTIAL_HINT_THRESHOLD:
-            await send_generated_response(message, answer_dict, confidence, is_partial=True)
+            recent_replies[message.author.id] = time.time()
             return
 
     # Fallback to keyword FAQ matching when Claude is unavailable
@@ -579,13 +611,7 @@ async def handle_support_question(message: discord.Message):
             'reasoning': 'keyword fallback'
         }
         await send_generated_response(message, fallback_answer, confidence)
-    elif faq and confidence >= PARTIAL_HINT_THRESHOLD:
-        fallback_answer = {
-            'answer': faq['answer'],
-            'docs_link': faq.get('docs_link'),
-            'reasoning': 'keyword fallback'
-        }
-        await send_generated_response(message, fallback_answer, confidence, is_partial=True)
+        recent_replies[message.author.id] = time.time()
 
 
 async def escalate_to_team(original_message: discord.Message):
@@ -612,9 +638,7 @@ async def test_faq(ctx, *, question: str):
             user_name=ctx.author.name
         )
         if answer_dict:
-            action = "auto_respond" if confidence >= CONFIDENCE_THRESHOLD else \
-                     "partial_hint" if confidence >= PARTIAL_HINT_THRESHOLD else "ignore"
-            logger.info(f"[TEST][Claude] Confidence: {confidence:.2f} | Action: {action}")
+            action = "respond" if confidence >= CONFIDENCE_THRESHOLD else "skip"
             await ctx.send(f"**[TEST]** Confidence: {confidence:.2f} | Action: {action}\n\n{answer_dict.get('answer', 'N/A')[:1500]}")
         else:
             logger.info(f"[TEST] No answer generated for: {question}")
@@ -632,32 +656,17 @@ async def test_faq(ctx, *, question: str):
 @bot.event
 async def on_ready():
     """Called when the bot is ready."""
-    logger.info(f"Bot is ready! Logged in as {bot.user}")
-    logger.info(f"Support channel ID: {SUPPORT_CHANNEL_ID}")
-    logger.info(f"Welcome channel ID: {WELCOME_CHANNEL_ID}")
-    logger.info(f"Response delay: {RESPONSE_DELAY_SECONDS} seconds")
-    logger.info(f"Confidence threshold: {CONFIDENCE_THRESHOLD}")
-    logger.info(f"Partial hint threshold: {PARTIAL_HINT_THRESHOLD}")
-    
-    # Claude API status
-    if anthropic_client:
-        logger.info(f"Claude API: ENABLED (model: {CLAUDE_MODEL}, max_tokens: {CLAUDE_MAX_TOKENS})")
-        logger.info("Answer mode: GENERATIVE (answers from full knowledge base)")
-        kb = get_knowledge_base()
-        logger.info(f"Knowledge base loaded: {len(kb.faqs)} FAQs, {len(kb.docs)} docs, {len(kb.codebase)} codebase files")
-    else:
-        logger.warning("Claude API: DISABLED (ANTHROPIC_API_KEY not set) - using keyword FAQ fallback only")
+    logger.info(f"Bot ready: {bot.user} | support={SUPPORT_CHANNEL_ID} welcome={WELCOME_CHANNEL_ID}")
+    logger.info(f"Thresholds: confidence={CONFIDENCE_THRESHOLD} delay={RESPONSE_DELAY_SECONDS}s")
 
-    # Hyperspell status
-    if os.getenv("HYPERSPELL_API_KEY"):
-        logger.info("Hyperspell: ENABLED (semantic retrieval for context)")
+    if anthropic_client:
+        kb = get_knowledge_base()
+        logger.info(f"Claude: {CLAUDE_MODEL} max_tokens={CLAUDE_MAX_TOKENS} | KB: {len(kb.faqs)} FAQs, {len(kb.docs)} docs, {len(kb.codebase)} codebase")
     else:
-        logger.info("Hyperspell: DISABLED (using local knowledge files only)")
-    
-    # Security settings
-    logger.info(f"Security: Rate limit {RATE_LIMIT_REQUESTS} requests per {RATE_LIMIT_WINDOW}s per user")
-    logger.info(f"Security: Max message length {MAX_MESSAGE_LENGTH} chars")
-    logger.info(f"Security: {len(PROMPT_INJECTION_PATTERNS)} injection patterns monitored")
+        logger.warning("Claude: DISABLED (no ANTHROPIC_API_KEY) — keyword fallback only")
+
+    hs = "ENABLED" if os.getenv("HYPERSPELL_API_KEY") else "DISABLED"
+    logger.info(f"Hyperspell: {hs} | Rate limit: {RATE_LIMIT_REQUESTS}/{RATE_LIMIT_WINDOW}s")
 
 
 @bot.event
@@ -788,11 +797,10 @@ async def on_member_join(member: discord.Member):
             )
 
     except discord.Forbidden:
-        # DM failed - fallback to channel
-        logger.warning(f"⚠️ Couldn't DM {member.name}, sent to channel")
+        logger.warning(f"Couldn't DM {member.name}, fallback to channel")
         if welcome_channel:
-            embed.set_footer(text="🤖 Enable server DMs for detailed welcome messages!")
-            await welcome_channel.send(f"Welcome {member.mention}!", embed=embed)
+            embed.set_footer(text="Enable server DMs for a detailed welcome message!")
+            await welcome_channel.send(f"Welcome {member.mention}!", embed=embed, delete_after=300)
 
     except Exception as e:
         logger.error(f"❌ Failed to send welcome message to {member.name}: {e}")
@@ -812,8 +820,6 @@ def main():
     if WELCOME_CHANNEL_ID == 0:
         logger.warning("WELCOME_CHANNEL_ID not set - Welcome messages will not work")
 
-    logger.info(f"Support bot enabled for channel {SUPPORT_CHANNEL_ID}")
-    logger.info(f"Team usernames: {TEAM_USERNAMES}")
     logger.info("Starting AgentMail Support Bot...")
     bot.run(DISCORD_BOT_TOKEN)
 

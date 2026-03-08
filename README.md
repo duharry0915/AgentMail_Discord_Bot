@@ -39,11 +39,9 @@ make run               # start the bot
 2. Security checks run (rate limit, injection detection, sanitization)
 3. Hyperspell retrieves relevant context from the knowledge vault
 4. Claude generates an answer grounded in the retrieved context
-5. Confidence-based response:
-   - **>= 0.5**: Wait for team response window, then send full answer
-   - **0.3 – 0.5**: Send partial hint immediately
-   - **< 0.3**: Skip (not a support question or unanswerable)
+5. If confidence >= 0.4, waits for team response window, then sends answer
 6. User reacts thumbs-up/down; thumbs-down escalates to team
+7. 10-minute per-user cooldown prevents duplicate replies
 
 ## Environment Variables
 

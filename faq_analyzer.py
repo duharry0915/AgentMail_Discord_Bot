@@ -22,13 +22,17 @@ SKIP_PATTERNS = ['dm you', 'dmed you', 'will look', 'looking into', 'looking now
 
 
 def load_support_history() -> list:
-    """Load support history from JSON file."""
+    """Load support messages from JSON file."""
     if not SUPPORT_HISTORY_FILE.exists():
         print(f"Error: {SUPPORT_HISTORY_FILE} not found")
         return []
 
     with open(SUPPORT_HISTORY_FILE, 'r') as f:
-        return json.load(f)
+        data = json.load(f)
+
+    if isinstance(data, dict):
+        return data.get('messages', [])
+    return data
 
 
 def is_team_member(author: str) -> bool:

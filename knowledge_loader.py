@@ -11,7 +11,6 @@ Loads multi-source knowledge base for Claude API integration:
 import json
 import logging
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +41,6 @@ class KnowledgeBase:
         
         self.base_path = base_path
         self.faqs = []
-        self.faqs_dict = {}  # For quick lookup by ID
         self.support_insights = ""
         self.docs = {}
         self.codebase = {}
@@ -71,7 +69,6 @@ class KnowledgeBase:
                     with open(faq_path, 'r') as f:
                         data = json.load(f)
                         self.faqs = data.get('faqs', [])
-                        self.faqs_dict = {faq['id']: faq for faq in self.faqs}
                         logger.info(f"Loaded {len(self.faqs)} FAQs from {faq_path}")
                     return
                 except (json.JSONDecodeError, IOError) as e:
@@ -117,30 +114,6 @@ class KnowledgeBase:
                 except IOError as e:
                     logger.warning(f"Failed to load codebase {file_path.name}: {e}")
             logger.info(f"Loaded {len(self.codebase)} codebase analysis files")
-    
-    def get_faq_by_id(self, faq_id: str) -> Optional[dict]:
-        """Get a specific FAQ by its ID."""
-        if not self._loaded:
-            self.load_all()
-        return self.faqs_dict.get(faq_id)
-    
-    def get_faqs_summary(self) -> str:
-        """
-        Get a concise summary of all FAQs for Claude context.
-        
-        Returns a formatted string with FAQ ID, category, and question patterns.
-        """
-        if not self._loaded:
-            self.load_all()
-        
-        lines = ["## Available FAQs\n"]
-        for faq in self.faqs:
-            lines.append(f"### {faq['id']} ({faq.get('category', 'General')})")
-            lines.append(f"Keywords: {', '.join(faq.get('keywords', []))}")
-            lines.append(f"Answer preview: {faq['answer'][:200]}...")
-            lines.append("")
-        
-        return "\n".join(lines)
     
     def get_context_for_query(self, query: str, max_tokens: int = 4000) -> str:
         """
@@ -299,8 +272,6 @@ class KnowledgeBase:
         if any(term in query for term in console_terms):
             if 'console-ui' in self.codebase:
                 parts.append(self.codebase['console-ui'][:2000])
-            elif 'apps-analysis' in self.codebase:
-                parts.append(self.codebase['apps-analysis'][:1500])
         
         return '\n\n'.join(parts)
 
