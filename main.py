@@ -1,8 +1,9 @@
 """
 AgentMail Discord Support Bot
 
-Auto-responds to common questions in #support channel based on FAQ patterns.
-Uses Claude API for intelligent semantic matching with keyword fallback.
+Auto-responds to support questions using Claude Opus 4.6 + Hyperspell RAG.
+Generates answers from the full knowledge base (docs, support insights, codebase analysis).
+Falls back to keyword FAQ matching when Claude is unavailable.
 """
 
 import discord
@@ -39,8 +40,8 @@ WELCOME_CHANNEL_ID = int(os.getenv('WELCOME_CHANNEL_ID', '0'))
 
 # Claude API Configuration
 ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
-CLAUDE_MODEL = os.getenv('CLAUDE_MODEL', 'claude-sonnet-4-20250514')
-CLAUDE_MAX_TOKENS = int(os.getenv('CLAUDE_MAX_TOKENS', '500'))
+CLAUDE_MODEL = os.getenv('CLAUDE_MODEL', 'claude-opus-4-6')
+CLAUDE_MAX_TOKENS = int(os.getenv('CLAUDE_MAX_TOKENS', '4096'))
 
 # Security Configuration
 RATE_LIMIT_REQUESTS = int(os.getenv('RATE_LIMIT_REQUESTS', '5'))  # Max requests per user
@@ -149,8 +150,6 @@ PROMPT_INJECTION_PATTERNS = [
     r"pretend\s+you\s+are",
     r"act\s+as\s+if\s+you",
     r"override\s+(your\s+)?instructions?",
-    r"instead\s+of\s+matching",
-    r"do\s+not\s+match\s+any\s+faq",
     r"return\s+null\s+for\s+everything",
     r"always\s+return\s+confidence\s+0",
     r"jailbreak",
@@ -241,33 +240,6 @@ def sanitize_user_input(message: str, max_length: int = None) -> str:
     return message
 
 
-def validate_faq_response(faq_id: str, confidence: float, knowledge_base) -> bool:
-    """
-    Validate that Claude's response contains valid FAQ data.
-    
-    Args:
-        faq_id: The FAQ ID returned by Claude
-        confidence: The confidence score returned by Claude
-        knowledge_base: The knowledge base instance
-        
-    Returns:
-        True if response is valid, False otherwise
-    """
-    # Confidence must be in valid range
-    if not (0.0 <= confidence <= 1.0):
-        return False
-    
-    # If faq_id is provided, it must exist in knowledge base
-    if faq_id is not None:
-        if not isinstance(faq_id, str):
-            return False
-        faq = knowledge_base.get_faq_by_id(faq_id)
-        if faq is None:
-            return False
-    
-    return True
-
-
 # Knowledge base functions
 def load_knowledge_base() -> dict:
     """Load the FAQ knowledge base."""
@@ -320,219 +292,161 @@ def keyword_find_best_faq_match(message: str, knowledge_base: dict) -> tuple:
     return (best_faq, best_score) if best_faq else (None, 0.0)
 
 
-# Claude-powered FAQ Matching System Prompt
-CLAUDE_FAQ_SYSTEM_PROMPT = """You are an FAQ matching assistant for AgentMail, an email API platform for AI agents.
+# Claude generative answer system prompt
+CLAUDE_SUPPORT_SYSTEM_PROMPT = """You are AgentMail's support assistant on Discord. You answer user questions based on the provided knowledge base context.
 
-Your task is to analyze user questions and match them to the most relevant FAQ entry from our database.
+AgentMail is an email API platform for AI agents. You help with:
+- API usage (inboxes, messages, threads, webhooks, domains, pods, lists, drafts, attachments)
+- SDK usage (Python: pip install agentmail, TypeScript: npm install agentmail)
+- MCP integration (agentmail-mcp)
+- Console UI (console.agentmail.to)
+- Pricing, billing, and account issues
+- Email deliverability and best practices
+- WebSockets for real-time events
 
 INSTRUCTIONS:
 1. Read the user's question carefully
-2. Review the FAQ database provided
-3. Find the single best matching FAQ (or determine no good match exists)
-4. Return a JSON response with your analysis
+2. Use the retrieved knowledge context to formulate an accurate answer
+3. Return a JSON response (no markdown wrapping)
 
-RESPONSE FORMAT (JSON only, no markdown):
+RESPONSE FORMAT (JSON only, no markdown code fences):
 {
-    "faq_id": "the_faq_id_or_null",
     "confidence": 0.85,
-    "reasoning": "Brief explanation of why this FAQ matches (or why no match)"
+    "answer": "Your helpful answer here. Use Discord-friendly markdown.",
+    "docs_link": "https://docs.agentmail.to/relevant-page or null",
+    "reasoning": "Brief internal reasoning (not shown to user)"
 }
 
 CONFIDENCE GUIDELINES:
-- 0.8-1.0: Exact match or very close semantic match
-- 0.5-0.8: Strong semantic match, the FAQ answers the question
-- 0.3-0.5: Partial match, FAQ is related but may not fully answer
-- 0.0-0.3: No relevant match, question is unrelated to any FAQ
+- 0.7-1.0: The context directly answers the question
+- 0.4-0.7: The context is partially relevant; answer what you can
+- 0.0-0.4: The question is unrelated to AgentMail or truly unanswerable
 
-IMPORTANT:
-- Only return valid JSON, no other text
-- faq_id must be null if confidence < 0.3
-- Be conservative - only high confidence if FAQ directly answers the question
-- Consider semantic meaning, not just keyword overlap
+RULES:
+- Base your answer ONLY on the provided knowledge context. Never invent API endpoints, parameters, or features.
+- Keep answers concise but complete (2-8 sentences typical, longer for complex questions)
+- Include code examples from the knowledge base when they help
+- Use Discord markdown: **bold**, `code`, ```code blocks```
+- If the user seems to be reporting a bug, acknowledge it and suggest they share error details
+- If the question is clearly not a support question (e.g., "thanks", casual chat), set confidence < 0.3
+- Be friendly — this is a Discord community
 """
 
 
-async def claude_match_faq(user_message: str, user_id: str = None, user_name: str = None) -> tuple:
+def _extract_json_from_response(response_text: str) -> dict:
+    """Extract JSON from Claude response, handling markdown code fences."""
+    text = response_text.strip()
+    if text.startswith('```'):
+        lines = text.split('\n')
+        json_lines = []
+        in_json = False
+        for line in lines:
+            if line.startswith('```') and not in_json:
+                in_json = True
+                continue
+            elif line.startswith('```') and in_json:
+                break
+            elif in_json:
+                json_lines.append(line)
+        text = '\n'.join(json_lines)
+    return json.loads(text)
+
+
+async def claude_generate_answer(user_message: str, user_id: str = None, user_name: str = None) -> tuple:
     """
-    Use Claude API to intelligently match user question to FAQ.
+    Use Claude Opus 4.6 + Hyperspell to generate an answer from the knowledge base.
     
-    Includes security measures:
-    - Rate limiting per user
-    - Prompt injection detection
-    - Input sanitization
-    - Output validation
-    
-    Args:
-        user_message: The user's support question
-        user_id: Discord user ID (for rate limiting)
-        user_name: Discord username (for logging)
-        
     Returns:
-        tuple: (matched_faq_dict, confidence_score)
-        Returns (None, 0.0) if no good match, security block, or API failure
+        tuple: (answer_dict, confidence)
+            answer_dict: {"answer": str, "docs_link": str|None, "reasoning": str}
+            confidence: float 0.0-1.0
+        Returns (None, 0.0) on failure or security block.
     """
     if not anthropic_client:
-        logger.warning("Claude client not initialized, using keyword fallback")
-        knowledge_base = load_knowledge_base()
-        return keyword_find_best_faq_match(user_message, knowledge_base)
-    
-    # Default values for logging
+        logger.warning("Claude client not initialized")
+        return (None, 0.0)
+
     user_id = user_id or "unknown"
     user_name = user_name or "unknown"
-    
+
     # ========== SECURITY CHECK 1: Rate Limiting ==========
     is_allowed, wait_time = check_rate_limit(user_id)
     if not is_allowed:
         log_security_event(
-            "RATE_LIMIT_EXCEEDED",
-            user_id,
-            user_name,
-            f"User exceeded rate limit ({RATE_LIMIT_REQUESTS} requests per {RATE_LIMIT_WINDOW}s). Wait: {wait_time}s"
+            "RATE_LIMIT_EXCEEDED", user_id, user_name,
+            f"Exceeded {RATE_LIMIT_REQUESTS} requests per {RATE_LIMIT_WINDOW}s. Wait: {wait_time}s"
         )
-        # Fall back to keyword matching (cheaper) when rate limited
-        knowledge_base = load_knowledge_base()
-        return keyword_find_best_faq_match(user_message, knowledge_base)
-    
+        return (None, 0.0)
+
     # ========== SECURITY CHECK 2: Prompt Injection Detection ==========
     is_suspicious, matched_pattern = detect_prompt_injection(user_message)
     if is_suspicious:
         log_security_event(
-            "PROMPT_INJECTION_ATTEMPT",
-            user_id,
-            user_name,
-            f"Detected pattern: '{matched_pattern}' in message: {user_message[:100]}..."
+            "PROMPT_INJECTION_ATTEMPT", user_id, user_name,
+            f"Pattern: '{matched_pattern}' in: {user_message[:100]}..."
         )
-        # Fall back to keyword matching (safer) for suspicious messages
-        knowledge_base = load_knowledge_base()
-        return keyword_find_best_faq_match(user_message, knowledge_base)
-    
+        return (None, 0.0)
+
     # ========== SECURITY CHECK 3: Input Sanitization ==========
     sanitized_message = sanitize_user_input(user_message)
     if len(sanitized_message) < 5:
-        # Message too short after sanitization
         return (None, 0.0)
-    
+
     try:
-        # Get knowledge base and build context
-        kb = get_knowledge_base()
-        context = kb.get_context_for_query(sanitized_message, max_tokens=4000)
-        
-        # Build the user prompt with sanitized input
+        # Retrieve context: Hyperspell (primary) or local KB (fallback)
+        context = None
+        if os.getenv("HYPERSPELL_API_KEY"):
+            try:
+                from hyperspell_retriever import get_context_from_hyperspell
+                context = await get_context_from_hyperspell(sanitized_message)
+                if context:
+                    logger.debug("Using Hyperspell for context retrieval")
+            except Exception as e:
+                logger.debug(f"Hyperspell retrieval skipped: {e}")
+
+        if not context:
+            kb = get_knowledge_base()
+            context = kb.get_context_for_query(sanitized_message, max_tokens=8000)
+
         user_prompt = f"""User Question: {sanitized_message}
 
-Knowledge Base Context:
+Retrieved Knowledge:
 {context}
 
-Analyze the question and return the best matching FAQ as JSON."""
+Generate a helpful, accurate answer based on the knowledge above. Return JSON only."""
 
-        # Call Claude API
-        logger.debug(f"Calling Claude API for message: {sanitized_message[:50]}...")
-        
         response = await anthropic_client.messages.create(
             model=CLAUDE_MODEL,
             max_tokens=CLAUDE_MAX_TOKENS,
-            system=CLAUDE_FAQ_SYSTEM_PROMPT,
-            messages=[
-                {"role": "user", "content": user_prompt}
-            ]
+            system=CLAUDE_SUPPORT_SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": user_prompt}]
         )
-        
-        # Log token usage
+
         input_tokens = response.usage.input_tokens
         output_tokens = response.usage.output_tokens
         logger.info(f"Claude API usage - Input: {input_tokens}, Output: {output_tokens}")
-        
-        # Parse response
-        response_text = response.content[0].text.strip()
-        
-        # Handle markdown-wrapped JSON (Claude sometimes wraps in ```json```)
-        if response_text.startswith('```'):
-            # Extract JSON from markdown code block
-            lines = response_text.split('\n')
-            json_lines = []
-            in_json = False
-            for line in lines:
-                if line.startswith('```') and not in_json:
-                    in_json = True
-                    continue
-                elif line.startswith('```') and in_json:
-                    break
-                elif in_json:
-                    json_lines.append(line)
-            response_text = '\n'.join(json_lines)
-        
-        result = json.loads(response_text)
-        
-        faq_id = result.get('faq_id')
+
+        result = _extract_json_from_response(response.content[0].text)
         confidence = float(result.get('confidence', 0.0))
-        reasoning = result.get('reasoning', '')
-        
-        logger.debug(f"Claude reasoning: {reasoning}")
-        
-        # ========== SECURITY CHECK 4: Output Validation ==========
-        if not validate_faq_response(faq_id, confidence, kb):
-            log_security_event(
-                "INVALID_CLAUDE_RESPONSE",
-                user_id,
-                user_name,
-                f"Invalid response - faq_id: {faq_id}, confidence: {confidence}"
-            )
-            # Fall back to keyword matching for invalid responses
-            knowledge_base = load_knowledge_base()
-            return keyword_find_best_faq_match(user_message, knowledge_base)
-        
-        if faq_id and confidence >= 0.3:
-            # Look up the FAQ by ID
-            faq = kb.get_faq_by_id(faq_id)
-            if faq:
-                logger.info(f"Claude matched FAQ: {faq_id}, confidence: {confidence:.2f}")
-                return (faq, confidence)
-            else:
-                logger.warning(f"Claude returned unknown FAQ ID: {faq_id}")
-        
-        logger.info(f"Claude found no good match, confidence: {confidence:.2f}")
+        confidence = max(0.0, min(1.0, confidence))
+
+        logger.debug(f"Claude reasoning: {result.get('reasoning', '')}")
+
+        if confidence >= PARTIAL_HINT_THRESHOLD:
+            logger.info(f"Claude generated answer (confidence: {confidence:.2f}) for: {sanitized_message[:50]}...")
+            return (result, confidence)
+
+        logger.info(f"Claude confidence too low ({confidence:.2f}), skipping")
         return (None, 0.0)
-        
+
     except json.JSONDecodeError as e:
         logger.error(f"Failed to parse Claude response as JSON: {e}")
-        logger.debug(f"Raw response: {response_text if 'response_text' in dir() else 'N/A'}")
     except anthropic.APIError as e:
         logger.error(f"Claude API error: {e}")
     except Exception as e:
-        logger.error(f"Unexpected error in claude_match_faq: {e}")
-    
-    # Fallback to keyword matching on any error
-    logger.warning("Claude API failed, using keyword fallback")
-    knowledge_base = load_knowledge_base()
-    return keyword_find_best_faq_match(user_message, knowledge_base)
+        logger.error(f"Unexpected error in claude_generate_answer: {e}")
 
-
-async def find_best_faq_match(message: str, knowledge_base: dict, user_id: str = None, user_name: str = None) -> tuple:
-    """Find the best matching FAQ for a message using Claude API with keyword fallback.
-
-    This is the main matching function that:
-    1. Applies security checks (rate limiting, injection detection)
-    2. Tries Claude API for semantic matching
-    3. Falls back to keyword matching if Claude fails or security blocks
-    
-    Args:
-        message: User's question
-        knowledge_base: The FAQ knowledge base dict
-        user_id: Discord user ID (for rate limiting)
-        user_name: Discord username (for logging)
-    
-    Returns: (faq, confidence) or (None, 0.0)
-    """
-    # Use Claude if available
-    if anthropic_client:
-        try:
-            faq, confidence = await claude_match_faq(message, user_id, user_name)
-            return (faq, confidence)
-        except Exception as e:
-            logger.warning(f"Claude matching failed, using keyword fallback: {e}")
-    
-    # Fallback to keyword matching
-    return keyword_find_best_faq_match(message, knowledge_base)
+    return (None, 0.0)
 
 
 def should_skip_message(message: str, knowledge_base: dict) -> bool:
@@ -565,18 +479,25 @@ async def check_team_responded(channel: discord.TextChannel, after_message: disc
     return False
 
 
-async def send_full_response(message: discord.Message, faq: dict, confidence: float):
-    """Send a full auto-response for high confidence matches."""
+async def send_generated_response(message: discord.Message, answer_dict: dict, confidence: float, is_partial: bool = False):
+    """Send a generated answer as a Discord embed."""
+    answer_text = answer_dict.get('answer', '')
+
+    # Discord embed description limit is 4096 chars
+    if len(answer_text) > 4000:
+        answer_text = answer_text[:4000] + "..."
+
     embed = discord.Embed(
-        title="💡 Quick Answer",
-        description=faq['answer'],
+        title="💡 Quick Answer" if not is_partial else "💡 This might help",
+        description=answer_text,
         color=DISCORD_BLURPLE
     )
 
-    if faq.get('docs_link'):
+    docs_link = answer_dict.get('docs_link')
+    if docs_link:
         embed.add_field(
             name="📚 Documentation",
-            value=f"[Learn more]({faq['docs_link']})",
+            value=f"[Learn more]({docs_link})",
             inline=False
         )
 
@@ -586,13 +507,7 @@ async def send_full_response(message: discord.Message, faq: dict, confidence: fl
         inline=False
     )
 
-    embed.add_field(
-        name="🆘 Need more help?",
-        value="Reply here and the team will assist you!",
-        inline=False
-    )
-
-    embed.set_footer(text="🤖 Automated response")
+    embed.set_footer(text="🤖 AI-generated from AgentMail docs")
 
     try:
         bot_message = await message.reply(embed=embed)
@@ -601,19 +516,20 @@ async def send_full_response(message: discord.Message, faq: dict, confidence: fl
 
         pending_feedback[bot_message.id] = {
             'original_message_id': message.id,
-            'faq_id': faq['id'],
+            'faq_id': 'generated',
             'user_id': message.author.id
         }
 
-        logger.info(f"Auto-responded to {message.author.name}: {faq['id']} (confidence: {confidence:.2f})")
+        action = 'auto_responded' if not is_partial else 'partial_hint'
+        logger.info(f"Auto-responded to {message.author.name} (confidence: {confidence:.2f}, partial: {is_partial})")
 
         log_support_event({
             'user': message.author.name,
             'user_id': str(message.author.id),
             'question': message.content[:200],
-            'matched_faq_id': faq['id'],
+            'matched_faq_id': 'generated',
             'confidence': round(confidence, 2),
-            'action': 'auto_responded',
+            'action': action,
             'user_feedback': None,
             'escalated': False
         })
@@ -622,87 +538,54 @@ async def send_full_response(message: discord.Message, faq: dict, confidence: fl
         logger.error(f"Failed to send auto-response: {e}")
 
 
-async def send_partial_hint(message: discord.Message, faq: dict, confidence: float):
-    """Send a partial hint with doc links for medium confidence matches."""
-    embed = discord.Embed(
-        title="📚 Relevant Resources",
-        description=f"I noticed you might be asking about **{faq.get('category', 'this topic')}**. Here are some helpful links:",
-        color=DISCORD_BLURPLE
-    )
-
-    if faq.get('docs_link'):
-        embed.add_field(
-            name="📖 Documentation",
-            value=f"[Learn more]({faq['docs_link']})",
-            inline=False
-        )
-
-    embed.set_footer(text="🤖 Quick links • Team will respond soon")
-
-    try:
-        await message.reply(embed=embed)
-        logger.info(f"Sent partial hint to {message.author.name}: {faq['id']} (confidence: {confidence:.2f})")
-
-        log_support_event({
-            'user': message.author.name,
-            'user_id': str(message.author.id),
-            'question': message.content[:200],
-            'matched_faq_id': faq['id'],
-            'confidence': round(confidence, 2),
-            'action': 'partial_hint',
-            'user_feedback': None,
-            'escalated': False
-        })
-
-    except Exception as e:
-        logger.error(f"Failed to send partial hint: {e}")
-
-
 async def handle_support_question(message: discord.Message):
-    """Handle a potential support question."""
+    """Handle a potential support question using generative answers."""
     knowledge_base = load_knowledge_base()
 
     if should_skip_message(message.content, knowledge_base):
         logger.debug(f"Skipping message (contains skip pattern): {message.content[:50]}...")
         return
 
-    # Use Claude-powered matching with keyword fallback
-    # Pass user info for rate limiting and security logging
-    faq, confidence = await find_best_faq_match(
-        message.content, 
-        knowledge_base,
-        user_id=str(message.author.id),
-        user_name=message.author.name
-    )
+    # Try Claude generative answer first
+    if anthropic_client:
+        answer_dict, confidence = await claude_generate_answer(
+            message.content,
+            user_id=str(message.author.id),
+            user_name=message.author.name
+        )
 
-    if not faq:
-        logger.debug(f"No FAQ match for: {message.content[:50]}...")
-        return
+        if answer_dict and confidence >= CONFIDENCE_THRESHOLD:
+            logger.info(f"Waiting {RESPONSE_DELAY_SECONDS}s before responding...")
+            await asyncio.sleep(RESPONSE_DELAY_SECONDS)
+            if await check_team_responded(message.channel, message):
+                logger.info("Team already responded, skipping bot reply")
+                return
+            await send_generated_response(message, answer_dict, confidence)
+            return
 
-    logger.info(f"FAQ match: {faq['id']} (confidence: {confidence:.2f}) for: {message.content[:50]}...")
+        if answer_dict and confidence >= PARTIAL_HINT_THRESHOLD:
+            await send_generated_response(message, answer_dict, confidence, is_partial=True)
+            return
 
-    # High confidence - brief delay then respond
-    if confidence >= CONFIDENCE_THRESHOLD:
-        logger.info(f"Waiting {RESPONSE_DELAY_SECONDS}s before responding...")
+    # Fallback to keyword FAQ matching when Claude is unavailable
+    faq, confidence = keyword_find_best_faq_match(message.content, knowledge_base)
+    if faq and confidence >= CONFIDENCE_THRESHOLD:
         await asyncio.sleep(RESPONSE_DELAY_SECONDS)
-        await send_full_response(message, faq, confidence)
-
-    # Medium confidence - send partial hint immediately
-    elif confidence >= PARTIAL_HINT_THRESHOLD:
-        await send_partial_hint(message, faq, confidence)
-
-    # Low confidence - ignore
-    else:
-        log_support_event({
-            'user': message.author.name,
-            'user_id': str(message.author.id),
-            'question': message.content[:200],
-            'matched_faq_id': faq['id'] if faq else None,
-            'confidence': round(confidence, 2),
-            'action': 'ignored',
-            'user_feedback': None,
-            'escalated': False
-        })
+        if await check_team_responded(message.channel, message):
+            return
+        fallback_answer = {
+            'answer': faq['answer'],
+            'docs_link': faq.get('docs_link'),
+            'reasoning': 'keyword fallback'
+        }
+        await send_generated_response(message, fallback_answer, confidence)
+    elif faq and confidence >= PARTIAL_HINT_THRESHOLD:
+        fallback_answer = {
+            'answer': faq['answer'],
+            'docs_link': faq.get('docs_link'),
+            'reasoning': 'keyword fallback'
+        }
+        await send_generated_response(message, fallback_answer, confidence, is_partial=True)
 
 
 async def escalate_to_team(original_message: discord.Message):
@@ -721,23 +604,28 @@ async def escalate_to_team(original_message: discord.Message):
 @bot.command(name='test_faq')
 @commands.is_owner()
 async def test_faq(ctx, *, question: str):
-    """Test FAQ matching - logs to console only (owner only)."""
-    knowledge_base = load_knowledge_base()
-    # Pass test user info (owner bypasses rate limiting in practice)
-    faq, confidence = await find_best_faq_match(
-        question, 
-        knowledge_base,
-        user_id=str(ctx.author.id),
-        user_name=ctx.author.name
-    )
-
-    if faq:
-        action = "auto_respond" if confidence >= CONFIDENCE_THRESHOLD else \
-                 "partial_hint" if confidence >= PARTIAL_HINT_THRESHOLD else "ignore"
-        method = "Claude" if anthropic_client else "Keyword"
-        logger.info(f"[TEST][{method}] Match: {faq['id']} ({faq.get('category', 'N/A')}) | Confidence: {confidence:.2f} | Action: {action}")
+    """Test answer generation - shows result in channel (owner only)."""
+    if anthropic_client:
+        answer_dict, confidence = await claude_generate_answer(
+            question,
+            user_id=str(ctx.author.id),
+            user_name=ctx.author.name
+        )
+        if answer_dict:
+            action = "auto_respond" if confidence >= CONFIDENCE_THRESHOLD else \
+                     "partial_hint" if confidence >= PARTIAL_HINT_THRESHOLD else "ignore"
+            logger.info(f"[TEST][Claude] Confidence: {confidence:.2f} | Action: {action}")
+            await ctx.send(f"**[TEST]** Confidence: {confidence:.2f} | Action: {action}\n\n{answer_dict.get('answer', 'N/A')[:1500]}")
+        else:
+            logger.info(f"[TEST] No answer generated for: {question}")
+            await ctx.send(f"**[TEST]** No answer generated (confidence too low)")
     else:
-        logger.info(f"[TEST] No FAQ match found for: {question}")
+        knowledge_base = load_knowledge_base()
+        faq, confidence = keyword_find_best_faq_match(question, knowledge_base)
+        if faq:
+            await ctx.send(f"**[TEST][Keyword]** {faq['id']} ({confidence:.2f})\n{faq['answer'][:1500]}")
+        else:
+            await ctx.send(f"**[TEST]** No match found")
 
 
 # Events
@@ -753,12 +641,18 @@ async def on_ready():
     
     # Claude API status
     if anthropic_client:
-        logger.info(f"Claude API: ENABLED (model: {CLAUDE_MODEL})")
-        # Load knowledge base on startup
+        logger.info(f"Claude API: ENABLED (model: {CLAUDE_MODEL}, max_tokens: {CLAUDE_MAX_TOKENS})")
+        logger.info("Answer mode: GENERATIVE (answers from full knowledge base)")
         kb = get_knowledge_base()
-        logger.info(f"Knowledge base loaded: {len(kb.faqs)} FAQs, {len(kb.docs)} docs")
+        logger.info(f"Knowledge base loaded: {len(kb.faqs)} FAQs, {len(kb.docs)} docs, {len(kb.codebase)} codebase files")
     else:
-        logger.warning("Claude API: DISABLED (ANTHROPIC_API_KEY not set) - using keyword fallback")
+        logger.warning("Claude API: DISABLED (ANTHROPIC_API_KEY not set) - using keyword FAQ fallback only")
+
+    # Hyperspell status
+    if os.getenv("HYPERSPELL_API_KEY"):
+        logger.info("Hyperspell: ENABLED (semantic retrieval for context)")
+    else:
+        logger.info("Hyperspell: DISABLED (using local knowledge files only)")
     
     # Security settings
     logger.info(f"Security: Rate limit {RATE_LIMIT_REQUESTS} requests per {RATE_LIMIT_WINDOW}s per user")

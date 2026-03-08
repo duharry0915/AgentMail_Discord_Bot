@@ -1,490 +1,1189 @@
-# AgentMail Console UI Guide
+# AgentMail Console UI — Knowledge Base Research Report
 
-This document describes the AgentMail Console web interface at console.agentmail.to, based on actual UI screenshots.
+> **Last updated:** 2026-03-07
+> **Source directory:** `agentmail-web/apps/console/`
+> **Live URL:** [console.agentmail.to](https://console.agentmail.to)
+> **Framework:** Next.js 16 (App Router) + React 19 + Tailwind CSS 4
 
 ---
 
-## Console Overview
+## Table of Contents
 
-The AgentMail Console is a dark-themed web application for managing email infrastructure. It features:
+1. [Overview](#1-overview)
+2. [Navigation & Layout](#2-navigation--layout)
+   - [Sidebar](#21-sidebar)
+   - [Organization Dropdown](#22-organization-dropdown)
+   - [Breadcrumb Navigation](#23-breadcrumb-navigation)
+   - [Layout Structure](#24-layout-structure)
+3. [Overview Dashboard](#3-overview-dashboard)
+4. [Inboxes](#4-inboxes)
+   - [Inboxes List](#41-inboxes-list)
+   - [Create Inbox](#42-create-inbox)
+   - [Inbox Detail / Email Client](#43-inbox-detail--email-client)
+   - [Inbox Sidebar Navigation](#44-inbox-sidebar-navigation)
+   - [Unified Inbox](#45-unified-inbox)
+   - [Compose Modal](#46-compose-modal)
+   - [Thread Detail View](#47-thread-detail-view)
+   - [SMTP/IMAP Credentials](#48-smtpimap-credentials)
+5. [Domains](#5-domains)
+   - [Domains List](#51-domains-list)
+   - [Create Domain](#52-create-domain)
+   - [Domain Records & Verification](#53-domain-records--verification)
+6. [Webhooks](#6-webhooks)
+7. [API Keys](#7-api-keys)
+   - [API Keys List](#71-api-keys-list)
+   - [Create API Key](#72-create-api-key)
+8. [Allow/Block Lists](#8-allowblock-lists)
+9. [Metrics](#9-metrics)
+   - [Health Score Bar](#91-health-score-bar)
+   - [Compact Stat Row](#92-compact-stat-row)
+   - [Email Activity Chart](#93-email-activity-chart)
+   - [Delivery Funnel](#94-delivery-funnel)
+   - [Latency Distribution](#95-latency-distribution)
+   - [Inbound/Outbound Chart](#96-inboundoutbound-chart)
+   - [Failure Heatmap](#97-failure-heatmap)
+10. [Pods](#10-pods)
+    - [Pods List](#101-pods-list)
+    - [Pod Detail](#102-pod-detail)
+11. [Upgrade / Pricing](#11-upgrade--pricing)
+12. [UI Patterns](#12-ui-patterns)
+    - [DataTable](#121-datatable)
+    - [Dialogs & Modals](#122-dialogs--modals)
+    - [Delete Confirmation](#123-delete-confirmation)
+    - [Status Badges](#124-status-badges)
+    - [Empty States](#125-empty-states)
+    - [Pagination](#126-pagination)
+    - [Premium Feature Banner](#127-premium-feature-banner)
+13. [Onboarding System](#13-onboarding-system)
+14. [Authentication & Organization Management](#14-authentication--organization-management)
+15. [Common User Questions by UI Section](#15-common-user-questions-by-ui-section)
+16. [Troubleshooting](#16-troubleshooting)
 
-- **Left Sidebar Navigation**: Contains user profile, Resources section, and Platform section
-- **Top Header**: Breadcrumb navigation, search (⌘K), and theme toggle
-- **Main Content Area**: Context-specific content for each section
+---
 
-### Navigation Structure
+## 1. Overview
+
+The **AgentMail Console** is a web-based management dashboard at [console.agentmail.to](https://console.agentmail.to). It provides a full-featured interface for managing inboxes, domains, webhooks, API keys, email metrics, pods (multi-tenancy), and allow/block lists.
+
+**Key characteristics:**
+- **Dark mode only** — forced via `<html className="dark">`
+- **Authentication** — Clerk (sign-in, sign-up, org management)
+- **Data fetching** — SWR (stale-while-revalidate) with server actions for mutations
+- **Billing** — Stripe integration (checkout, customer portal)
+- **Webhooks** — Svix embedded portal
+- **Email client** — Built-in thread viewer with compose, reply, attachments
+
+**Tech stack:**
+
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| Framework | Next.js (App Router) | 16.0.0 |
+| UI | React | 19.1.1 |
+| Styling | Tailwind CSS | 4.1.11 |
+| Auth | Clerk | 6.12.0 |
+| Data fetching | SWR | 2.3.8 |
+| Tables | @tanstack/react-table | 8.21.3 |
+| Charts | Recharts | 3.7.0 |
+| Icons | Lucide React | 0.475.0 |
+| Billing | Stripe | 17.5.0 |
+| Webhooks | Svix | 1.84.1 |
+
+---
+
+## 2. Navigation & Layout
+
+### 2.1 Sidebar
+
+The sidebar is the primary navigation element. It is collapsible: **208px (w-52)** expanded, **64px (w-16)** collapsed. In collapsed mode, icons are shown with right-side tooltips.
+
+**Navigation items (in order):**
+
+| # | Label | Icon | Route |
+|---|-------|------|-------|
+| 1 | Overview | `LayoutDashboard` | `/dashboard/overview` |
+| 2 | Inboxes | `Inbox` | `/dashboard/inboxes` |
+| 3 | Domains | `Globe` | `/dashboard/domains` |
+| 4 | Webhooks | `Webhook` | `/dashboard/webhooks` |
+| 5 | API Keys | `Key` | `/dashboard/api-keys` |
+| 6 | Allow/Block Lists | `Shield` | `/dashboard/lists` |
+| 7 | Metrics | `BarChart3` | `/dashboard/metrics` |
+| 8 | Pods | `Box` | `/dashboard/pods` |
+
+**Active state:** `bg-accent text-accent-foreground` when pathname matches.
+
+**Bottom section (external links):**
+
+| Label | Icon | URL |
+|-------|------|-----|
+| Discord | `DiscordIcon` (custom) | `https://discord.gg/EmDHrGsyQ4` |
+| Documentation | `BookOpen` | `https://docs.agentmail.to` |
+| Feedback | `MessageSquare` | `mailto:support@agentmail.cc` |
+
+**User button** — Clerk `UserButton` at bottom. Shows avatar and name (expanded) or avatar only (collapsed). `afterSignOutUrl="/sign-in"`.
+
+**Navigation tree:**
 
 ```
-AgentMail Console
-├── [User Profile: shangran]
-├── Resources
-│   ├── Inboxes
-│   ├── Domains
-│   ├── Webhooks
-│   ├── API Keys
-│   ├── Metrics
-│   └── Pods
-└── Platform
-    └── Documentation
+Sidebar (w-52 / w-16)
+├── Logo (AgentMail) + Collapse toggle
+├── Organization Dropdown
+├── ── ── ── ── ── ──
+├── Overview              → /dashboard/overview
+├── Inboxes               → /dashboard/inboxes
+│   ├── [inboxId]         → /dashboard/inboxes/[inboxId]
+│   │   ├── (Inbox)       → /dashboard/inboxes/[inboxId]
+│   │   ├── Starred       → /dashboard/inboxes/[inboxId]/starred
+│   │   ├── Sent          → /dashboard/inboxes/[inboxId]/sent
+│   │   ├── Drafts        → /dashboard/inboxes/[inboxId]/drafts
+│   │   ├── Important     → /dashboard/inboxes/[inboxId]/important
+│   │   ├── Scheduled     → /dashboard/inboxes/[inboxId]/scheduled
+│   │   ├── All Mail      → /dashboard/inboxes/[inboxId]/all
+│   │   ├── Spam          → /dashboard/inboxes/[inboxId]/spam
+│   │   ├── Trash         → /dashboard/inboxes/[inboxId]/trash
+│   │   └── Thread        → /dashboard/inboxes/[inboxId]/threads/[threadId]
+│   ├── Unified Inbox     → /dashboard/unified
+│   │   ├── All Inboxes   → /dashboard/unified
+│   │   ├── Starred       → /dashboard/unified/starred
+│   │   ├── Sent          → /dashboard/unified/sent
+│   │   ├── Drafts        → /dashboard/unified/drafts
+│   │   ├── Important     → /dashboard/unified/important
+│   │   ├── Scheduled     → /dashboard/unified/scheduled
+│   │   ├── All Mail      → /dashboard/unified/all
+│   │   └── Spam          → /dashboard/unified/spam
+│   └── SMTP/IMAP         → /dashboard/inboxes/smtp-imap
+├── Domains               → /dashboard/domains
+├── Webhooks              → /dashboard/webhooks
+├── API Keys              → /dashboard/api-keys
+├── Allow/Block Lists     → /dashboard/lists
+├── Metrics               → /dashboard/metrics
+├── Pods                  → /dashboard/pods
+│   └── [podId]           → /dashboard/pods/[podId]
+│       ├── Inboxes tab
+│       ├── Domains tab
+│       ├── API Keys tab
+│       └── Unified Inbox → /dashboard/pods/[podId]/threads
+├── Upgrade               → /dashboard/upgrade
+├── ── ── ── ── ── ──
+├── Discord (external)
+├── Documentation (external)
+├── Feedback (mailto)
+└── User Button (Clerk)
 ```
 
----
+### 2.2 Organization Dropdown
 
-## 1. Inboxes
+Located at the top of the sidebar, below the logo.
 
-### Inboxes List View
+**Expanded trigger shows:** Org avatar, org name, `ChevronsUpDown` icon. If agent-created: shows "Agent Created" subtitle.
 
-**Location**: Dashboard > Inboxes
+**Dropdown contents:**
 
-**Purpose**: Manage all email inboxes in your account
+| Section | Action | Icon | Behavior |
+|---------|--------|------|----------|
+| Header | Org info | — | Avatar, name, tier, member count, "Member since" date |
+| Actions | Organization Settings | `Settings` | Opens Clerk org profile dialog |
+| Actions | Switch Organization | `ArrowRightLeft` | Navigates to `/select-organization` |
+| Billing | Upgrade Plan | `CreditCard` | Shown for free tier → `/dashboard/upgrade` |
+| Billing | Manage Subscription | `CreditCard` | Shown for paid tiers → Stripe portal |
 
-**UI Elements**:
-- **Header**: "Inboxes" title with subtitle "Manage your email inboxes • X total"
-- **Action Buttons** (top right):
-  - `+ Create Inbox` - Opens inbox creation modal
-  - `Unified View` - View all inboxes in one interface
-  - `SMTP/IMAP` - Access SMTP/IMAP connection settings
+**Tier display format:** `"{tierName} · {count} {members/member}"` (e.g., "Developer · 3 members")
 
-**Table Columns**:
-| Column | Description |
-|--------|-------------|
-| Inbox ID | Email address (e.g., `crowdeddamage134@agentmail.to`) |
-| Display Name | Human-readable name (e.g., "AgentMail", "Testing White Label Feedback") |
-| Created | Creation timestamp |
-| Updated | Last update timestamp |
-| Actions | Three-dot menu for more options |
+### 2.3 Breadcrumb Navigation
 
-**Features**:
-- Checkbox selection for bulk operations
-- Rows per page selector (10, 25, 50)
-- Pagination controls
-- Column visibility toggle ("Columns" button)
+Displayed in the 56px header bar above the content area.
 
----
+**Route-to-label mapping:**
 
-### Create New Inbox Modal
+| Segment | Label |
+|---------|-------|
+| `dashboard` | Dashboard |
+| `overview` | Overview |
+| `inboxes` | Inboxes |
+| `domains` | Domains |
+| `webhooks` | Webhooks |
+| `api-keys` | API Keys |
+| `lists` | Allow/Block Lists |
+| `metrics` | Metrics |
+| `pods` | Pods |
+| `upgrade` | Upgrade |
+| `unified` | Unified Inbox |
+| `smtp-imap` | SMTP/IMAP |
+| `all` | All Mail |
+| `spam` | Spam |
+| `sent` | Sent |
+| `starred` | Starred |
+| `important` | Important |
+| `drafts` | Drafts |
+| `scheduled` | Scheduled |
 
-**Purpose**: Create a new email inbox
+**Dynamic segments:**
+- **Inbox ID** — Shows `inbox.name` with a **copy button** (copies email address). Has `data-onboarding="inbox-breadcrumb"` attribute.
+- **Pod ID** — Shows `pod.name`
+- **Thread ID** — Shows `thread.subject` (truncated at 50 chars) or "Thread"
 
-**Form Fields**:
-1. **Username** (optional)
-   - Placeholder: "e.g. sales"
-   - If not specified, auto-generated random username
+### 2.4 Layout Structure
 
-2. **Domain** (dropdown)
-   - Default: `agentmail.to (Default)`
-   - Can select custom verified domains
-
-3. **Display Name** (optional)
-   - Placeholder: "e.g. Lead Generation Team"
-   - Sets the "From" name in emails
-
-**Configuration Rules Panel** (right side):
-- Username will be auto-generated if not specified
-- Domain defaults to `agentmail.to`
-- To use a custom domain, first register it in the Domains section
-
-**Example Panel**:
 ```
-Input:
-  Username: marketing
-  Domain: apple.com
-  Display: Marketing Team
-
-Output:
-  Marketing Team <marketing@apple.com>
+┌──────────────────────────────────────────────────┐
+│  Sidebar (w-52)  │  Header (h-14, breadcrumbs)   │
+│                  │───────────────────────────────│
+│  [Logo]          │                               │
+│  [Org dropdown]  │  Main Content Area            │
+│  ─────────────   │  (scrollable, px-6 py-4)      │
+│  Overview        │                               │
+│  Inboxes         │                               │
+│  Domains         │                               │
+│  Webhooks        │                               │
+│  API Keys        │                               │
+│  Allow/Block     │                               │
+│  Metrics         │                               │
+│  Pods            │                               │
+│  ─────────────   │                               │
+│  Discord         │                               │
+│  Docs            │                               │
+│  Feedback        │                               │
+│  ─────────────   │                               │
+│  [User avatar]   │                               │
+└──────────────────────────────────────────────────┘
 ```
 
-**Action Button**: `⊕ Create Inbox`
+**Auth guards:** Users without `userId` are redirected to `/sign-in`. Users without `orgId` are redirected to `/select-organization`.
 
 ---
 
-### Inbox Detail View (Thread View)
+## 3. Overview Dashboard
 
-**Location**: Dashboard > Inboxes > [inbox@domain] > Thread
+**Route:** `/dashboard/overview`
 
-**Purpose**: View and manage emails for a specific inbox
+The overview is the landing page after login. It provides a high-level summary of the organization's email activity and resources.
 
-**Tab Navigation**:
-| Tab | Purpose |
-|-----|---------|
-| Inbox | View received emails |
-| Sent | View sent emails |
-| Drafts | View draft emails |
-| Custom View | Create filtered views |
-| Spam | View spam emails |
-| Compose | Write new email |
+**Layout (top to bottom):**
 
-**Thread List (Left Panel)**:
-- Shows email threads with:
-  - Sender name
-  - Subject line
-  - Preview text
-  - Date
-  - Status tags: `received`, `unread`, `sent`, `send`
-- Rows per page selector
-- Page navigation
+1. **Email Activity Chart** — Full-width stacked bar chart with time range selector (24h / 7d / 30d). Title: "Email Activity". Default range: `7d`.
 
-**Thread Detail (Right Panel)**:
-- **Header**:
-  - Subject line
-  - Last activity timestamp
-  - Message count
-  - Participants list
-  - Status badges: `Received`, `Unread`
+2. **Two-column grid** (70%/30% split):
+   - **Left:** Unified Inbox Preview — Recent threads across all inboxes
+   - **Right (stacked):**
+     - **Resource Cards** — Shows domain and inbox counts with usage limits
+     - **Bounce Rate Card** — 7-day bounce/complaint rate with risk thresholds
+     - **Onboarding Checklist** — "Getting Started" guide (see [Section 13](#13-onboarding-system))
 
-- **Message Display**:
-  - Sender name and email
-  - Recipient (To:)
-  - Timestamp with relative time ("2 months ago")
-  - Reply and forward buttons
-  - Message body
-  - Attachments section with:
-    - File icon
-    - File name
-    - File size (e.g., "970 KB")
+**Resource Cards detail:**
 
----
+| Resource | Icon | Display |
+|----------|------|---------|
+| Domains | `Globe` | Count, or `count/limit` with progress bar, or "Upgrade" button if limit=0 |
+| Inboxes | `Mail` | Count, or `count/limit` with progress bar |
 
-## 2. Domains
+**Usage alert thresholds (both inboxes and domains):**
 
-### Domains List View
+| Condition | Message | Color |
+|-----------|---------|-------|
+| count >= limit | "You've reached your {resource} limit ({count}/{limit})." | Red |
+| count >= 80% of limit | "You're approaching your {resource} limit ({count}/{limit})." | Orange |
+| count >= 50% of limit | "You've used 50% of your {resource} limit." | Amber |
 
-**Location**: Dashboard > Domains
+Each alert includes an "Upgrade →" link.
 
-**Purpose**: Manage custom domains for sending/receiving emails
+**Bounce Rate Card:**
 
-**Header**: "Domains" with subtitle "X domain configured"
+Two toggle tabs: **Bounce Rate** and **Complained Rate**
 
-**Action Button**: `+ Add Domain`
+| Tab | Metric | Bar Color | Risk Threshold | Y-Axis Max |
+|-----|--------|-----------|----------------|------------|
+| Bounce Rate | bounced/sent × 100 | Blue `hsl(210, 70%, 55%)` | 5% | 10% |
+| Complained Rate | complained/sent × 100 | Orange `hsl(25, 75%, 55%)` | 0.1% | 0.5% |
 
-**Table Columns**:
-| Column | Description |
-|--------|-------------|
-| Domain | Domain name (e.g., `harrydu.dev`) |
-| Feedback Forwarding | Status badge (`Enabled` / `Disabled`) |
-| Created | Creation timestamp |
-| Updated | Last update timestamp |
-| Actions | Three-dot menu |
+Bars that meet or exceed the threshold turn red. A dashed "RISK" reference line marks the threshold.
+
+**Auto-onboarding:** If the org has no inboxes and onboarding hasn't been completed, the onboarding flow starts automatically.
 
 ---
 
-### Domain DNS Configuration Modal
+## 4. Inboxes
 
-**Purpose**: Configure DNS records for domain verification
+### 4.1 Inboxes List
 
-**Header Section**:
-- Domain name (e.g., `harrydu.dev`)
-- Subtitle: "DNS Records Configuration"
-- **Overall Status**: Badge showing `Verifying`, `Verified`, or `Failed`
+**Route:** `/dashboard/inboxes`
+**Header:** Title: "Inboxes" | Subtitle: "Manage your email inboxes"
 
-**DNS Records Table**:
-| Type | Name | Value | Status |
-|------|------|-------|--------|
-| TXT | `agentmail._domainkey` | DKIM public key (`v=DKIM1; k=rsa; p=MIIBIjANB...`) | ● valid |
-| MX | `@` | `inbound-smtp.us-east-1.amazonaws.com` Priority: 10 | ● valid |
-| MX | `mail` | `feedback-smtp.us-east-1.amazonses.com` Priority: 10 | ● valid |
-| TXT | `mail` | `v=spf1 include:amazonses.com -all` | ● valid |
-| TXT | `_dmarc` | `v=DMARC1; p=reject; rua=mailto:dmarc@agentmail.to` | ● valid |
+**Header buttons (right side):**
+- **Unified Inbox** (ghost) → `/dashboard/unified`
+- **SMTP/IMAP** (ghost) → `/dashboard/inboxes/smtp-imap`
+- **Create Inbox** (with Plus icon, `data-onboarding="create-inbox-btn"`)
 
-**Features**:
-- Copy buttons for both Name and Value columns
-- Green "valid" badges when records are verified
-- Blue "Verifying" status during DNS propagation
+**Table columns:**
 
-**Action Buttons**:
-- `↻ Verify Domain` - Trigger manual verification check
-- `📄 Download Zone File` - Download complete DNS zone file for import
+| Column | Header | Width | Content |
+|--------|--------|-------|---------|
+| `inboxId` | Inbox ID | auto | `inbox.name` (truncated, font-medium) |
+| `displayName` | Display Name | 200px | Display name or `"-"` |
+| `createdAt` | Created | 180px | Formatted date |
+| `updatedAt` | Updated | 180px | Formatted date |
+| `actions` | (empty) | 50px | Three-dot menu |
 
-**Common Questions**:
-- "Why is my domain still pending?" → Check DNS propagation (can take up to 48 hours)
-- "How do I set up DNS records?" → Add records shown in this modal to your DNS provider
-- "What does each record do?":
-  - **DKIM (TXT)**: Email authentication and signing
-  - **MX (@)**: Receive emails to your domain
-  - **MX (mail)**: Handle bounce/feedback emails
-  - **SPF (TXT)**: Authorize AgentMail to send on your behalf
-  - **DMARC (TXT)**: Policy for handling unauthenticated emails
+**Row actions:**
+- **Update Display Name** (`Pencil` icon) — Opens update dialog
+- **Delete** (`Trash2` icon, red text) — Opens delete confirmation
 
----
+**Row click:** Navigates to `/dashboard/inboxes/[inboxId]`
 
-## 3. Webhooks
+**Empty state:** Icon: `Inbox` | "No inboxes yet" | "Create your first inbox to get started"
 
-### Webhooks List View
+### 4.2 Create Inbox
 
-**Location**: Dashboard > Webhooks
+**Dialog title:** "Create Inbox" (or "Create Inbox in {podName}" when in a pod)
+**Dialog description:** "Create a new email inbox for your agents" (or "Create a new email inbox for this pod.")
 
-**Purpose**: Manage webhook endpoints for event notifications
+**Form fields:**
 
-**Header**: "Webhooks" with subtitle "Manage webhooks and monitor delivery logs"
+| Field | Label | Placeholder | Validation |
+|-------|-------|-------------|------------|
+| Username | Username (optional) | "e.g. sales" | Letters, numbers, dots, dashes, underscores only |
+| Domain | Domain | "Select a domain" | Required (default: `agentmail.to`) |
+| Display Name | Display Name (optional) | "e.g. Sales Team" | None |
 
-**Tab Navigation**:
-| Tab | Purpose |
-|-----|---------|
-| Endpoints | List of webhook URLs |
-| Event Catalog | Available event types |
-| Logs | Webhook delivery logs |
-| Activity | Recent webhook activity |
+**Info hint:** "Username will be auto-generated if not specified"
 
-**Endpoints Table**:
-| Column | Description |
-|--------|-------------|
-| Endpoint | Webhook URL |
-| (Disabled badge) | Shows if endpoint is disabled |
-| Error Rate | Percentage of failed deliveries |
+**Error messages:**
 
-**Action Button**: `+ Add Endpoint`
+| Error Code | Message |
+|------------|---------|
+| `INBOX_EXISTS` | "This inbox address already exists in your organization." |
+| `INBOX_TAKEN` | "This inbox address is already taken. Please try a different username or domain." |
+| `LIMIT_EXCEEDED` | "You have reached your inbox limit. Please upgrade your plan or remove an existing inbox." |
+| `DOMAIN_NOT_FOUND` | "The domain is not registered or verified. Please verify the domain first." |
+| Catch-all | "Failed to create inbox. Please try again." |
 
----
+**Submit button:** "Create Inbox" (Plus icon) → "Creating..." (spinner)
 
-### Webhook Endpoint Detail View
+### 4.3 Inbox Detail / Email Client
 
-**Location**: Dashboard > Webhooks > [endpoint-name]
+**Route:** `/dashboard/inboxes/[inboxId]`
 
-**Purpose**: View and configure a specific webhook endpoint
+When you click an inbox row, you enter a full-screen email client layout. This uses the `InboxLayoutUI` component from the shared `@workspace/ui` package. The layout is:
 
-**Header Section**:
-- Endpoint URL displayed prominently
-- `Edit` button to modify URL
+```
+┌──────────────────────────────────────────────┐
+│ Inbox Sidebar │ Thread List │ Thread Detail  │
+│ (Compose btn) │ (clickable) │ (messages)     │
+│ Inbox         │             │                │
+│ Starred       │             │                │
+│ Sent          │             │                │
+│ Drafts        │             │                │
+│ Important     │             │                │
+│ Scheduled     │             │                │
+│ All Mail      │             │                │
+│ Spam          │             │                │
+│ Trash         │             │                │
+└──────────────────────────────────────────────┘
+```
 
-**Tab Navigation**:
-| Tab | Purpose |
-|-----|---------|
-| Overview | General info and stats |
-| Testing | Send test events |
-| Advanced | Advanced configuration |
+The layout fills the full viewport height minus the 56px header: `h-[calc(100vh-3.5rem)]`.
 
-**Overview Tab Content**:
+### 4.4 Inbox Sidebar Navigation
 
-1. **Description Section**:
-   - Editable description field
-   - "No description" placeholder if empty
+**Single inbox sidebar items:**
 
-2. **Delivery Stats**:
-   - Visual chart of successful/failed deliveries
-   - Message: "NO MESSAGES RECEIVED IN THE LAST 28 DAYS" if inactive
+| # | Label | Icon | Route suffix |
+|---|-------|------|-------------|
+| — | **Compose** (button) | `Pencil` | Opens compose modal |
+| 1 | Inbox | `Inbox` | `/` |
+| 2 | Starred | `Star` | `/starred` |
+| 3 | Sent | `Send` | `/sent` |
+| 4 | Drafts | `File` | `/drafts` |
+| 5 | Important | `Flag` | `/important` |
+| 6 | Scheduled | `Clock` | `/scheduled` |
+| 7 | All Mail | `Mail` | `/all` |
+| 8 | Spam | `AlertOctagon` | `/spam` |
+| 9 | Trash | `Trash2` | `/trash` |
 
-3. **Message Attempts Table**:
-   - Filter buttons: `All`, `Succeeded`, `Failed`
-   - Refresh button
-   - Filters button
+Each sub-view filters threads by the corresponding label.
 
-   | Column | Description |
-   |--------|-------------|
-   | Event Type | e.g., `message.received` |
-   | Tags | Custom tags |
-   | Message ID | UUID of the message |
-   | Timestamp | Delivery timestamp |
-   | Status | `✓ Succeeded` or `✗ Failed` |
+### 4.5 Unified Inbox
 
-**Right Sidebar Info**:
-- **Creation Date**: When endpoint was created
-- **Last Updated**: Last modification date
-- **Subscribed events**: List of events (e.g., `message.received`) with Edit link
-- **Signing Secret**: Masked secret for webhook verification (with reveal toggle)
+**Route:** `/dashboard/unified`
 
----
+Cross-inbox thread view. Same layout as single inbox but shows threads from **all** inboxes.
 
-## 4. API Keys
+**Unified sidebar items (differences from single-inbox):**
+- First item is **"All Inboxes"** instead of "Inbox"
+- **No "Trash"** item (8 items instead of 9)
+- Compose is a no-op in unified mode
 
-### API Keys List View
+### 4.6 Compose Modal
 
-**Location**: Dashboard > API Keys
+**Window title:** "New Message"
 
-**Purpose**: Manage API keys for programmatic access
+**Form fields:**
 
-**Header**: "API Keys" with subtitle "X API keys configured"
+| Field | Placeholder | Type | Notes |
+|-------|-------------|------|-------|
+| To | (empty) | email | Required |
+| Cc | (empty) | email | Toggle button, hidden by default |
+| Bcc | (empty) | email | Toggle button, hidden by default |
+| Subject | "Subject" | text | — |
+| Body | (empty) | textarea | — |
 
-**Action Button**: `+ Create API Key`
+**Attachment handling:**
+- Max file size: **25 MB** per file
+- Oversized error: "File(s) too large: {names}. Max size is 25MB per file."
+- Duplicate error: "All selected files are already attached."
 
-**Table Columns**:
-| Column | Description |
-|--------|-------------|
-| Name | Human-readable key name (e.g., "myNewKey", "mySecondKEY") |
-| API Key | Masked key (e.g., `am_2ae75••••••••••••`) |
-| Last Used | Last API call timestamp |
-| Created | Creation timestamp |
-| Actions | Three-dot menu (delete, regenerate) |
+**Window controls:** Minimize, Full screen / Exit full screen, Close
+**Window sizes:** Normal: 500×450px | Full screen: 800×80vh | Minimized: 250×36px
 
-**Key Format**: API keys start with `am_` prefix
+**Send button states:** "Send" → "Sending..." → "Sent!" (with check icon). Also supports "Scheduling..." → "Scheduled!" for scheduled sends.
 
-**Security Notes**:
-- API keys are partially masked in the UI
-- Full key only shown once at creation
-- Store keys securely (e.g., in .env files)
+### 4.7 Thread Detail View
 
----
+**Route:** `/dashboard/inboxes/[inboxId]/threads/[threadId]`
 
-## 5. Metrics
+Shows the full email thread with all messages. Features:
+- Download message as `.eml` file (filename: `message-{messageId}.eml`)
+- Preview/download attachments
+- Add/remove message labels
+- Back navigation to inbox
 
-### Metrics Dashboard
+**Loading state:** "Loading thread..."
+**Error state:** "Failed to load thread" with "Back to inbox" link
 
-**Location**: Dashboard > Metrics
+### 4.8 SMTP/IMAP Credentials
 
-**Purpose**: Monitor email sending performance and deliverability
+**Route:** `/dashboard/inboxes/smtp-imap`
+**Header:** Title: "SMTP/IMAP Credentials" (Key icon) | Subtitle: "Export credentials for cold email platforms like Smartlead or Instantly"
 
-**Header Section**:
-- Title: "Metrics Dashboard"
-- Subtitle: "Comprehensive analysis of your email metrics • Last 7 days"
-- **Time Range** dropdown: Last 7 days, Last 30 days, etc.
-- **Display Timezone** dropdown: e.g., "Pacific Time (PT)"
+**API Key input:** Required to populate password fields. Placeholder: `"am_live_xxxxx"`. Toggle show/hide.
 
-**Tab Navigation**:
-| Tab | Purpose |
-|-----|---------|
-| Overview | Summary statistics |
-| Detailed Graphs | In-depth charts |
+**Platform selector (3 options):**
 
-**Summary Cards (Top Section)**:
+| Platform | Value | Notes |
+|----------|-------|-------|
+| Generic | `generic` | Standard SMTP/IMAP columns |
+| Smartlead | `smartlead` | Includes From Name/From Email |
+| Instantly | `instantly` | Includes First/Last Name; SMTP username hardcoded as "agentmail" |
 
-| Metric | Icon | Description |
-|--------|------|-------------|
-| Total Sent | ✈️ (plane) | Emails delivered to recipients |
-| Total Delivered | ✓ (check) | Successfully delivered emails |
+**Export:** "Export as CSV" button (Download icon). Disabled when no credentials.
 
-**Rate Cards (Below Summary)**:
+**Connection details (across all platforms):**
 
-| Metric | Description | Good Value |
-|--------|-------------|------------|
-| Delivery Rate | Percentage of sent emails delivered | 100% |
-| Bounce Rate | Percentage bounced | 0% |
-| Complaint Rate | Spam complaints | 0% |
-| Rejection Rate | Rejected by recipient servers | 0% |
+| Protocol | Host | Port |
+|----------|------|------|
+| SMTP | `smtp.agentmail.to` | 465 |
+| IMAP | `imap.agentmail.to` | 993 |
 
-**Email Metrics - Interactive Chart**:
-- Line graph showing sent/delivered over time
-- Hourly buckets
-- Metric selector dropdown (e.g., "2 selected")
+**Password:** Uses the API key. Shows "Enter API Key" placeholder if not entered.
 
-**Email Issues Breakdown Panel**:
-- Status badge: `EXCELLENT`, `GOOD`, `WARNING`, `CRITICAL`
-- Success message: "100% delivery success!"
-- Count: "X emails delivered successfully"
-- Celebratory emoji when excellent (🎉)
+**Row action:** Copy button copies entire row to clipboard.
 
 ---
 
-## 6. Pods
+## 5. Domains
 
-### Pods List View
+### 5.1 Domains List
 
-**Location**: Dashboard > Pods
+**Route:** `/dashboard/domains`
+**Header:** Title: "Domains" | Subtitle: "Manage your custom domains for sending emails"
 
-**Purpose**: Organize email infrastructure by isolated workspaces
+**Premium gate:** When `org.domainLimit === 0` (free tier), a premium banner is shown: "Upgrade to Developer or Startup plan to use custom domains for sending emails."
 
-**Header**: "Pods" with subtitle "Organize your email infrastructure by isolated workspaces"
+**Table columns:**
 
-**Action Button**: `+ Create Pod`
+| Column | Header | Width | Content |
+|--------|--------|-------|---------|
+| `domainId` | Domain | auto | Domain name (truncated, font-medium) |
+| `status` | Status | 120px | Badge (see status values below) |
+| `feedbackEnabled` | Feedback | 100px | Badge: "Enabled" or "Disabled" |
+| `createdAt` | Created | 180px | Formatted date |
+| `updatedAt` | Updated | 180px | Formatted date |
+| `actions` | (empty) | 50px | Three-dot menu → Delete |
 
-**Pod Cards**:
-Each pod displayed as a card with:
-- **Pod Name** (bold title): e.g., "Default Pod"
-- **Pod ID**: UUID (e.g., `86afd95b-0e4c-55d5-937b-4f7bc9466e43`)
-- **Created**: Creation date
-- **Action Buttons**:
-  - `📧 View Inboxes` - See inboxes in this pod
-  - `👁 Unified View` - View all pod messages together
-- Three-dot menu for additional options
+**Row click:** Opens Domain Details dialog with DNS records.
 
-**Use Cases**:
-- Separate development/staging/production environments
-- Isolate different projects or clients
-- Organize inboxes by team or function
+**Empty state:** Icon: `Globe` | "No domains configured" | "Add your first domain to start sending emails from your own domain"
+
+### 5.2 Create Domain
+
+**Dialog title:** "Add New Domain" (or "Add Domain to {podName}" in pod context)
+**Dialog description:** "Configure your domain for sending emails with precision and control"
+
+**Form field:**
+
+| Field | Label | Placeholder | Validation |
+|-------|-------|-------------|------------|
+| Domain | Domain Name | "your-domain.com" | Required; must have dot; no leading/trailing dots; TLD >= 2 chars |
+
+**Validation errors:**
+
+| Condition | Message |
+|-----------|---------|
+| Empty | "Domain name is required." |
+| No dot | "Domain is malformed. Please try again." |
+| Starts/ends with dot | "A domain cannot start or end with a '.'." |
+| Multiple consecutive dots | "Invalid domain format. Check for multiple dots together." |
+| TLD too short | "The top-level domain (e.g., '.com') must be at least two characters long." |
+
+**Info cards (general mode):**
+
+1. **Domain Requirements:** Must be valid domain, under your control, feedback auto-enabled
+2. **Next Steps:** DNS records generated → Add to DNS provider → Auto-verification → Start sending
+
+**Post-creation:** Shows DNS records table. Footer buttons: "Add Another Domain" (ghost) + "Done" (check icon).
+
+### 5.3 Domain Records & Verification
+
+**Dialog title:** "Domain: {domainId}"
+**Subtitle:** "DNS Records Configuration"
+
+**Records table columns:**
+
+| Column | Header | Width | Content |
+|--------|--------|-------|---------|
+| Type | Type | 15% | Badge (outline): `TXT`, `CNAME`, or `MX` |
+| Name | Name | 35% | Mono text + Copy button |
+| Value | Value | 35% | Mono text, truncated at 50 chars with popover + Copy button |
+| Status | Status | 15% | Status indicator badge (only when status info available) |
+
+**MX records** additionally show: "Priority: {priority}" (default 10).
+
+**DNS record status values:**
+
+| Status | Display Text | Badge Variant | Indicator Color | Animation |
+|--------|-------------|---------------|-----------------|-----------|
+| `VERIFIED` | "verified" | default (green) | `bg-green-500` | — |
+| `VALID` | "valid" | default (green) | `bg-green-500` | — |
+| `VERIFYING` | "verifying" | secondary | `bg-blue-500` | Pulsing |
+| `PENDING` | "pending" | secondary | `bg-yellow-500` | Pulsing |
+| `NOT_STARTED` | "Not Started" | secondary | `bg-yellow-500` | Pulsing |
+| `FAILED` | "failed" | destructive (red) | `bg-red-500` | — |
+| `INVALID` | "invalid" | destructive (red) | `bg-red-500` | — |
+
+**Action buttons:**
+- **Verify Domain** — `RefreshCw` icon. Has 5-minute cooldown (persisted in localStorage). Shows countdown during cooldown.
+- **Download Zone File** — `FileText` icon. Downloads BIND-format zone file as `{domain}.zone`.
+
+**Verification nudge messages:**
+- All DNS records verified but domain NOT_STARTED: "Great! All DNS records are verified. Click 'Verify Domain' below to complete domain verification..."
+- Domain FAILED/INVALID: "Domain verification failed. Please ensure all DNS records are correctly configured..."
+- Verifying for > 1 hour: "Your domain has been verifying for over an hour. DNS records can sometimes get stuck..."
+
+**Zone file tooltip:** "Some quirky registries like Namecheap doesn't support bulk zone file upload--paste records individually instead." + link to `https://docs.agentmail.to/custom-domains`.
 
 ---
 
-## 7. Common UI Patterns
+## 6. Webhooks
 
-### Tables
+**Route:** `/dashboard/webhooks`
+**Header:** Title: "Webhooks" | Subtitle: "Manage webhook endpoints and monitor delivery"
 
-All list views share common table features:
-- **Checkbox column**: For bulk selection
-- **Column visibility**: Toggle columns with "Columns" button
-- **Sorting**: Click column headers to sort
-- **Pagination**: 
-  - "X of Y row(s) selected" counter
-  - Rows per page selector (10, 25, 50, 100)
-  - Page navigation: First, Previous, Next, Last
+The webhooks section uses an **embedded Svix portal** via iframe. The portal URL is fetched from `POST /api/webhooks/portal-url` with `{ darkMode: true }`.
 
-### Action Menus
+**Svix portal features (provided by Svix):**
+- Create/edit/delete webhook endpoints
+- Event catalog and filtering
+- Delivery monitoring and logs
+- Retry failed deliveries
+- Signing secret management
 
-Three-dot menus (⋮) provide contextual actions:
-- Edit / View details
-- Delete / Remove
-- Copy ID
-- Additional context-specific options
+**Iframe:** Height: 800px, width: 100%, `allow="clipboard-write"`, `loading="lazy"`, title: "Svix Webhook Portal"
 
-### Status Badges
+**Error state:** "Failed to load webhook portal" with "Try Again" button.
 
-Color-coded badges indicate status:
-- **Green**: Success, Valid, Enabled, Succeeded
-- **Blue**: Verifying, Processing
-- **Yellow/Orange**: Warning, Pending
-- **Red**: Failed, Error, Disabled
-- **Gray**: Default, Inactive
-
-### Search
-
-Global search available via:
-- Search icon in header
-- Keyboard shortcut: `⌘K` (Mac) / `Ctrl+K` (Windows)
-
-### Feedback
-
-- "Feedback" button in sidebar for reporting issues
-- User account section shows email and profile
+> **Support note:** Webhook management UI is entirely provided by Svix. AgentMail does not control the portal's internal UI. If users report webhook portal issues, check Svix status.
 
 ---
 
-## 8. Common User Questions by UI Section
+## 7. API Keys
+
+### 7.1 API Keys List
+
+**Route:** `/dashboard/api-keys`
+**Header:** Title: "API Keys" | Subtitle: "Manage API keys for authenticating with the AgentMail API"
+
+**Table columns:**
+
+| Column | Header | Width | Content |
+|--------|--------|-------|---------|
+| `name` | Name | auto | Key name (truncated, font-medium) |
+| `scope` | Scope | 100px | "Pod" if pod-scoped, otherwise "Org" |
+| `apiKey` | API Key | 200px | `{prefix}•••••••••••••` (mono, gray background) |
+| `usedAt` | Last Used | 180px | Formatted datetime |
+| `createdAt` | Created | 180px | Formatted date |
+| `actions` | (empty) | 50px | Three-dot menu → Delete |
+
+**Masking format:** `{prefix}` followed by 13 bullet characters (U+2022). The full key is never shown after creation.
+
+**Empty state:** Icon: `Key` | "No API keys configured" | "Create your first API key to start using the AgentMail API"
+
+### 7.2 Create API Key
+
+**Dialog title:** "Create API Key"
+**Dialog description:** "Create a new API key to authenticate with the AgentMail API."
+
+**Form fields:**
+
+| Field | Label | Placeholder | Helper Text |
+|-------|-------|-------------|-------------|
+| Name | Name | "My API Key" | "A friendly name to identify this API key." |
+| Scope | Scope (optional) | "Limit to a pod or leave empty for org-wide" | "Limit to a pod or leave empty for org-wide access." |
+
+**Scope options:**
+- "No scope" (value: `none`) — org-wide access
+- List of pods from API — pod-scoped access
+
+**Validation:** Name is required ("Name is required").
+
+**Success view (shown once after creation):**
+
+Security warning (yellow): "Save your API key now — Make sure to copy or download your API key now. You won't be able to see it again!"
+
+Displayed fields:
+- **API Key** — Full key in readonly input + Copy button + Download button
+- **Display Name** — Readonly input
+- **Key Prefix** — Readonly mono input
+
+**Download filename:** `agentmail_api_key_{keyName}`
+
+Footer: "Create Another" (ghost) + "Done" (check icon)
+
+---
+
+## 8. Allow/Block Lists
+
+**Route:** `/dashboard/lists`
+**Header:** Title: "Lists" | Subtitle: "Manage allow and block lists for email"
+
+**Layout:** Two sections ("Receive" and "Send"), each containing a 2-column grid with Allow List and Block List.
+
+**Four lists displayed:**
+
+| Section | Title | Direction | Type | Shows Reason Column |
+|---------|-------|-----------|------|-------------------|
+| Receive | Allow List | `receive` | `allow` | No |
+| Receive | Block List | `receive` | `block` | Yes |
+| Send | Allow List | `send` | `allow` | No |
+| Send | Block List | `send` | `block` | Yes |
+
+**Table columns per list:**
+
+| Column | Shown In | Content |
+|--------|----------|---------|
+| Address | All lists | Email address or domain |
+| Reason | Block lists only | Reason text or "—" |
+| Created At | All lists | Formatted date |
+| Actions | All lists | Three-dot menu → Delete |
+
+**Add entry dialog:**
+- Title: "Add to {Allow List/Block List}"
+- Fields: Address (required, placeholder: "user@example.com or example.com") + Reason (optional, block lists only, placeholder: "Spam sender")
+- Help text: "An email address or domain to allow/block."
+- Submit: "Add Entry" → "Adding..."
+
+---
+
+## 9. Metrics
+
+**Route:** `/dashboard/metrics`
+**Header:** Title: "Metrics" | Dynamic subtitle based on time range ("Last 24 hours" / "Last 7 days" / "Last 30 days")
+
+**Controls (top right):**
+
+| Control | Options | Default |
+|---------|---------|---------|
+| Time Range | "Last 24 hours" (24h), "Last 7 days" (7d), "Last 30 days" (30d) | 7d |
+| Timezone | 12 common timezones + auto-detected user timezone | Browser timezone |
+
+**Available timezones:**
+
+| Value | Label |
+|-------|-------|
+| `UTC` | UTC (Coordinated Universal Time) |
+| `America/Los_Angeles` | Pacific Time (PT) |
+| `America/Denver` | Mountain Time (MT) |
+| `America/Chicago` | Central Time (CT) |
+| `America/New_York` | Eastern Time (ET) |
+| `Europe/London` | London (GMT/BST) |
+| `Europe/Paris` | Paris (CET/CEST) |
+| `Europe/Berlin` | Berlin (CET/CEST) |
+| `Asia/Tokyo` | Tokyo (JST) |
+| `Asia/Shanghai` | Shanghai (CST) |
+| `Asia/Kolkata` | India (IST) |
+| `Australia/Sydney` | Sydney (AEST/AEDT) |
+
+If the user's browser timezone isn't in the list, it's added with a "(Your Timezone)" label.
+
+**Layout (5 sections, top to bottom):**
+
+1. Health Score Bar (full width)
+2. Compact Stat Row (full width)
+3. Email Activity chart (full width, 350px height)
+4. Two-column grid: Delivery Funnel + Latency Distribution
+5. Two-column grid: Inbound/Outbound Chart + Failure Heatmap
+
+**Empty state:** Icon: `BarChart3` | "No Metrics Data Yet" | "Once you start sending emails through AgentMail, you'll see detailed analytics here."
+
+### 9.1 Health Score Bar
+
+Displays a health score (0-100) with a Shield icon.
+
+**Health levels:**
+
+| Level | Label | Text Color | Background | Score Range |
+|-------|-------|------------|------------|-------------|
+| Excellent | "Excellent" | Emerald | `bg-emerald-500/10` | High |
+| Good | "Good" | Blue | `bg-blue-500/10` | — |
+| Average | "Average" | Amber | `bg-amber-500/10` | — |
+| Concerning | "Concerning" | Orange | `bg-orange-500/10` | — |
+| Critical | "Critical" | Red | `bg-red-500/10` | Low |
+
+**Display:** "Score: {score} — {label}" + sparkline SVG (120×32px) showing daily health scores over the period.
+
+### 9.2 Compact Stat Row
+
+Horizontal row of key metrics with period-over-period comparison arrows.
+
+**Left group (volume stats):**
+- `{sent} sent` · `{delivered} delivered` · `{deliveryRate}% delivery` · `{received} received`
+
+**Right group (problem stats, separated by divider):**
+- `{bounced} bounced` · `{complained} complained` · `{rejected} rejected`
+
+**Comparison arrows:**
+- Volume stats: up = green (good), down = neutral
+- Problem stats: up = red (bad), down = green (good)
+
+**Anomaly highlighting:**
+- Bounce rate > 2%: Text turns red
+- Any complaints > 0: Text turns orange
+- Reject rate > 2%: Text turns red
+
+### 9.3 Email Activity Chart
+
+Stacked bar chart (Recharts) showing email volume by status over time.
+
+- **Series:** Sent, Delivered, Bounced, Failed
+- **Title:** "Email Activity"
+- **Height:** 350px
+- Timezone-aware timestamps
+
+### 9.4 Delivery Funnel
+
+**Title:** "Delivery Funnel"
+**Subtitle:** "{sent} sent — where did they end up?"
+
+Horizontal bar chart showing the breakdown of sent emails:
+
+| Segment | Color |
+|---------|-------|
+| Delivered | Green `hsl(145, 65%, 50%)` |
+| Bounced | Red `hsl(0, 70%, 55%)` |
+| Rejected | Purple `hsl(270, 60%, 55%)` |
+| Delayed | Yellow `hsl(45, 85%, 55%)` |
+
+Format: "{count} ({pct}%)" per bar. Segments with count=0 are hidden.
+
+**Special states:**
+- No sent emails: "No sent emails in this period."
+- 100% delivered: Green checkmark + "All emails delivered successfully"
+
+### 9.5 Latency Distribution
+
+**Title:** "Delivery Latency"
+
+**Latency quality tiers:**
+
+| Threshold | Label | Color |
+|-----------|-------|-------|
+| < 1000ms | Fast | Emerald |
+| < 5000ms | Normal | Foreground |
+| < 30000ms | Slow | Amber |
+| >= 30000ms | Very Slow | Red |
+
+**Display modes:**
+- **No data (0 deliveries):** "Not enough data to compute latency."
+- **Few data points (< 4):** Individual latency entries + average line
+- **Sufficient data (>= 4):** Percentile stats (p50, p95, p99) + histogram bar chart (120px height)
+
+### 9.6 Inbound/Outbound Chart
+
+**Title:** "Email Flow — Inbound vs Outbound"
+**Subtitle:** "Volume comparison over time"
+
+Dual area chart:
+- **Outbound (Sent):** Blue `hsl(220, 70%, 55%)`
+- **Inbound (Received):** Green `hsl(150, 60%, 45%)`
+
+Natural curve interpolation with 40% fill opacity.
+
+**Empty state:** "No email activity in this period."
+
+### 9.7 Failure Heatmap
+
+**Title:** "Failure Patterns"
+**Subtitle:** "{totalFailures} failure(s) — when do they happen?"
+
+7×24 grid (days × hours). Hour labels shown every 3 hours (`12a`, `3a`, `6a`, ... `9p`).
+
+**Cell color intensity (5 levels):**
+
+| Intensity | Background |
+|-----------|------------|
+| 0 failures | `bg-muted/30` |
+| <= 25% of max | `bg-amber-500/20` |
+| <= 50% of max | `bg-orange-500/30` |
+| <= 75% of max | `bg-red-500/40` |
+| > 75% of max | `bg-red-500/60` |
+
+**Cell tooltip:** "{day} {hour}: {count} failure(s)"
+
+**Legend:** "Less" [5 swatches] "More"
+
+**Zero failures:** Green checkmark + "No failures in this period"
+
+---
+
+## 10. Pods
+
+### 10.1 Pods List
+
+**Route:** `/dashboard/pods`
+**Header:** Title: "Pods" | Subtitle: "Manage your isolated workspaces for multi-tenant applications"
+
+**Table columns:**
+
+| Column | Header | Width | Content |
+|--------|--------|-------|---------|
+| `name` | Name | auto | Pod name (bold) + client ID in mono below |
+| `createdAt` | Created | 180px | Formatted date |
+| `actions` | (empty) | 50px | Three-dot menu |
+
+**Row actions:**
+- Default pod: "Cannot Delete Default" (disabled, muted)
+- Other pods: "Delete Pod" (destructive, `Trash2` icon)
+
+**Row click:** Navigates to `/dashboard/pods/[podId]`
+
+**Empty state:** Icon: `Box` | "No pods yet" | "Create your first pod to start organizing your multi-tenant workloads."
+
+### 10.2 Pod Detail
+
+**Route:** `/dashboard/pods/[podId]`
+
+**Header:** Back button ("Back to Pods"), pod icon + name, client ID (mono), created date. Options menu (delete, except default pod).
+
+**Three tabs:**
+
+| Tab | Label | Icon | Content |
+|-----|-------|------|---------|
+| `inboxes` | Inboxes | `Inbox` | Pod's inboxes (same DataTable as org inboxes) + "Unified Inbox" + "SMTP/IMAP" + "Create Inbox" buttons |
+| `domains` | Domains | `Globe` | Pod's domains (same DataTable as org domains) + "Create Domain" button |
+| `api-keys` | API Keys | `Key` | Pod-scoped API keys (same DataTable as org API keys) + "Create API Key" button |
+
+Default tab: `inboxes`
+
+**Pod-scoped create dialogs:** Create Inbox, Create Domain, and Create API Key dialogs all work in pod context, scoping resources to the pod.
+
+**Pod unified inbox:** Available at `/dashboard/pods/[podId]/threads` — shows threads across all inboxes in the pod.
+
+---
+
+## 11. Upgrade / Pricing
+
+**Route:** `/dashboard/upgrade`
+**Header:** Title: "Upgrade Your Plan" | Subtitle varies by current tier
+
+**Pricing tiers (4 columns):**
+
+| Tier | Name | Price | Key Features |
+|------|------|-------|-------------|
+| `free` | Free | $0/month | No credit card required, 3 inboxes, 3,000 emails/month, 3 GB storage |
+| `developer` | Developer | $20/month | 10 inboxes, 10,000 emails/month, 10 GB storage, 10 custom domains, Email support |
+| `startup` | Startup | $200/month | 150 inboxes, 150,000 emails/month, 150 GB storage, 150 custom domains, Dedicated IPs, SOC 2 report, Slack channel support |
+| `enterprise` | Enterprise | Custom | Everything in Startup, Custom volume pricing, White-label platform, EU region cloud, BYO cloud deployment, OIDC/SAML SSO |
+
+**Card badges:**
+- Current plan: "Current" badge
+- Startup (when not current): "Popular" badge (inverted styling)
+
+**Button states:**
+- Current plan: "Current Plan" (disabled, with check icon)
+- Lower tier: "Included in Your Plan" (disabled)
+- Higher tier: "Upgrade to {tier}" (Crown icon) → "Creating checkout..." (spinner)
+- Enterprise: "Contact Sales" → `mailto:founders@agentmail.cc`
+
+**Checkout:** Stripe checkout session via `POST /api/billing/checkout-session`. Users with an existing Stripe subscription are redirected to `/dashboard`.
+
+**Cancelled checkout:** Yellow banner: "Your upgrade was cancelled. You can try again anytime."
+
+---
+
+## 12. UI Patterns
+
+### 12.1 DataTable
+
+Built on `@tanstack/react-table`. Used consistently across all list views.
+
+**Features:**
+- Fixed column widths via `width` property
+- Row click callbacks (navigation)
+- Hover state: `cursor-pointer hover:bg-muted/50`
+- Loading state with skeleton animation
+- Empty state message
+- Server-side pagination (see [Pagination](#126-pagination))
+
+### 12.2 Dialogs & Modals
+
+Built on Radix UI Dialog. Two modes:
+- **Trigger mode:** Pass children as the trigger button
+- **Controlled mode:** `isOpen` and `onClose` props
+
+Standard structure: `DialogContent` > `DialogHeader` > `DialogTitle` + `DialogDescription` > form > footer buttons.
+
+### 12.3 Delete Confirmation
+
+Generic `DeleteConfirmDialog<T>` used for all delete operations.
+
+**Standard flow:**
+1. Dialog title: "Delete {ResourceName}"
+2. Description: "This action cannot be undone. This will permanently delete the {resourcename}."
+3. Warning box (red border): "Warning" heading + custom warning message
+4. Type-to-confirm: "To confirm, please type **delete** in the box below." → placeholder: "Type 'delete' to confirm"
+5. Buttons: "Cancel" + "Delete {ResourceName}" (destructive, disabled until "delete" typed)
+6. Deleting state: "Deleting..." with spinner
+
+**Resource-specific warning messages:**
+
+| Resource | Warning |
+|----------|---------|
+| Inbox | Default |
+| Domain | "You will lose the ability to send and receive emails from this domain, but you will still have access to existing inbox information." |
+| API Key | "You are about to delete {keyName}. Any applications using this API key will no longer be able to authenticate." + shows masked key |
+| Pod | Default (cannot delete default pod) |
+| List Entry | "You are about to remove {entry} from the {allow/block list}." |
+
+### 12.4 Status Badges
+
+**Domain/DNS status badges:**
+
+| Status | Variant | Color |
+|--------|---------|-------|
+| VERIFIED / VALID | default | Green |
+| VERIFYING / PENDING / NOT_STARTED | secondary | Yellow/Blue indicator |
+| FAILED / INVALID | destructive | Red |
+
+**Feedback badges:** "Enabled" (default) / "Disabled" (secondary)
+
+**API key scope:** Plain text "Org" or "Pod" (not a badge)
+
+### 12.5 Empty States
+
+Two variants:
+
+**PageEmptyState** — Centered icon (size-12, muted) + title + description. Used in tables.
+
+**CardEmptyState** — Same content inside a Card component (max-w-md). Used on dedicated pages like Metrics.
+
+### 12.6 Pagination
+
+`PaginationBar` component at the bottom of all DataTables.
+
+**Features:**
+- **Rows per page:** Dropdown with options `[5, 10, 20, 30, 50]` (default: 30)
+- **Navigation:** First (⏮), Previous (◀), range display ("{start} to {end}"), Next (▶), Last (⏭)
+- Server-side pagination using `pageToken`
+- Does **not** display total count or total pages
+
+### 12.7 Premium Feature Banner
+
+Shown when a feature's limit is 0 (free tier restriction).
+
+**Styling:** Amber/orange gradient card with Crown icon.
+- Heading: "Premium Feature"
+- Message: Custom or default "{feature} limit reached. Upgrade to add more."
+- Button: "Upgrade Plan" (amber background) → `/dashboard/upgrade`
+- Optional dismiss (X button)
+
+---
+
+## 13. Onboarding System
+
+Triggered automatically when a new org has no inboxes. Also accessible from the Overview page.
+
+**Card title:** "Getting Started"
+**Progress:** "{completed}/{total} completed"
+
+**Checklist steps (2×2 grid):**
+
+| # | Label | Icon | Link | Completion Condition |
+|---|-------|------|------|---------------------|
+| 1 | Create an inbox | `Mail` | `/dashboard/inboxes` | `org.inboxCount > 0` |
+| 2 | Receive an email | `Inbox` | `/dashboard/inboxes` | Any threads exist |
+| 3 | Create an API key | `Key` | `/dashboard/api-keys` | `apiKeyCount > 0` |
+| 4 | Read the docs | `BookOpen` | `https://docs.agentmail.to` | Docs link visited (localStorage) |
+
+**Step visual states:**
+- Completed: `CheckCircle2` icon (primary), text has line-through + 50% opacity
+- Incomplete: `Circle` icon (muted), normal text
+
+**CTA button:** Shows the label of the first uncompleted step with arrow icon. When all done: "Dismiss" button.
+
+**Dismiss:** Persisted to `localStorage` key `agentmail-checklist-dismissed-{orgId}`.
+
+---
+
+## 14. Authentication & Organization Management
+
+**Auth provider:** Clerk
+
+**Routes:**
+- `/sign-in/[[...sign-in]]` — Sign in page
+- `/sign-up/[[...sign-up]]` — Sign up page
+- `/select-organization` — Org picker
+- `/create-organization` — Create new org
+- `/auto-create-organization` — Auto-create on first login
+
+**Auth guards (dashboard layout):**
+- No `userId` → redirect to `/sign-in`
+- No `orgId` → redirect to `/select-organization`
+
+**Org profile dialog:** Full-screen Clerk `OrganizationProfile` overlay. Closes on Escape or backdrop click.
+
+**SSO:** Vercel SSO callback at `/sso/vercel/callback`.
+
+---
+
+## 15. Common User Questions by UI Section
+
+### Overview
+
+| Question | Answer |
+|----------|--------|
+| "What does the Overview page show?" | A summary dashboard with an email activity chart (24h/7d/30d), recent threads preview, resource usage (inboxes and domains with limits), bounce/complaint rates, and an onboarding checklist for new users. |
+| "Why do I see 'Upgrade' on the Domains card?" | Your plan has a domain limit of 0 (free tier). Upgrade to Developer or Startup to use custom domains. |
+| "What do the colored arrows mean in the stats?" | Green up arrows mean a metric improved. Red up arrows on bounce/complaint/reject mean those got worse. The comparison is against the previous equivalent period. |
 
 ### Inboxes
-- **"How do I create an inbox?"** → Click `+ Create Inbox`, optionally set username/domain/display name
-- **"Why can't I see my custom domain?"** → Register it in Domains section first
-- **"How do I read emails?"** → Click on inbox row, then click on a thread
-- **"What do the tags mean?"** → `received` = incoming, `sent` = outgoing, `unread` = not read yet
+
+| Question | Answer |
+|----------|--------|
+| "How do I create an inbox?" | Click "Create Inbox" on the Inboxes page. Username is optional (auto-generated if blank). Choose a domain (agentmail.to by default, or a verified custom domain). |
+| "What's the Unified Inbox?" | It shows threads from all your inboxes in one view. Access it via the "Unified Inbox" button on the Inboxes list page. |
+| "Can I change an inbox email address?" | No. You can only update the Display Name. To change the address, delete the inbox and create a new one. |
+| "Where is SMTP/IMAP setup?" | Click "SMTP/IMAP" on the Inboxes page. Enter your API key to populate credentials. Supports Generic, Smartlead, and Instantly export formats. You can also export as CSV. |
+| "What email folders are available?" | Inbox, Starred, Sent, Drafts, Important, Scheduled, All Mail, Spam, and Trash (Trash is not available in Unified Inbox). |
+| "How do I compose an email?" | Open an inbox, then click the "Compose" button in the inbox sidebar. Fill in To, Subject, and Body. Cc/Bcc are available as toggle buttons. |
+| "What's the max attachment size?" | 25 MB per file. |
 
 ### Domains
-- **"How long does verification take?"** → Usually minutes, but DNS can take up to 48 hours
-- **"Which records do I need?"** → All 5 records (DKIM, 2 MX, SPF, DMARC) for full functionality
-- **"What if a record shows invalid?"** → Double-check the value copied correctly, wait for DNS propagation
+
+| Question | Answer |
+|----------|--------|
+| "How do I add a custom domain?" | Click "Create Domain" on the Domains page. Enter your domain name. After creation, DNS records (MX, CNAME, TXT) are generated. Add them to your DNS provider. |
+| "What DNS records do I need?" | The console shows the exact records. Typically: MX record for receiving, CNAME for DKIM, TXT for SPF and verification. You can download a BIND zone file. |
+| "My domain is stuck on 'verifying'." | If it's been more than an hour, click "Verify Domain" to trigger a re-check. Check that all DNS records are correctly configured. Some DNS providers take up to 48 hours to propagate. |
+| "Why can't I add domains on the free plan?" | Custom domains are a premium feature. Upgrade to Developer ($20/mo) or Startup ($200/mo). |
+| "What does 'Feedback Enabled' mean?" | When enabled, bounce and complaint feedback is processed for deliverability monitoring. It's automatically enabled for new domains. |
 
 ### Webhooks
-- **"How do I test my webhook?"** → Use the "Testing" tab in endpoint detail view
-- **"What's the signing secret for?"** → Verify webhook requests are from AgentMail (prevent spoofing)
-- **"Why are deliveries failing?"** → Check your endpoint returns 2xx status code within timeout
+
+| Question | Answer |
+|----------|--------|
+| "How do I set up webhooks?" | Go to the Webhooks page. The UI is powered by Svix. Click to add an endpoint, select event types, and provide your URL. |
+| "The webhook portal won't load." | Try clicking "Try Again". If it persists, check your network connection. The portal is hosted by Svix and loaded in an iframe. |
 
 ### API Keys
-- **"Where do I find my API key?"** → Dashboard > API Keys
-- **"I lost my API key"** → Create a new one; old keys cannot be retrieved
-- **"How do I use the API key?"** → Set as Bearer token: `Authorization: Bearer am_xxxxx`
+
+| Question | Answer |
+|----------|--------|
+| "I lost my API key. Can I see it again?" | No. API keys are shown only once at creation. You must create a new one and delete the old one. |
+| "What's the difference between Org and Pod scope?" | Org-scoped keys can access all resources. Pod-scoped keys can only access resources within that specific pod. |
+| "What does the masked key format mean?" | The display shows the key prefix followed by bullets (e.g., `am_us_abc•••••••••••••`). The prefix helps identify the key without revealing it. |
+
+### Allow/Block Lists
+
+| Question | Answer |
+|----------|--------|
+| "What are Allow/Block Lists?" | Four lists that control email filtering: Receive Allow, Receive Block, Send Allow, and Send Block. Enter email addresses or full domains. |
+| "What's the Reason column?" | Block lists optionally show a reason (e.g., "Spam sender"). Allow lists don't have reasons. |
+| "Can I add a whole domain?" | Yes. Enter just the domain (e.g., `example.com`) instead of a full email address. |
 
 ### Metrics
-- **"Why is my delivery rate low?"** → Check bounce reasons, email content, sender reputation
-- **"What's a good bounce rate?"** → Under 2% is acceptable, under 0.5% is excellent
-- **"How often do metrics update?"** → Near real-time, with hourly aggregation
+
+| Question | Answer |
+|----------|--------|
+| "What time ranges are available?" | Last 24 hours, Last 7 days, and Last 30 days. |
+| "Can I change the timezone?" | Yes. Click the timezone selector in the top-right of the Metrics page. 12 common timezones are available, plus your browser's timezone if it's different. |
+| "What's the Health Score?" | A 0-100 score reflecting your overall email sending health. Levels: Excellent, Good, Average, Concerning, Critical. |
+| "What does the Failure Heatmap show?" | A 7-day × 24-hour grid showing when email failures occur. Darker cells = more failures. Useful for identifying patterns. |
+| "No metrics are showing." | Metrics appear after you start sending emails. If you've sent emails and still see nothing, try changing the time range or check your API key permissions. |
 
 ### Pods
-- **"What are pods for?"** → Isolate different environments or projects
-- **"Can I move inboxes between pods?"** → Currently inboxes are created within a pod
-- **"Do I need multiple pods?"** → Only if you need workspace isolation; Default Pod works for most users
+
+| Question | Answer |
+|----------|--------|
+| "What are Pods?" | Pods are isolated workspaces for multi-tenant applications. Each pod has its own inboxes, domains, and API keys. |
+| "Can I delete the default pod?" | No. The default pod cannot be deleted. Other pods can be deleted if empty. |
+| "How do I scope an API key to a pod?" | When creating an API key, select the pod from the Scope dropdown. Or create the key from within the pod's API Keys tab. |
+
+### Upgrade / Billing
+
+| Question | Answer |
+|----------|--------|
+| "How do I upgrade?" | Go to the Upgrade page (sidebar org dropdown → "Upgrade Plan", or `/dashboard/upgrade`). Select a plan and complete checkout via Stripe. |
+| "How do I manage my subscription?" | Org dropdown → "Manage Subscription" (opens Stripe customer portal). |
+| "My checkout was cancelled." | A yellow banner will confirm cancellation. You can try again anytime from the Upgrade page. |
 
 ---
 
-## 9. UI Tips and Shortcuts
+## 16. Troubleshooting
 
-### Keyboard Shortcuts
-- `⌘K` / `Ctrl+K`: Open global search
-- Standard browser shortcuts for navigation
+### Page/Loading Issues
 
-### Best Practices
-1. **Name your resources descriptively** - Makes management easier
-2. **Use display names for inboxes** - Improves email appearance
-3. **Set up webhooks early** - Real-time notifications are powerful
-4. **Monitor metrics regularly** - Catch deliverability issues early
-5. **Organize with pods** - Especially for multi-project setups
+| Symptom | Cause | Resolution |
+|---------|-------|------------|
+| Blank page after login | Missing org selection | Navigate to `/select-organization` and pick or create an org |
+| "Loading..." spinner that never resolves | API connectivity issue | Check network tab for failed requests. Verify API key is valid. |
+| Webhook portal not loading | Svix portal URL fetch failure | Click "Try Again". Check network/firewall for iframe restrictions. |
+| Breadcrumbs show raw IDs instead of names | Data still loading or not found | Wait for data to load. If persistent, the resource may have been deleted. |
 
-### Troubleshooting
-- **Page not loading?** → Refresh, check network, clear cache
-- **Action not working?** → Check permissions, try logging out/in
-- **Data not updating?** → Refresh the page, some data has slight delays
+### Domain Verification
+
+| Symptom | Cause | Resolution |
+|---------|-------|------------|
+| Domain stuck on "Not Started" | DNS records not yet configured | Add all DNS records shown in the records table to your DNS provider. |
+| Domain stuck on "verifying" > 1 hour | DNS propagation delay or misconfigured records | Click "Verify Domain" to force re-check. Double-check records match exactly. DNS can take up to 48 hours. |
+| "FAILED" status | DNS records incorrect or missing | Compare each record in the table against your DNS config. Common issues: wrong CNAME target, missing TXT value, split DKIM string. |
+| Zone file won't import | Some registrars (e.g., Namecheap) don't support bulk import | Paste records individually. See tooltip in the records dialog. |
+| Verify button disabled with countdown | 5-minute cooldown between verification attempts | Wait for the countdown. The cooldown is stored in localStorage. |
+
+### Create Operations
+
+| Symptom | Cause | Resolution |
+|---------|-------|------------|
+| "This inbox address already exists" | Inbox email already in your org | Choose a different username or domain. |
+| "This inbox address is already taken" | Another org owns that address | Choose a different username. |
+| "You have reached your inbox limit" | Plan limit exceeded | Delete unused inboxes or upgrade your plan. |
+| "Domain is malformed" | Invalid domain format | Check for missing dots, multiple consecutive dots, or short TLD. |
+| "Name is required" (API key) | Empty name field | Enter a descriptive name for the key. |
+
+### Billing
+
+| Symptom | Cause | Resolution |
+|---------|-------|------------|
+| "Creating checkout..." hangs | Stripe API timeout | Retry. Check network connectivity. |
+| Redirected to dashboard after clicking upgrade | Already has a Stripe subscription | Use "Manage Subscription" in org dropdown to access Stripe portal. |
+| Premium banner won't dismiss | Not dismissible by design (for limit=0 features) | Upgrade plan to remove the banner. |
+
+### Known Limitations
+
+- **Dark mode only** — No light mode toggle. The console forces dark mode.
+- **No global search** — There is no global search across resources. Use per-section tables.
+- **No keyboard shortcuts** — No documented keyboard shortcuts for navigation.
+- **Webhook UI is external** — The webhook management portal is an embedded Svix iframe; AgentMail cannot customize its internal behavior.
+- **Pagination shows no total count** — The pagination bar shows "X to Y" but does not display total items or total pages.
+- **Compose not available in Unified Inbox** — The Compose button is a no-op in unified view; you must open a specific inbox to compose.
+- **Trash not available in Unified Inbox** — The Unified sidebar has 8 items; the Trash folder is only available in single-inbox views.
+
+---
+
+*Report generated from source code analysis of `agentmail-web/apps/console/` (Next.js 16 App Router, React 19, component files, route structure). Cross-referenced with official documentation at docs.agentmail.to. Last validated: 2026-03-07.*

@@ -1,172 +1,66 @@
 # AgentMail Discord Bot
 
-A Discord bot for the AgentMail community with intelligent support, Twitter/X post syncing, and welcome messages.
+Discord support bot for the AgentMail community. Uses Claude Opus 4.6 + Hyperspell RAG to generate answers from the full knowledge base.
 
 ## Features
 
-- **AI-Powered Support**: Uses Claude API for intelligent semantic FAQ matching in #support channel
-- **Multi-Source Knowledge Base**: Pulls from FAQs, support history, documentation, and codebase analysis
-- **Automatic Fallback**: Falls back to keyword matching if Claude API is unavailable
-- **Twitter Sync**: Automatically posts new tweets from @agentmail to a Discord channel
-- **Welcome Messages**: Sends a welcome embed when new members join with links to get started
+- **Generative AI Support**: Claude reads retrieved docs/FAQs and generates accurate answers in #support
+- **Hyperspell RAG**: Semantic search over 100+ knowledge base documents for context retrieval
+- **Keyword Fallback**: Falls back to keyword-based FAQ matching when Claude is unavailable
+- **Welcome Messages**: Sends a welcome embed with quick-start links when new members join
+- **Security**: Rate limiting, prompt injection detection, input sanitization
 
-## Setup
-
-### 1. Create Discord Application
-
-1. Go to [Discord Developer Portal](https://discord.com/developers/applications)
-2. Click "New Application" and name it
-3. Go to "Bot" section, click "Add Bot"
-4. Copy the bot token (keep it secret!)
-5. Enable these Privileged Gateway Intents:
-   - **Server Members Intent** (for welcome messages)
-   - **Message Content Intent** (for commands)
-
-### 2. Get Channel IDs
-
-1. In Discord, go to User Settings > Advanced > Enable "Developer Mode"
-2. Right-click on your Twitter feed channel > "Copy ID"
-3. Right-click on your welcome channel > "Copy ID"
-
-### 3. Configure Environment
-
-Copy `.env.example` to `.env` and edit with your values:
+## Quick Start
 
 ```bash
-cp .env.example .env
-```
-
-Required configuration:
-
-```
-# Discord Configuration
-DISCORD_BOT_TOKEN=your_bot_token_here
-SUPPORT_CHANNEL_ID=123456789012345678
-WELCOME_CHANNEL_ID=123456789012345678
-TEAM_USERNAMES=haakam21,simplehacker1313,mikesteroonie
-
-# Support Bot Behavior
-RESPONSE_DELAY_SECONDS=300
-CONFIDENCE_THRESHOLD=0.5
-PARTIAL_HINT_THRESHOLD=0.3
-
-# Claude API (Required for intelligent matching)
-ANTHROPIC_API_KEY=your_anthropic_api_key_here
-CLAUDE_MODEL=claude-sonnet-4-20250514
-CLAUDE_MAX_TOKENS=500
-```
-
-### 4. Set Up Claude API (Optional but Recommended)
-
-The bot uses Claude API for intelligent semantic FAQ matching. Without it, the bot falls back to keyword matching.
-
-1. Get an API key from [Anthropic Console](https://console.anthropic.com/)
-2. Add `ANTHROPIC_API_KEY` to your `.env` file
-3. For Railway: Add `ANTHROPIC_API_KEY` as an environment variable
-
-### 4. Invite Bot to Server
-
-1. In Developer Portal, go to OAuth2 > URL Generator
-2. Select scopes: `bot`
-3. Select permissions:
-   - Send Messages
-   - Embed Links
-   - View Channels
-4. Copy the generated URL and open it to invite the bot
-
-## Running
-
-```bash
-# Install dependencies
+cp .env.example .env   # fill in your tokens
 pip install -r requirements.txt
-
-# Run the bot
-python main.py
+make ingest            # one-time: populate Hyperspell vault
+make run               # start the bot
 ```
 
-## Deployment
-
-The bot can be deployed to:
-
-- **Railway**: Connect repo, add env vars, deploy
-- **Fly.io**: `fly launch`, set secrets with `fly secrets set`
-- **VPS**: Run with `systemd` or `pm2` for persistence
-
-## Files
+## Project Structure
 
 | File | Purpose |
 |------|---------|
-| `main.py` | Main bot code with Claude API integration |
-| `knowledge_loader.py` | Multi-source knowledge base loader |
-| `knowledge_base.json` | FAQ database (32 entries) |
-| `support_insights.md` | Analyzed support patterns |
-| `knowledge_base/` | Documentation and codebase analysis |
-| `.env` | Environment configuration |
-| `.env.example` | Example environment template |
-| `requirements.txt` | Python dependencies |
-| `bot.log` | (generated) Log file |
-| `support_bot.log` | (generated) Support event log (JSON lines) |
-
-## Knowledge Base Structure
-
-```
-knowledge_base/
-├── docs/           # Official documentation (MDX files)
-│   ├── quickstart.mdx
-│   ├── webhooks-overview.mdx
-│   └── ...
-└── codebase/       # Codebase analysis
-    ├── api-analysis.md      # API endpoints and patterns
-    ├── mcp-analysis.md      # MCP server tools
-    ├── apps-analysis.md     # Console app architecture
-    └── console-ui.md        # Console UI guide (from screenshots)
-```
+| `main.py` | Bot entry point — Discord events, Claude API, response logic |
+| `knowledge_loader.py` | Loads FAQs, docs, codebase analysis into structured context |
+| `hyperspell_retriever.py` | Async Hyperspell client for semantic retrieval |
+| `ingest_hyperspell.py` | One-time script to ingest knowledge base into Hyperspell |
+| `export_support.py` | Export Discord support messages to JSON |
+| `faq_analyzer.py` | Analyze support history for FAQ patterns |
+| `knowledge_base.json` | Structured FAQ database (43 entries) |
+| `knowledge_base/` | Docs (pages/), codebase analysis, support insights |
+| `Makefile` | Convenience targets: `run`, `ingest`, `export`, `install` |
 
 ## How It Works
 
-1. **User asks a question** in #support channel
-2. **Security checks**: Rate limiting, prompt injection detection
-3. **Claude API** analyzes the question with full knowledge context
-4. **Semantic matching** finds the best FAQ match
-5. **Confidence-based response**:
-   - High confidence (>=0.5): Wait 5 min, then send full answer
-   - Medium (0.3-0.5): Send partial hint with docs link
-   - Low (<0.3): Log and ignore
-6. **Fallback**: If Claude API fails or security blocks, uses keyword matching
+1. User asks a question in #support
+2. Security checks run (rate limit, injection detection, sanitization)
+3. Hyperspell retrieves relevant context from the knowledge vault
+4. Claude generates an answer grounded in the retrieved context
+5. Confidence-based response:
+   - **>= 0.5**: Wait for team response window, then send full answer
+   - **0.3 – 0.5**: Send partial hint immediately
+   - **< 0.3**: Skip (not a support question or unanswerable)
+6. User reacts thumbs-up/down; thumbs-down escalates to team
 
-## Security Features
+## Environment Variables
 
-The bot includes multiple security layers to prevent abuse:
+See `.env.example` for all options. Key variables:
 
-### Rate Limiting
-- Default: 5 requests per 60 seconds per user
-- Configurable via `RATE_LIMIT_REQUESTS` and `RATE_LIMIT_WINDOW`
-- Exceeding rate limit falls back to keyword matching (cheaper)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DISCORD_BOT_TOKEN` | Yes | Discord bot token |
+| `SUPPORT_CHANNEL_ID` | Yes | Channel ID for support questions |
+| `WELCOME_CHANNEL_ID` | No | Channel ID for welcome messages |
+| `ANTHROPIC_API_KEY` | Yes | Claude API key |
+| `HYPERSPELL_API_KEY` | No | Hyperspell API key for RAG retrieval |
 
-### Prompt Injection Protection
-- Detects 15+ patterns of prompt injection attempts
-- Examples blocked: "ignore previous instructions", "you are now", "SYSTEM:"
-- Suspicious messages fall back to keyword matching (safer)
+## Deployment
 
-### Input Sanitization
-- Truncates messages to max length (default: 2000 chars)
-- Removes control characters
-- Normalizes whitespace
+Uses `Procfile` for platforms like Railway:
 
-### Output Validation
-- Validates Claude returns valid FAQ IDs from knowledge base
-- Validates confidence scores are in valid range (0-1)
-- Invalid responses fall back to keyword matching
-
-### Security Logging
-- All security events logged to `security.log`
-- Events include: rate limit exceeded, injection attempts, invalid responses
-- Logs include user ID, timestamp, and details
-
-### Configuration
 ```
-# Security Configuration (in .env)
-RATE_LIMIT_REQUESTS=5      # Max requests per user per window
-RATE_LIMIT_WINDOW=60       # Time window in seconds
-MAX_MESSAGE_LENGTH=2000    # Max chars to process
+worker: python main.py
 ```

@@ -3,13 +3,12 @@ Knowledge Loader for AgentMail Support Bot
 
 Loads multi-source knowledge base for Claude API integration:
 - FAQs from knowledge_base.json
-- Support insights from support_insights.md
-- Documentation from knowledge_base/docs/
-- Codebase analysis from knowledge_base/codebase/
+- Support insights from knowledge_base/support_insights.md
+- Documentation from knowledge_base/pages/**/*.mdx
+- Codebase analysis from knowledge_base/codebase/*.md
 """
 
 import json
-import os
 import logging
 from pathlib import Path
 from typing import Optional
@@ -64,42 +63,48 @@ class KnowledgeBase:
                    f"{len(self.docs)} docs, {len(self.codebase)} codebase files")
     
     def _load_faqs(self) -> None:
-        """Load FAQs from knowledge_base.json."""
-        faq_path = self.base_path / 'knowledge_base.json'
-        if faq_path.exists():
-            try:
-                with open(faq_path, 'r') as f:
-                    data = json.load(f)
-                    self.faqs = data.get('faqs', [])
-                    self.faqs_dict = {faq['id']: faq for faq in self.faqs}
-                    logger.info(f"Loaded {len(self.faqs)} FAQs")
-            except (json.JSONDecodeError, IOError) as e:
-                logger.error(f"Failed to load FAQs: {e}")
+        """Load FAQs from knowledge_base.json (project root or knowledge_base/)."""
+        for faq_path in [self.base_path / 'knowledge_base.json',
+                         self.base_path / 'knowledge_base' / 'knowledge_base.json']:
+            if faq_path.exists():
+                try:
+                    with open(faq_path, 'r') as f:
+                        data = json.load(f)
+                        self.faqs = data.get('faqs', [])
+                        self.faqs_dict = {faq['id']: faq for faq in self.faqs}
+                        logger.info(f"Loaded {len(self.faqs)} FAQs from {faq_path}")
+                    return
+                except (json.JSONDecodeError, IOError) as e:
+                    logger.error(f"Failed to load FAQs from {faq_path}: {e}")
     
     def _load_support_insights(self) -> None:
-        """Load support insights from support_insights.md."""
-        insights_path = self.base_path / 'support_insights.md'
-        if insights_path.exists():
-            try:
-                with open(insights_path, 'r') as f:
-                    self.support_insights = f.read()
-                    logger.info(f"Loaded support insights ({len(self.support_insights)} chars)")
-            except IOError as e:
-                logger.error(f"Failed to load support insights: {e}")
+        """Load support insights from knowledge_base/support_insights.md."""
+        for insights_path in [self.base_path / 'knowledge_base' / 'support_insights.md',
+                              self.base_path / 'support_insights.md']:
+            if insights_path.exists():
+                try:
+                    with open(insights_path, 'r') as f:
+                        self.support_insights = f.read()
+                        logger.info(f"Loaded support insights ({len(self.support_insights)} chars)")
+                    return
+                except IOError as e:
+                    logger.error(f"Failed to load support insights: {e}")
     
     def _load_docs(self) -> None:
-        """Load documentation from knowledge_base/docs/."""
-        docs_path = self.base_path / 'knowledge_base' / 'docs'
-        if docs_path.exists():
-            for file_path in docs_path.glob('*.mdx'):
+        """Load documentation from knowledge_base/pages/ (recursive)."""
+        pages_path = self.base_path / 'knowledge_base' / 'pages'
+        if pages_path.exists():
+            for file_path in pages_path.rglob('*.mdx'):
                 try:
                     with open(file_path, 'r') as f:
                         content = f.read()
-                        if content.strip():  # Skip empty files
-                            self.docs[file_path.stem] = content
+                        if content.strip():
+                            rel = file_path.relative_to(pages_path)
+                            key = str(rel.with_suffix("")).replace("/", "-").replace("\\", "-")
+                            self.docs[key] = content
                 except IOError as e:
                     logger.warning(f"Failed to load doc {file_path.name}: {e}")
-            logger.info(f"Loaded {len(self.docs)} documentation files")
+            logger.info(f"Loaded {len(self.docs)} documentation files from pages/")
     
     def _load_codebase(self) -> None:
         """Load codebase analysis from knowledge_base/codebase/."""
@@ -238,35 +243,38 @@ class KnowledgeBase:
         return '\n\n'.join(result)
     
     def _find_relevant_docs(self, query: str) -> list:
-        """Find documentation files relevant to the query."""
+        """Find documentation files relevant to the query using keyword search."""
         relevant = []
-        
-        # Map keywords to doc files
+
         keyword_map = {
-            'webhook': ['webhooks-overview', 'webhook-setup', 'webhooks-events'],
-            'inbox': ['inboxes', 'quickstart'],
-            'thread': ['threads', 'messages'],
-            'message': ['messages', 'sending-receiving-email'],
-            'domain': ['custom-domains', 'managing-domains'],
-            'attachment': ['attachments'],
-            'label': ['labels'],
-            'pod': ['pods'],
-            'mcp': ['claude-skill'],
-            'draft': ['drafts'],
-            'deliverability': ['email-deliverability'],
-            'smtp': ['imap-smtp'],
-            'imap': ['imap-smtp'],
+            'webhook': ['webhooks-webhooks-overview', 'webhooks-webhook-setup', 'webhooks-webhooks-events'],
+            'inbox': ['core-concepts-inboxes', 'get-started-quickstart'],
+            'thread': ['core-concepts-threads', 'core-concepts-messages'],
+            'message': ['core-concepts-messages', 'guides-sending-receiving-email'],
+            'domain': ['guides-domains-custom-domains', 'guides-domains-managing-domains'],
+            'attachment': ['core-concepts-attachments'],
+            'label': ['core-concepts-labels'],
+            'pod': ['core-concepts-pods'],
+            'mcp': ['integrations-mcp'],
+            'draft': ['core-concepts-drafts'],
+            'deliverability': ['best-practices-email-deliverability'],
+            'smtp': ['guides-imap-smtp'],
+            'imap': ['guides-imap-smtp'],
+            'list': ['core-concepts-lists'],
+            'allowlist': ['knowledge-base-allowlists-blocklists'],
+            'blocklist': ['knowledge-base-allowlists-blocklists'],
+            'websocket': ['websockets', 'websockets-quickstart'],
         }
-        
+
         matching_docs = set()
         for keyword, docs in keyword_map.items():
             if keyword in query:
                 matching_docs.update(docs)
-        
+
         for doc_name in matching_docs:
             if doc_name in self.docs:
                 relevant.append((doc_name, self.docs[doc_name]))
-        
+
         return relevant
     
     def _get_relevant_codebase(self, query: str) -> str:

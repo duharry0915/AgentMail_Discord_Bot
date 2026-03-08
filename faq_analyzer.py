@@ -5,11 +5,6 @@ Analyzes support_history.json to identify FAQ patterns and help build/update kno
 
 Usage:
     python faq_analyzer.py
-
-Output:
-    - Top keywords in questions
-    - Question-answer pairs
-    - Suggested FAQ patterns
 """
 
 import json
@@ -17,12 +12,10 @@ import re
 from collections import Counter
 from pathlib import Path
 
-# Configuration
-SUPPORT_HISTORY_FILE = Path(__file__).parent / 'support_history.json'
-KNOWLEDGE_BASE_FILE = Path(__file__).parent / 'knowledge_base.json'
-
-# Team members (their messages are answers)
-TEAM_USERNAMES = ['haakam21', 'mablanc', 'simplehacker1313', 'mikesteroonie', 'harryduu_61189']
+BASE = Path(__file__).parent
+SUPPORT_HISTORY_FILE = BASE / 'knowledge_base' / 'support_history.json'
+KNOWLEDGE_BASE_FILE = BASE / 'knowledge_base.json'
+TEAM_USERNAMES = ['haakam21', 'simplehacker1313', 'mikesteroonie']
 
 # Skip patterns (messages we don't want to learn from)
 SKIP_PATTERNS = ['dm you', 'dmed you', 'will look', 'looking into', 'looking now']
@@ -209,22 +202,8 @@ def main():
     print("\n" + "="*80)
     print("RECOMMENDATIONS")
     print("="*80)
-    print("""
-Based on the analysis, consider adding/updating these FAQ categories:
-
-1. Domain verification issues (pending, stuck, DNS)
-2. 404 API errors (common cause: free tier limitations)
-3. Webhook configuration
-4. Billing/upgrade questions
-5. Profile picture/avatar setup
-6. Auto-reply implementation
-7. Gmail/Google Workspace integration
-8. Reply going to wrong recipient
-9. Attachment download issues
-
-Run the bot with DEBUG logging to see which questions are being matched
-and adjust the knowledge_base.json accordingly.
-""")
+    print("Review the question types above and update knowledge_base.json with new FAQs.")
+    print("Run the bot with DEBUG logging to see how questions are answered.")
 
 
 if __name__ == '__main__':
