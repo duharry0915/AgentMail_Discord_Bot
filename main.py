@@ -472,11 +472,8 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 # Support bot functions
 async def check_team_responded(channel: discord.TextChannel, after_message: discord.Message) -> bool:
     """Check if a team member has responded after the given message."""
-    knowledge_base = load_knowledge_base()
-    team_usernames = knowledge_base.get('team_usernames', TEAM_USERNAMES)
-
     async for msg in channel.history(after=after_message, limit=20):
-        if msg.author.name in team_usernames:
+        if msg.author.name in TEAM_USERNAMES:
             return True
     return False
 
@@ -494,26 +491,8 @@ async def send_generated_response(message: discord.Message, answer_dict: dict, c
         color=DISCORD_BLURPLE
     )
 
-    docs_link = answer_dict.get('docs_link')
-    if docs_link:
-        embed.add_field(
-            name="📚 Documentation",
-            value=f"[Learn more]({docs_link})",
-            inline=False
-        )
-
-    embed.add_field(
-        name="💬 Did this help?",
-        value="React 👍 if helpful, or 👎 if you need more help from the team.",
-        inline=False
-    )
-
-    embed.set_footer(text="🤖 AI-generated from AgentMail docs")
-
     try:
         bot_message = await message.reply(embed=embed)
-        await bot_message.add_reaction("👍")
-        await bot_message.add_reaction("👎")
 
         pending_feedback[bot_message.id] = {
             'original_message_id': message.id,
@@ -644,10 +623,8 @@ async def on_message(message: discord.Message):
     # Handle support channel
     if message.channel.id == SUPPORT_CHANNEL_ID:
         knowledge_base = load_knowledge_base()
-        team_usernames = knowledge_base.get('team_usernames', TEAM_USERNAMES)
-
         # If team member responds, clear bot reactions on recent bot messages
-        if message.author.name in team_usernames:
+        if message.author.name in TEAM_USERNAMES:
             async for msg in message.channel.history(limit=10):
                 if msg.author == bot.user and msg.embeds:
                     try:
